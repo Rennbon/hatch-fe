@@ -4,11 +4,14 @@
 <script lang="ts">
     import {defineComponent, provide} from "vue";
     import {WClient} from "@/chain/walletconnect";
+    import {ContractManager} from "@/chain/erc20";
 
     export default defineComponent({
         name: "App",
         setup() {
             provide<WClient>("walletConnect", new WClient())
+            provide<ContractManager>("abi", new ContractManager(String(process.env.VUE_APP_DREAM_MAKE)))
+            provide<string>("fundsToken", String(process.env.VUE_APP_DREAM_MAKE))
         }
     })
 </script>

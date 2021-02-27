@@ -9,13 +9,25 @@ export interface IPageParam {
 export interface IPageArgs {
 }
 
+export class NavArg implements IPageArgs {
+    public Account: string | undefined
+}
+
 export interface IFundArgs extends IPageArgs {
     FundAddress: string
 }
 
-
-let DefaultPage: IPageParam = {
-    Name: "DreamDAO-Nav",
-    Title: "Nav",
-    Args: {},
+export interface IOperationSlot {
+    Type: SubmitType
+    Project: string
+    Funds: string
 }
+
+export enum SubmitType {
+    Save,
+    WithDraw,
+    Invest,
+    Sell,
+
+}
+

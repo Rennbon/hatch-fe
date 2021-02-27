@@ -22,6 +22,8 @@ interface INumberAndAddress {
     Address: string[];
 }
 
+export const FundsToken: string = String(process.env.VUE_APP_CHAIN_URL)
+
 export class ContractManager {
     provider: ethers.providers.JsonRpcProvider;
     dreamMakeAbi: Interface = new utils.Interface(Abi.DreamMake)
@@ -31,28 +33,31 @@ export class ContractManager {
     token: string;
     chainId: number;
 
-    constructor() {
+    constructor(fundsAddr: string) {
         console.log(process.env.VUE_APP_CHAIN_URL)
         this.provider = new ethers.providers.JsonRpcProvider(String(process.env.VUE_APP_CHAIN_URL))
-        this.dreamMakeContract = new Contract(String(process.env.VUE_APP_DREAM_MAKE), Abi.DreamMake, this.provider)
+        //String(process.env.VUE_APP_DREAM_MAKE)
+        this.dreamMakeContract = new Contract(fundsAddr, Abi.DreamMake, this.provider)
         this.dreamTokenContract = new Contract(String(process.env.VUE_APP_DREAM_TOKEN), Abi.DreamToken, this.provider)
         this.chainId = Number(process.env.VUE_APP_CHAIN_ID)
-        this.token = String(process.env.VUE_APP_DREAM_MAKE);
+        //String(process.env.VUE_APP_DREAM_MAKE)
+        this.token = fundsAddr;
     }
 
-    public async Stake(from: string, val: string): Promise<ITxData> {
+
+    public async Deposit(from: string, val: string): Promise<ITxData> {
 
         const nonce = await ApiManager.GetAccountNonce(from, this.chainId);
         const gasPrice = await ApiManager.GetGasPrice(this.chainId);
 
 
-        const _gasLimit = 21000;
+        const _gasLimit = 210000;
         const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
 
         const _value = convertAmountToRawNumber(val);
         const value = sanitizeHex(convertStringToHex(_value));
 
-        const data = this.dreamMakeAbi.encodeFunctionData("stake")
+        const data = this.dreamMakeAbi.encodeFunctionData("deposit")
         const to = this.token
         const tx = {
             from,
@@ -254,8 +259,8 @@ export class ContractManager {
     }
 
 
-    public async ViewTotalAmount(): Promise<string> {
-        let res = await this.dreamMakeContract.functions.ViewTotalAmount()
+    public async TotalDeposit(): Promise<string> {
+        let res = await this.dreamMakeContract.functions.totlaDeposit()
         return convertHexToString(res)
     }
 

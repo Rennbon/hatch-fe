@@ -2,9 +2,9 @@
     <div>
         <div class="dm-body">
             <div class="dm-pod">
-                <div class="dm-container" @click="toFund('1','DreamDAO-Fund')">
+                <div class="dm-container" @click="toFund(fundsToken,'DreamDAO-Fund')">
                     <div>DreamDAO</div>
-                    <div>10000</div>
+                    <div>{{ dreamDao.amount }}</div>
                     <div>ETH</div>
                 </div>
                 <div class="dm-container" @click="toFund('fx1231231a','MyFund-Fund')">
@@ -60,10 +60,12 @@
 
 <script lang="ts">
     import {Notify} from "vant";
-    import {defineComponent, onMounted, reactive} from "vue";
+    import {defineComponent, inject, onMounted, reactive} from "vue";
     // eslint-disable-next-line no-unused-vars
-    import {IFundArgs, IPageArgs, IPageParam} from "../../pgcommon/common";
+    import {IFundArgs, IPageParam} from "../../pgcommon/common";
     import {BackendApi} from "../../chain/backendApi";
+    // eslint-disable-next-line no-unused-vars
+    import {WClient} from "../../chain/walletconnect";
 
     class ReqMyPage {
         account: string
@@ -99,18 +101,14 @@
         status: string
     }
 
-    const NavArg: IPageArgs = {
-
-    }
-
 
     export default defineComponent({
         name: "Nav",
-        props: {
-            account: String,
-        },
+        props: {},
         setup(props, context) {
-            const reqMyPage: ReqMyPage = new ReqMyPage(props.account as string, 0, 0)
+            const fundsToken = inject<string>("fundsToken", "")
+            const wcli = inject<WClient>("walletConnect")
+            const reqMyPage: ReqMyPage = new ReqMyPage("", 0, 0)
 
             const myFunds: Funds[] = []
             const dreamDao = reactive({amount: "0"})
@@ -118,7 +116,11 @@
 
             const myProjects: Project[] = []
             onMounted(() => {
-                // getMyPage()
+                if (wcli != undefined) {
+                    reqMyPage.account = wcli.state.address
+                    getMyPage()
+                }
+                console.log("load nav")
             })
 
             function getMyPage() {
@@ -194,7 +196,8 @@
                 toFund,
                 toProject,
                 getMyPage,
-                dreamDao
+                dreamDao,
+                fundsToken
             }
         }
     })

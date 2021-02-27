@@ -13,9 +13,6 @@
 
 <script lang="ts">
     import {defineComponent, inject, onBeforeMount, ref} from "vue";
-    // eslint-disable-next-line no-unused-vars
-    import * as dreamManager from "@/chain/erc20";
-    import {Notify} from "vant";
     // @ts-ignore
     import useStore from '../../store/index.js'
     // eslint-disable-next-line no-unused-vars
@@ -23,13 +20,12 @@
 
     export default defineComponent({
         name: "Bottom",
-        props: {},
-        setup(props, context) {
+        setup() {
             const account = ref("")
             const balance = ref("0")
             const connectStatus = ref(false)
             const store = useStore()
-            const cmgr: dreamManager.ContractManager = new dreamManager.ContractManager()
+            //const cmgr: dreamManager.ContractManager = new dreamManager.ContractManager()
             const wcli = inject<WClient>('walletConnect')
 
             onBeforeMount(async () => {
@@ -41,7 +37,6 @@
                     connectStatus.value = true
                     account.value = wcli.state.address
                     balance.value = wcli.state.asset
-                    currentAccount(account.value)
                 }
             })
 
@@ -52,7 +47,6 @@
                 await wcli.walletConnectInit()
                 if (wcli.state.connected) {
                     store.commit("updateConnected", true)
-                    currentAccount(account.value)
                     account.value = wcli.state.address
                     balance.value = wcli.state.asset
                     connectStatus.value = wcli.state.connected
@@ -66,7 +60,7 @@
                 balance.value = "0"
             }
 
-            async function stake(value: string) {
+            /*async function stake(value: string) {
                 const {connector} = wcli!.state;
                 let tx = await cmgr.Stake(account.value, value)
                 console.log(tx)
@@ -81,11 +75,7 @@
                 ).catch(res => {
                     Notify(res)
                 })
-            }
-
-            function currentAccount(acc: string) {
-                context.emit("currentAccount", acc)
-            }
+            }*/
 
             return {
                 connectWallet,
@@ -93,7 +83,7 @@
                 connectStatus,
                 balance,
                 account,
-                stake
+                //stake
             }
 
         }

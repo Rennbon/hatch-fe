@@ -1,8 +1,10 @@
 <template>
     <div>
         <NavBar ref="RefNavBar" @backPre="handlePreView"></NavBar>
-        <component @changeView="handleChangeView" :is="currentPage" :jsonParams="pageParam.Args"></component>
-        <Bottom @currentAccount="handleAccount" ref="RefWC"></Bottom>
+        <component @submit="handleOpenOperation" @changeView="handleChangeView" :is="currentPage"
+                   :jsonParams="pageParam.Args"></component>
+        <Operation ref="RefOperation"></Operation>
+        <Bottom></Bottom>
     </div>
 </template>
 
@@ -13,13 +15,15 @@
     import Bottom from "@/components/bar/Bottom.vue";
     import NavBar from "@/components/bar/NavBar.vue";
     import Nav from "@/components/content/Nav.vue"
-    import {defineComponent, onMounted, ref} from "vue";
+    import {defineComponent, onMounted, provide, ref} from "vue";
     // eslint-disable-next-line no-unused-vars
-    import {IPageParam} from "@/pgcommon/common";
+    import {IFundArgs, IOperationSlot, IPageParam} from "@/pgcommon/common";
+    import Operation from "@/components/bar/Operation.vue"
 
     export default defineComponent({
         name: "Page",
         components: {
+            Operation,
             NavBar,
             Bottom,
             Fund,
@@ -30,6 +34,7 @@
         setup() {
             onMounted(() => {
                 fnNavBar("DreamDAO-Nav")
+                console.log("load page")
             })
             const pMap = new Map<string, any>([
                 ["Fund", Fund],
@@ -45,9 +50,7 @@
             const pageParam = ref<IPageParam>({
                 Name: "Nav",
                 Title: "DreamDAO-Nav",
-                Args: {
-
-                },
+                Args: {},
             })
 
             function handleChangeView(p: IPageParam) {
@@ -56,12 +59,24 @@
                     preParams.push(pageParam.value as IPageParam)
                 }
                 if (pMap.has(p.Name)) {
+                    provideValue(p)
                     currentPage.value = pMap.get(p.Name)
                     pageParam.value = p
                     fnNavBar(p.Title)
                 }
             }
 
+            function provideValue(p: IPageParam) {
+                switch (p.Name) {
+                    case "Fund":
+                        curFundsId.value = (p.Args as IFundArgs).FundAddress
+
+                        break
+                    case "Project":
+                    default:
+                        break;
+                }
+            }
 
             function handlePreView(title: string) {
                 console.log("handlePreView", title)
@@ -72,24 +87,28 @@
                 }
             }
 
-            const currentAccount = ref("")
-
-            function handleAccount(account: string) {
-                console.log("current account ", account)
-                currentAccount.value = account
-            }
-
             const RefNavBar = ref()
             const fnNavBar = (title: string) => {
                 RefNavBar.value.setTitle(title)
             }
+
+            const RefOperation = ref()
+
+            function handleOpenOperation(p: IOperationSlot) {
+                RefOperation.value.open(p)
+            }
+
+            const curFundsId = ref("")
+            provide("funds", curFundsId)
+
             return {
                 currentPage,
                 pageParam,
                 handleChangeView,
                 handlePreView,
+                handleOpenOperation,
                 RefNavBar,
-                handleAccount,
+                RefOperation
             }
         }
     })
