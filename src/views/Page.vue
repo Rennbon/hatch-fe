@@ -15,6 +15,7 @@
     import Bottom from "@/components/bar/Bottom.vue";
     import NavBar from "@/components/bar/NavBar.vue";
     import Nav from "@/components/content/Nav.vue"
+    import CreateProject from "@/components/content/CreateProject.vue"
     import {defineComponent, onMounted, provide, ref} from "vue";
     // eslint-disable-next-line no-unused-vars
     import {IFundArgs, IOperationSlot, IPageParam} from "@/pgcommon/common";
@@ -28,7 +29,8 @@
             Bottom,
             Fund,
             Project,
-            Nav
+            Nav,
+            CreateProject
         },
         props: {},
         setup() {
@@ -39,7 +41,8 @@
             const pMap = new Map<string, any>([
                 ["Fund", Fund],
                 ["Nav", Nav],
-                ["Project", Project]
+                ["Project", Project],
+                ["CreateProject", CreateProject]
             ])
             const currentPage = ref<any>(Nav)
             const preParams: IPageParam[] = [{
@@ -94,6 +97,7 @@
             }
 
             const RefOperation = ref()
+
             // submit scheduler
             function handleOpenOperation(p: IOperationSlot) {
                 RefOperation.value.open(p)

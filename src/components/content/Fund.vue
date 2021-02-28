@@ -34,7 +34,7 @@
                 <van-button type="info" @click="SubmitSaveETH">ETH存入</van-button>
                 <van-button type="info" @click="SubmitWithdrawETH">ETH提现</van-button>
                 <van-button type="info" @click="SubmitWithdrawToken">AAA提现</van-button>
-                <van-button type="info">融资申请</van-button>
+                <van-button type="info" @click="toCreateProject">融资申请</van-button>
             </div>
         </div>
         <div>
@@ -66,7 +66,7 @@
     import {defineComponent, inject, onMounted, reactive, ref} from "vue";
     import {ContractManager} from "@/chain/erc20";
     // eslint-disable-next-line no-unused-vars
-    import {IOperationSlot, SubmitType} from "../../pgcommon/common";
+    import {IFundArgs, IOperationSlot, IPageParam, SubmitType} from "../../pgcommon/common";
     // eslint-disable-next-line no-unused-vars
     import {WClient} from "@/chain/walletconnect";
     import {convertAmountToCommon} from "@/chain/bignumber"
@@ -128,6 +128,19 @@
 
             })
 
+            // create new project
+            function toCreateProject() {
+                let args: IFundArgs = {
+                    FundAddress: fundsId.value,
+                }
+                let p: IPageParam = {
+                    Name: "CreateProject",
+                    Title: "融资申请",
+                    Args: args,
+                    NewPage: true,
+                }
+                context.emit("changeView", p)
+            }
 
             // account fund method
             function SubmitSaveETH() {
@@ -168,6 +181,7 @@
                 SubmitSaveETH,
                 SubmitWithdrawETH,
                 SubmitWithdrawToken,
+                toCreateProject,
                 MyDeposit,
                 MyFundToken,
                 Login
