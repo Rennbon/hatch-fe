@@ -93,6 +93,15 @@ export function convertAmountFromRawNumber(value: string | number, decimals = 18
     return new BigNumber(`${value}`).dividedBy(new BigNumber("10").pow(decimals)).toString();
 }
 
+export function convertAmountToCommon(value: string | number, decimals = 18): string {
+    if (value === "0" || value === "" || value === 0) {
+        return "0"
+    }
+    let v = new BigNumber(`${value}`).dividedBy(new BigNumber("10").pow(decimals)).toString();
+    // @ts-ignore
+    return v.match(/^\d+(?:\.\d{0,5})?/)[0]
+}
+
 export function handleSignificantDecimals(
     value: string,
     decimals: number,

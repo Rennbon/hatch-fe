@@ -4,8 +4,15 @@ import {Abi} from "./abis"
 import {Interface} from 'ethers/lib/utils';
 import {ApiManager} from "./api";
 import {sanitizeHex} from "./utilities";
-import {convertAmountToRawNumber, convertHexToString, convertStringToHex} from "./bignumber";
+import {
+    convertAmountToCommon,
+    convertAmountToRawNumber,
+    convertHexToString,
+    convertStringToHex,
+    subtract
+} from "./bignumber";
 import {ITxData} from "./types";
+import {IMyAsset} from "@/pgcommon/common";
 
 class DreamContract {
     Abi: ContractInterface;
@@ -71,6 +78,134 @@ export class ContractManager {
         return tx
     }
 
+    public async Withdraw(from: string, amount: string): Promise<ITxData> {
+        const nonce = await ApiManager.GetAccountNonce(from, this.chainId);
+        const gasPrice = await ApiManager.GetGasPrice(this.chainId);
+
+        const _gasLimit = 210000;
+        const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
+
+        const _value = 0;
+        const value = sanitizeHex(convertStringToHex(_value));
+
+        const _input = convertAmountToRawNumber(amount)
+        const input = sanitizeHex(convertStringToHex(_input));
+
+        const data = this.dreamMakeAbi.encodeFunctionData("withdrawal", [input])
+        const tx = {
+            from,
+            to: this.token,
+            nonce,
+            gasPrice,
+            gasLimit,
+            value,
+            data,
+        }
+        return tx
+    }
+
+
+    public async WithdrawFundToken(from: string, amount: string): Promise<ITxData> {
+        const nonce = await ApiManager.GetAccountNonce(from, this.chainId);
+        const gasPrice = await ApiManager.GetGasPrice(this.chainId);
+
+        const _gasLimit = 210000;
+        const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
+
+        const _value = 0;
+        const value = sanitizeHex(convertStringToHex(_value));
+
+        const _input = convertAmountToRawNumber(amount)
+        const input = sanitizeHex(convertStringToHex(_input));
+
+        const data = this.dreamMakeAbi.encodeFunctionData("withdrawalFundToken", [input])
+        const tx = {
+            from,
+            to: this.token,
+            nonce,
+            gasPrice,
+            gasLimit,
+            value,
+            data,
+        }
+        return tx
+    }
+
+    public async TotalDeposit(): Promise<string> {
+        let res = await this.dreamMakeContract.functions.totlaDeposit()
+        return convertAmountToCommon(res)
+    }
+
+    public async CountUsers(): Promise<string> {
+        let res = await this.dreamMakeContract.functions.totalUser()
+        return convertHexToString(res)
+    }
+
+    public async CountInvests(): Promise<string> {
+        let res = await this.dreamMakeContract.functions.totalInvests()
+        return convertHexToString(res)
+    }
+
+    public async CountProjects(): Promise<string> {
+        let res = await this.dreamMakeContract.functions.projectAmount()
+        return convertHexToString(res)
+    }
+
+    public async TotalFundToken(): Promise<string> {
+        let res = await this.dreamMakeContract.functions.totalFundToken()
+        return convertAmountToCommon(res)
+    }
+
+    public async MyFundDeposit(account: string): Promise<string> {
+        let contract = this.dreamMakeContract
+        let overrides = {
+            from: account,
+        }
+        let res = await contract.functions.myDepositValue()
+        return convertAmountToCommon(res)
+    }
+
+    public async MyDeposit(account: string): Promise<IMyAsset> {
+        let contract = this.dreamMakeContract
+        let overrides = {
+            from: account,
+        }
+        let _all = await contract.functions.myDepositValue(overrides)
+        let _unloc = await contract.functions.myCirculateValue(overrides)
+        let all = convertHexToString(_all)
+        let unloc = convertHexToString(_unloc)
+        let loc = subtract(all, unloc)
+        return {
+            All: all,
+            Unlock: unloc,
+            Lock: loc,
+            Decimals: 18,
+            Symbol: "ETH"
+        } as IMyAsset
+    }
+
+    public async MyFundTokenAmount(account: string): Promise<IMyAsset> {
+        let contract = this.dreamMakeContract
+        let overrides = {
+            from: account,
+        }
+        let _all = await contract.functions.myFundTokenAmount(overrides)
+        let _unloc = await contract.functions.myFreeFundTokenAmount(overrides)
+        let _withdraw = await contract.functions.myCirculateFundTokenAmount(overrides)
+        let all = convertHexToString(_all)
+        let unloc = convertHexToString(_unloc)
+        let withdraw = convertHexToString(_withdraw)
+
+        return {
+            All: all,
+            Unlock: unloc,
+            Lock: "0",
+            Withdraw: withdraw,
+            Decimals: 18,
+            Symbol: "DDD"
+        } as IMyAsset
+    }
+
     public async WithdrawProject(from: string, token: string): Promise<ITxData> {
         const nonce = await ApiManager.GetAccountNonce(from, this.chainId);
         const gasPrice = await ApiManager.GetGasPrice(this.chainId);
@@ -93,29 +228,6 @@ export class ContractManager {
         return tx
     }
 
-    public async Withdraw(from: string, amount: string): Promise<ITxData> {
-        const nonce = "0x35"//await ApiManager.GetAccountNonce(from, this.chainId);
-        const gasPrice = "0X222"//await ApiManager.GetGasPrice(this.chainId);
-        const _gasLimit = 21000;
-        const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
-
-        const _value = 0;
-        const value = sanitizeHex(convertStringToHex(_value));
-
-        const _input = convertAmountToRawNumber(amount)
-        const input = sanitizeHex(convertStringToHex(_input));
-        const data = this.dreamMakeAbi.encodeFunctionData("withdraw", [input])
-        const tx = {
-            from,
-            to: this.token,
-            nonce,
-            gasPrice,
-            gasLimit,
-            value,
-            data,
-        }
-        return tx
-    }
 
     public async UnlockDream(from: string, amount: string): Promise<ITxData> {
         const nonce = await ApiManager.GetAccountNonce(from, this.chainId);
@@ -259,11 +371,6 @@ export class ContractManager {
     }
 
 
-    public async TotalDeposit(): Promise<string> {
-        let res = await this.dreamMakeContract.functions.totlaDeposit()
-        return convertHexToString(res)
-    }
-
     public async ViewProjectPrice(token: string): Promise<string> {
         let res = await this.dreamMakeContract.functions.ViewProjectPrice(token)
         return convertHexToString(res)
@@ -355,3 +462,5 @@ export class ContractManager {
         return convertHexToString(res)
     }
 }
+
+

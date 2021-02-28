@@ -3,9 +3,9 @@
         <div id="title">{{ Title }}</div>
         <div>
             <van-cell-group id="content">
-                <van-field v-model="value" label="金额" placeholder="请输入金额"/>
+                <van-field v-model="Amount" label="金额" placeholder="请输入金额"/>
             </van-cell-group>
-            <van-button width="80px;" type="primary" @click="submit">提交</van-button>
+            <van-button width="80px;" type="primary" @click="Submit">提交</van-button>
         </div>
     </van-action-sheet>
 </template>
@@ -17,6 +17,8 @@
     import {WClient} from "../../chain/walletconnect";
     import {ContractManager} from "../../chain/erc20";
     import {Notify} from "vant";
+    // eslint-disable-next-line no-unused-vars
+    import {ITxData} from "@/chain/types";
 
     export default defineComponent({
         name: "Operation",
@@ -26,14 +28,25 @@
             const To = ref("")
             const Amount = ref("")
             const wcli = inject<WClient>('walletConnect')
+            let methodType: SubmitType
             let abi: ContractManager
+            const account = ref("")
 
             function open(p: IOperationSlot) {
-                abi = new ContractManager(p.Funds)
+                account.value = wcli!.state.address
+                abi = new ContractManager(p.Fund)
+                methodType = p.Type
                 switch (p.Type) {
                     case SubmitType.Save:
-                        Title.value = "存入"
-                        break;
+                        Title.value = "ETH存入"
+                        break
+                    case SubmitType.WithDraw:
+                        Title.value = "ETH提现"
+                        break
+                    case SubmitType.WithDrawFundToken:
+                        Title.value = "基金币提现"
+                        break
+                    case SubmitType.Invest:
                     default:
                         break
                 }
@@ -41,11 +54,26 @@
             }
 
             async function Submit() {
-                let tx = await abi.Deposit(wcli!.state.address, Amount.value)
+                let tx: ITxData
+                switch (methodType) {
+                    case SubmitType.Save:
+                        tx = await abi.Deposit(account.value, Amount.value)
+                        break;
+                    case SubmitType.WithDraw:
+                        tx = await abi.Withdraw(account.value, Amount.value)
+                        break
+                    case SubmitType.WithDrawFundToken:
+                        tx = await abi.WithdrawFundToken(account.value, Amount.value)
+                        break
+                    default:
+                        throw new Error("异常方法")
+                }
+                console.log("tx ", tx)
                 wcli!.state.connector!.sendTransaction(tx)
                     .then(
                         () => {
                             Notify({type: 'success', message: '交易发送成功'});
+                            Show.value = false
                         }
                     ).catch(res => {
                     Notify(res)

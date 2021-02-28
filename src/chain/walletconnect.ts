@@ -46,20 +46,15 @@ export class WClient {
         ...INITIAL_STATE
     }
     public walletConnectInit = async () => {
-        if (this.state.connector === null || !this.state.connector.connected) {
-            const bridge = "https://bridge.walletconnect.org"
-            const connector = new WalletConnect({bridge, qrcodeModal: QRCodeModal})
-            this.state.connector = connector
-            console.log("walletConnectInit")
-            if (!connector.connected) {
-                await connector.createSession()
-            }
-            await this.subscribeToEvents()
-        } else {
-            if (this.state.address === "") {
-               await this.fillState()
-            }
+        const bridge = "https://bridge.walletconnect.org"
+        const connector = new WalletConnect({bridge, qrcodeModal: QRCodeModal})
+        this.state.connector = connector
+        console.log("walletConnectInit")
+        //await this.fillState(connector)
+        if (!connector.connected) {
+            await connector.createSession()
         }
+        await this.subscribeToEvents()
     }
     public sendMockTx = async () => {
         const {connector, address, chainId} = this.state;
@@ -112,16 +107,14 @@ export class WClient {
         this.state.connector = connector
     }
 
-    private async fillState() {
-        if (this.state.connector != null && this.state.connector.connected) {
-            const {chainId, accounts} = this.state.connector;
-            const address = accounts[0];
-            this.state.connected = true
-            this.state.chainId = chainId
-            this.state.accounts = accounts
-            this.state.address = address
-            await this.onSessionUpdate(accounts, chainId)
-        }
+    private async fillState(connector: WalletConnect) {
+        let {chainId, accounts} = connector
+        let address = accounts[0];
+        this.state.connected = true
+        this.state.chainId = chainId
+        this.state.accounts = accounts
+        this.state.address = address
+        await this.onSessionUpdate(accounts, chainId)
     }
 
     private onConnect = async (payload: IInternalEvent) => {

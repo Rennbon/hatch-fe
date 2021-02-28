@@ -78,6 +78,7 @@
                 }
             }
 
+            // page content scheduler
             function handlePreView(title: string) {
                 console.log("handlePreView", title)
                 let pre = preParams.pop()
@@ -93,7 +94,7 @@
             }
 
             const RefOperation = ref()
-
+            // submit scheduler
             function handleOpenOperation(p: IOperationSlot) {
                 RefOperation.value.open(p)
             }

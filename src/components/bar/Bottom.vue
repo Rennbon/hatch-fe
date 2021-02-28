@@ -5,8 +5,10 @@
             <div id="wc_desc">Wallet Connect</div>
         </div>
         <div v-if="connectStatus" class="wc-border">
+
             <div>{{ account }}</div>
-            <div>{{ balance }}</div>
+            <div>{{ balance }}<van-button width="80px;" type="primary" @click="disconnect">断开</van-button></div>
+
         </div>
     </van-action-bar>
 </template>

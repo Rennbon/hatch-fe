@@ -1,7 +1,23 @@
 export const Abi = {
     DreamToken: [
         {
-            "inputs": [],
+            "inputs": [
+                {
+                    "internalType": "string",
+                    "name": "name_",
+                    "type": "string"
+                },
+                {
+                    "internalType": "string",
+                    "name": "symbol_",
+                    "type": "string"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "cap",
+                    "type": "uint256"
+                }
+            ],
             "stateMutability": "nonpayable",
             "type": "constructor"
         },
@@ -173,19 +189,6 @@ export const Abi = {
             "type": "function"
         },
         {
-            "inputs": [],
-            "name": "factory",
-            "outputs": [
-                {
-                    "internalType": "address",
-                    "name": "",
-                    "type": "address"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
             "inputs": [
                 {
                     "internalType": "address",
@@ -213,13 +216,26 @@ export const Abi = {
             "inputs": [
                 {
                     "internalType": "address",
-                    "name": "_factory",
+                    "name": "initializeMinter",
                     "type": "address"
                 }
             ],
-            "name": "initFactory",
+            "name": "initializeNested",
             "outputs": [],
             "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "initializerRan",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "view",
             "type": "function"
         },
         {
@@ -235,7 +251,7 @@ export const Abi = {
                     "type": "uint256"
                 }
             ],
-            "name": "mintTo",
+            "name": "mint",
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"

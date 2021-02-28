@@ -20,12 +20,24 @@ export interface IFundArgs extends IPageArgs {
 export interface IOperationSlot {
     Type: SubmitType
     Project: string
-    Funds: string
+    Fund: string
+    Limit: string
+}
+
+
+export interface IMyAsset {
+    All: string
+    Unlock: string
+    Lock: string
+    Withdraw: string
+    Decimals: number
+    Symbol: string
 }
 
 export enum SubmitType {
     Save,
     WithDraw,
+    WithDrawFundToken,
     Invest,
     Sell,
 
