@@ -1,5 +1,4 @@
 import {Contract, ethers, utils} from "ethers";
-import {ContractInterface} from "@ethersproject/contracts/src.ts/index";
 import {Abi} from "./abis"
 import {Interface} from 'ethers/lib/utils';
 import {ApiManager} from "./api";
@@ -8,6 +7,7 @@ import {
     convertAmountToCommon,
     convertAmountToRawNumber,
     convertHexToString,
+    convertNumberToString,
     convertStringToHex,
     subtract
 } from "./bignumber";
@@ -207,11 +207,12 @@ export class ContractManager {
         const value = sanitizeHex(convertStringToHex(_value));
 
         const input1 = param.Token
-        const input2 = convertStringToHex(param.SellPrice)
-        const input3 = convertStringToHex(param.SoftCap)
-        const input4 = convertStringToHex(param.HardCap)
-        const input5 = convertStringToHex(param.TargetPrice)
-        const input6 = convertStringToHex(param.SetupHeight)
+
+        const input2 = utils.parseEther(param.SellPrice)
+        const input3 = utils.parseEther(param.SoftCap)
+        const input4 = utils.parseEther(param.HardCap)
+        const input5 = utils.parseEther(param.TargetPrice)
+        const input6 = convertNumberToString(param.SetupHeight)
         const input7 = [param.Web, param.WhitePaper]
 
         const data = this.dreamMakeAbi.encodeFunctionData("setProject", [input1, input2, input3, input4, input5, input6, input7])
