@@ -5,7 +5,7 @@
             <van-cell-group id="content">
                 <van-field v-model="Amount" label="金额" placeholder="请输入金额"/>
             </van-cell-group>
-            <van-button width="80px;" type="primary" @click="Submit">提交</van-button>
+            <van-button width="80px;" type="primary" @click="SubmitMethod">提交</van-button>
         </div>
     </van-action-sheet>
 </template>
@@ -53,7 +53,7 @@
                 Show.value = true
             }
 
-            async function Submit() {
+            async function SubmitMethod() {
                 let tx: ITxData
                 switch (methodType) {
                     case SubmitType.Save:
@@ -86,7 +86,7 @@
                 open,
                 To,
                 Amount,
-                Submit
+                SubmitMethod
             }
         }
     })

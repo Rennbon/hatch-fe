@@ -33,6 +33,17 @@ export interface IMyAsset {
     Decimals: number
     Symbol: string
 }
+export interface ISetProjectParam{
+    From:string
+    Token:string
+    SellPrice:string
+    SoftCap:string
+    HardCap:string
+    TargetPrice:string
+    SetupHeight:string
+    WhitePaper:string
+    Web: string,
+}
 
 export enum SubmitType {
     Save,

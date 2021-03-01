@@ -173,7 +173,7 @@
             }
 
             function emit(p: IOperationSlot) {
-                context.emit("submit", p)
+                context.emit("openOperation", p)
             }
 
             return {

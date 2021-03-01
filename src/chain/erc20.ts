@@ -12,22 +12,13 @@ import {
     subtract
 } from "./bignumber";
 import {ITxData} from "./types";
-import {IMyAsset} from "@/pgcommon/common";
-
-class DreamContract {
-    Abi: ContractInterface;
-    Address: string;
-
-    constructor(address: string, abi: ContractInterface) {
-        this.Abi = abi
-        this.Address = address
-    }
-}
+import {IMyAsset, ISetProjectParam} from "@/pgcommon/common";
 
 interface INumberAndAddress {
     Number: string;
     Address: string[];
 }
+
 
 export const FundsToken: string = String(process.env.VUE_APP_CHAIN_URL)
 
@@ -161,7 +152,7 @@ export class ContractManager {
         let overrides = {
             from: account,
         }
-        let res = await contract.functions.myDepositValue()
+        let res = await contract.functions.myDepositValue(overrides)
         return convertAmountToCommon(res)
     }
 
@@ -205,6 +196,37 @@ export class ContractManager {
             Symbol: "DDD"
         } as IMyAsset
     }
+
+    public async SetProject(param: ISetProjectParam): Promise<ITxData> {
+        const nonce = await ApiManager.GetAccountNonce(param.From, this.chainId);
+        const gasPrice = await ApiManager.GetGasPrice(this.chainId);
+        const _gasLimit = 21000;
+        const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
+
+        const _value = 0;
+        const value = sanitizeHex(convertStringToHex(_value));
+
+        const input1 = param.Token
+        const input2 = convertStringToHex(param.SellPrice)
+        const input3 = convertStringToHex(param.SoftCap)
+        const input4 = convertStringToHex(param.HardCap)
+        const input5 = convertStringToHex(param.TargetPrice)
+        const input6 = convertStringToHex(param.SetupHeight)
+        const input7 = [param.Web, param.WhitePaper]
+
+        const data = this.dreamMakeAbi.encodeFunctionData("setProject", [input1, input2, input3, input4, input5, input6, input7])
+        const tx = {
+            from: param.From,
+            to: this.token,
+            nonce,
+            gasPrice,
+            gasLimit,
+            value,
+            data,
+        }
+        return tx
+    }
+
 
     public async WithdrawProject(from: string, token: string): Promise<ITxData> {
         const nonce = await ApiManager.GetAccountNonce(from, this.chainId);
@@ -252,33 +274,6 @@ export class ContractManager {
         return tx
     }
 
-    public async SetProject(from: string, token: string, sellPrice: string, softCap: string, hardCap: string, targetPrice: string, startNumber: number): Promise<ITxData> {
-        const nonce = await ApiManager.GetAccountNonce(from, this.chainId);
-        const gasPrice = await ApiManager.GetGasPrice(this.chainId);
-        const _gasLimit = 21000;
-        const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
-
-        const _value = 0;
-        const value = sanitizeHex(convertStringToHex(_value));
-
-        const input2 = convertStringToHex(sellPrice)
-        const input3 = convertStringToHex(softCap)
-        const input4 = convertStringToHex(hardCap)
-        const input5 = convertStringToHex(targetPrice)
-        const input6 = convertStringToHex(startNumber)
-
-        const data = this.dreamMakeAbi.encodeFunctionData("setProject", [token, input2, input3, input4, input5, input6])
-        const tx = {
-            from,
-            to: this.token,
-            nonce,
-            gasPrice,
-            gasLimit,
-            value,
-            data,
-        }
-        return tx
-    }
 
     public async SellMyProject(from: string, token: string, amount: string): Promise<ITxData> {
         const nonce = await ApiManager.GetAccountNonce(from, this.chainId);

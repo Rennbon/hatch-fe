@@ -1,7 +1,7 @@
 <template>
     <div>
         <NavBar ref="RefNavBar" @backPre="handlePreView"></NavBar>
-        <component @submit="handleOpenOperation" @changeView="handleChangeView" :is="currentPage"
+        <component @openOperation="handleOpenOperation" @changeView="handleChangeView" :is="currentPage"
                    :jsonParams="pageParam.Args"></component>
         <Operation ref="RefOperation"></Operation>
         <Bottom></Bottom>
