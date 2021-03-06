@@ -399,41 +399,6 @@ export const Abi = {
                     "internalType": "address",
                     "name": "fundToken_",
                     "type": "address"
-                },
-                {
-                    "internalType": "address",
-                    "name": "forkFund_",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "startBlock_",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "totalAllocation_",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "perReward_",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "duration_",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "guaranteeCommission_",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "fundCommission_",
-                    "type": "uint256"
                 }
             ],
             "stateMutability": "nonpayable",

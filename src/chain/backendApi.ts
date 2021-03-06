@@ -28,4 +28,10 @@ export const BackendApi = {
                 params: params
             })
     },
+    getOtherProjects(params: object){
+        return apiManager.get(
+            '/otherProjects', {
+                params: params
+            })
+    }
 }

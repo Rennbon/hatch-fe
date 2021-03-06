@@ -70,6 +70,25 @@
     // eslint-disable-next-line no-unused-vars
     import {WClient} from "@/chain/walletconnect";
     import {convertAmountToCommon} from "@/chain/bignumber"
+    import {BackendApi} from "@/chain/backendApi";
+    import {Notify} from "vant";
+
+    interface Project {
+        name: string
+        token: string
+        price: string
+        softCap: string
+        targetPrice: string
+        guarantee: string
+        setupHeight: number
+        deadline: number
+        //0:none
+        //1: Profitable
+        //2: Profitable but not on target
+        //3: loss
+        //4: break the contract
+        status: string
+    }
 
     export default defineComponent({
         name: "Fund",
@@ -127,6 +146,38 @@
                 FundsInfo.totalFundsToken = await abi.TotalFundToken()
 
             })
+
+
+            // get
+            const reqOtherProjects = reactive({
+                offset: 0,
+                more: true,
+            })
+
+
+            const otherProjects: Project[] = []
+
+            function getOtherProjects() {
+                BackendApi.getOtherProjects({
+                    "account": account.value,
+                    "offset": reqOtherProjects.offset
+                }).then(res => {
+                    let projectLen = res.data.array.length
+                    for (let i = 0; i < projectLen; i++) {
+                        let proTmp = res.data.array[i]
+                        otherProjects.push(proTmp)
+                    }
+                    if (projectLen == 0) {
+                        reqOtherProjects.more = false
+                    }
+                    reqOtherProjects.offset += projectLen
+                    console.log("load other projects over")
+                }).catch(err => {
+                        Notify({type: 'danger', message: err});
+                    }
+                )
+            }
+
 
             // create new project
             function toCreateProject() {

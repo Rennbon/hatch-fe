@@ -4,7 +4,7 @@
             <div class="dm-pod">
                 <div class="dm-container" @click="toFund(fundsToken,'DreamDAO-Fund')">
                     <div>DreamDAO</div>
-                    <div>{{ dreamDao.amount }}</div>
+                    <div>{{ convertAmountToCommon(dreamDao.amount) }}</div>
                     <div>ETH</div>
                 </div>
                 <div class="dm-container" @click="toFund('fx1231231a','MyFund-Fund')">
@@ -41,17 +41,11 @@
             </div>
             <van-divider dashed>other Startup</van-divider>
             <div class="dm-pod">
-                <div class="dm-container">
-
-                </div>
-                <div class="dm-container">
-
-                </div>
-                <div class="dm-container">
-
-                </div>
-                <div class="dm-container">
-
+                <div class="dm-container" :key="index" v-for="(pro,index) in otherProjects">
+                    {{ pro.fundName }}
+                    {{ pro.name }}
+                    {{ pro.price }}
+                    {{ pro.status }}
                 </div>
             </div>
         </div>
@@ -60,21 +54,20 @@
 
 <script lang="ts">
     import {Notify} from "vant";
-    import {defineComponent, inject, onMounted, reactive} from "vue";
+    import {defineComponent, inject, onMounted, reactive, ref} from "vue";
     // eslint-disable-next-line no-unused-vars
     import {IFundArgs, IPageParam} from "../../pgcommon/common";
     import {BackendApi} from "../../chain/backendApi";
     // eslint-disable-next-line no-unused-vars
     import {WClient} from "../../chain/walletconnect";
+    import {convertAmountToCommon} from "@/chain/bignumber"
 
     class ReqMyPage {
-        account: string
         sign: number
         offset: number
         more: boolean
 
-        constructor(acc: string, sign: number, off: number) {
-            this.account = acc
+        constructor(sign: number, off: number) {
             this.sign = sign
             this.offset = off
             this.more = true
@@ -90,9 +83,11 @@
     }
 
     interface Project {
+        //oken: string
         name: string
         price: string
         fundName: string
+
         //0:none
         //1: Profitable
         //2: Profitable but not on target
@@ -105,10 +100,14 @@
     export default defineComponent({
         name: "Nav",
         props: {},
+        methods: {
+            convertAmountToCommon
+        },
         setup(props, context) {
+            const account = ref("")
             const fundsToken = inject<string>("fundsToken", "")
             const wcli = inject<WClient>("walletConnect")
-            const reqMyPage: ReqMyPage = new ReqMyPage("", 0, 0)
+
 
             const myFunds: Funds[] = []
             const dreamDao = reactive({amount: "0"})
@@ -117,11 +116,16 @@
             const myProjects: Project[] = []
             onMounted(() => {
                 if (wcli != undefined) {
-                    reqMyPage.account = wcli.state.address
+                    account.value = wcli.state.address
                     getMyPage()
+                    getOtherProjects()
                 }
+
                 console.log("load nav")
             })
+
+
+            const reqMyPage: ReqMyPage = new ReqMyPage(0, 0)
 
             function getMyPage() {
                 if (!reqMyPage.more) {
@@ -129,7 +133,7 @@
                 }
                 BackendApi.getMyPage(
                     {
-                        "account": reqMyPage.account,
+                        "account": account.value,
                         "sign": reqMyPage.sign,
                         "offset": reqMyPage.offset
                     }).then(res => {
@@ -165,6 +169,35 @@
                 })
             }
 
+            const reqOtherProjects = reactive({
+                offset: 0,
+                more: true,
+            })
+
+
+            const otherProjects: Project[] = []
+
+            function getOtherProjects() {
+                BackendApi.getOtherProjects({
+                    "account": account.value,
+                    "offset": reqOtherProjects.offset
+                }).then(res => {
+                    let projectLen = res.data.array.length
+                    for (let i = 0; i < projectLen; i++) {
+                        let proTmp = res.data.array[i]
+                        otherProjects.push(proTmp)
+                    }
+                    if (projectLen == 0) {
+                        reqOtherProjects.more = false
+                    }
+                    reqOtherProjects.offset += projectLen
+                    console.log("load other projects over")
+                }).catch(err => {
+                        Notify({type: 'danger', message: err});
+                    }
+                )
+            }
+
             function toFund(fundAddr: string, fundName: string) {
                 let args: IFundArgs = {
                     FundAddress: fundAddr,
@@ -196,8 +229,10 @@
                 toFund,
                 toProject,
                 getMyPage,
+                getOtherProjects,
                 dreamDao,
-                fundsToken
+                fundsToken,
+                otherProjects
             }
         }
     })
