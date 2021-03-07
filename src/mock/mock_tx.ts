@@ -7,16 +7,16 @@ import {utils} from "ethers";
 import {Abi} from "@/chain/abis";
 
 
-export async function GetTx (address:string,chainId:number):Promise<ITxData> {
+export async function GetTx (address:string):Promise<ITxData> {
     const from = address;
     //0x300B0975B6F277515AD7a7B32a1eC2da1bE27F7B
     // to 0x4EC23f94d26cA32d7529AfdAe24433AaEd24d5bf
     const to = "0x1aD76125f61c974ebdD7471E0D8498eb967e6565";
     // nonce
-    const nonce = await ApiManager.GetAccountNonce(address, chainId);
+    const nonce = await ApiManager.GetAccountNonce(address);
 
     // gasPrice
-    const gasPrice = await ApiManager.GetGasPrice(chainId);
+    const gasPrice = await ApiManager.GetGasPrice();
 
     // gasLimit
     const _gasLimit = 210000;

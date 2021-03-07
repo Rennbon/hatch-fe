@@ -111,13 +111,14 @@
                 Web: ""
             })
             const wcli = inject<WClient>('walletConnect')
+            const fundAddr = inject("fund", ref(""))
             const AmountPattern = /^([1-9]\d{0,9}|0)(\.\d{1,5})?$/
             const ERC20Pattern = /^0x[0-9a-fA-F]{40}$/
             const provider = new ethers.providers.JsonRpcProvider(String(process.env.VUE_APP_CHAIN_URL))
-            const fundsId = inject("funds", ref(""))
+
             let abi: ContractManager
             onMounted(() => {
-                abi = new ContractManager(fundsId.value)
+                abi = new ContractManager(fundAddr.value)
             })
 
             async function getERC20TokenSymbol() {

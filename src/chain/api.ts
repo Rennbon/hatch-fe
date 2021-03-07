@@ -1,4 +1,5 @@
 import axios, {AxiosInstance} from "axios";
+import {convertAmountFromRawNumber} from "@/chain/bignumber";
 
 const api: AxiosInstance = axios.create({
     baseURL: process.env.VUE_APP_CHAIN_URL,
@@ -10,7 +11,7 @@ const api: AxiosInstance = axios.create({
 });
 
 
-async function GetAccountBalance(address: string, chainId: number): Promise<string> {
+async function GetAccountBalance(address: string): Promise<string> {
     const response = await api.post("",
         {
             "jsonrpc": "2.0",
@@ -19,14 +20,14 @@ async function GetAccountBalance(address: string, chainId: number): Promise<stri
                 address,
                 "latest"
             ],
-            "id": chainId
+            "id": Number(process.env.VUE_APP_CHAIN_ID)
         }
     );
     const {result} = response.data;
     return result;
 }
 
-async function GetAccountNonce(address: string, chainId: number): Promise<string> {
+async function GetAccountNonce(address: string): Promise<string> {
     const response = await api.post("",
         {
             "jsonrpc": "2.0",
@@ -35,43 +36,57 @@ async function GetAccountNonce(address: string, chainId: number): Promise<string
                 address,
                 "latest"
             ],
-            "id": chainId
+            "id": Number(process.env.VUE_APP_CHAIN_ID)
         }
     )
     const {result} = response.data
     return result
 }
 
-async function GetGasPrice(chainId: number): Promise<string> {
+async function GetGasPrice(): Promise<string> {
     const response = await api.post("",
         {
             "jsonrpc": "2.0",
             "method": "eth_gasPrice",
             "params": [],
-            "id": chainId
+            "id": Number(process.env.VUE_APP_CHAIN_ID)
         }
     );
     const {result} = response.data;
     return result;
 }
 
-async function GetGasLimit(chainId: number): Promise<string> {
+async function GetGasLimit(): Promise<string> {
     const response = await api.post("",
         {
             "jsonrpc": "2.0",
             "method": "eth_gasPrice",
             "params": [],
-            "id": chainId
+            "id": Number(process.env.VUE_APP_CHAIN_ID)
         }
     );
     const {result} = response.data;
     return result;
+}
+
+async function GetBlockNumber(): Promise<number> {
+    const response = await api.post("",
+        {
+            "jsonrpc": "2.0",
+            "method": "eth_blockNumber",
+            "params": [],
+            "id": Number(process.env.VUE_APP_CHAIN_ID)
+        }
+    );
+    const {result} = response.data;
+    return Number(convertAmountFromRawNumber(result, 0))
 }
 
 export const ApiManager = {
     GetAccountBalance,
     GetAccountNonce,
-    GetGasPrice
+    GetGasPrice,
+    GetBlockNumber
 }
 
 

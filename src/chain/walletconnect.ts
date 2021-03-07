@@ -62,7 +62,7 @@ export class WClient {
             return ""
         }
         console.log("sendMockTx=> address:", address)
-        let tx = await GetTx(address, chainId)
+        let tx = await GetTx(address)
         let res = await connector.sendTransaction(tx)
         return res
     }
@@ -139,7 +139,7 @@ export class WClient {
         this.state.fetching = true
         try {
             // get account balances
-            const assets = await ApiManager.GetAccountBalance(address, chainId);
+            const assets = await ApiManager.GetAccountBalance(address);
             let balance = convertAmountFromRawNumber(assets)
             this.state.fetching = false
             this.state.address = address

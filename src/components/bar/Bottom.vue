@@ -23,12 +23,13 @@
     export default defineComponent({
         name: "Bottom",
         setup() {
+            const wcli = inject<WClient>('walletConnect')
             const account = ref("")
             const balance = ref("0")
             const connectStatus = ref(false)
             const store = useStore()
             //const cmgr: dreamManager.ContractManager = new dreamManager.ContractManager()
-            const wcli = inject<WClient>('walletConnect')
+
 
             onBeforeMount(async () => {
                 // when refresh reload walletconnect state

@@ -6,12 +6,12 @@
                 <div>6.7eth</div>
             </div>
             <div id="fi-desc">
-                <div>{{ FundsInfo.totalDeposit }} eth</div>
-                <div>{{ FundsInfo.countUsers }} users</div>
-                <div>{{ FundsInfo.countInvests }} investors</div>
-                <div>{{ FundsInfo.countProjects }} startups</div>
-                <div>{{ FundsInfo.countFunds }} funds</div>
-                <div>{{ FundsInfo.totalFundsToken }} token</div>
+                <div>{{ FundInfo.totalDeposit }} eth</div>
+                <div>{{ FundInfo.countUsers }} users</div>
+                <div>{{ FundInfo.countInvests }} investors</div>
+                <div>{{ FundInfo.countProjects }} startups</div>
+                <div>{{ FundInfo.countFunds }} funds</div>
+                <div>{{ FundInfo.totalFundsToken }} token</div>
             </div>
             <div id="fi-amount" v-if="Login">
                 <div>余额： {{ convertAmountToCommon(MyDeposit.all) }} {{ MyDeposit.symbol }}</div>
@@ -37,26 +37,11 @@
                 <van-button type="info" @click="toCreateProject">融资申请</van-button>
             </div>
         </div>
-        <div>
-            <div>
-                <div>AAAA</div>
-                <div>123123</div>
-                <van-button type="info">担保</van-button>
-            </div>
-            <div>
-                <div>AAAA</div>
-                <div>123123</div>
-                <van-button type="info">担保</van-button>
-            </div>
-            <div>
-                <div>AAAA</div>
-                <div>123123</div>
-                <van-button type="info">担保</van-button>
-            </div>
-            <div>
-                <div>AAAA</div>
-                <div>123123</div>
-                <van-button type="info">担保</van-button>
+        <div class="project-list">
+            <div :key="index" v-for="(pro,index) in projects">
+                <div>{{ pro.name }}</div>
+                <div>{{ pro.token }}</div>
+                <van-button type="info" @click="SubmitToProject(pro)">{{ pro.stage }}</van-button>
             </div>
         </div>
     </div>
@@ -76,18 +61,14 @@
     interface Project {
         name: string
         token: string
+        stage: number
         price: string
         softCap: string
-        targetPrice: string
+        hardCap: string
         guarantee: string
+        guaranteePercent: string // tmp
         setupHeight: number
-        deadline: number
-        //0:none
-        //1: Profitable
-        //2: Profitable but not on target
-        //3: loss
-        //4: break the contract
-        status: string
+        deadline: number //tmp = ( setupHeight - currentHeight ) * 10s
     }
 
     export default defineComponent({
@@ -98,7 +79,8 @@
         },
         setup(props, context) {
             const wcli = inject<WClient>("walletConnect")
-            const FundsInfo = reactive({
+            const fundAddr = inject("fund", ref(""))
+            const FundInfo = reactive({
                 totalDeposit: "0",
                 countUsers: "0",
                 countInvests: "0",
@@ -121,9 +103,9 @@
                 symbol: "",
             })
 
-            const fundsId = inject("funds", ref(""))
+
             onMounted(async () => {
-                const abi = new ContractManager(fundsId.value)
+                const abi = new ContractManager(fundAddr.value)
                 if (wcli != undefined) {
                     Login.value = true
                     account.value = wcli.state.address
@@ -139,38 +121,54 @@
                     MyFundToken.symbol = myFundToken.Symbol
                     MyFundToken.unlock = myFundToken.Unlock
                 }
-                FundsInfo.totalDeposit = await abi.TotalDeposit()
-                FundsInfo.countUsers = await abi.CountUsers()
-                FundsInfo.countInvests = await abi.CountInvests()
-                FundsInfo.countProjects = await abi.CountProjects()
-                FundsInfo.totalFundsToken = await abi.TotalFundToken()
+                getProjectsByFund()
+                FundInfo.totalDeposit = await abi.TotalDeposit()
+                FundInfo.countUsers = await abi.CountUsers()
+                FundInfo.countInvests = await abi.CountInvests()
+                FundInfo.countProjects = await abi.CountProjects()
+                FundInfo.totalFundsToken = await abi.TotalFundToken()
+
 
             })
 
 
             // get
-            const reqOtherProjects = reactive({
-                offset: 0,
+            const reqProjectsByFund = reactive({
+                pageIndex: 1,
+                pageSize: 5,
                 more: true,
             })
 
 
-            const otherProjects: Project[] = []
+            const projects: Project[] = []
 
-            function getOtherProjects() {
-                BackendApi.getOtherProjects({
-                    "account": account.value,
-                    "offset": reqOtherProjects.offset
+            function getProjectsByFund() {
+                BackendApi.getProjectsByFund({
+                    "fund": fundAddr.value,
+                    "pageIndex": reqProjectsByFund.pageIndex,
+                    "pageSize": reqProjectsByFund.pageSize,
                 }).then(res => {
                     let projectLen = res.data.array.length
                     for (let i = 0; i < projectLen; i++) {
                         let proTmp = res.data.array[i]
-                        otherProjects.push(proTmp)
+                        let p = {
+                            name: proTmp.name,
+                            token: proTmp.token,
+                            stage: proTmp.stage,
+                            price: proTmp.price,
+                            softCap: proTmp.softCap,
+                            hardCap: proTmp.hardCap,
+                            guarantee: proTmp.guarantee,
+                            guaranteePercent: "0", // tmp
+                            setupHeight: proTmp.setupHeight,
+                            deadline: 0 //tmp = ( setupHeight - currentHeight ) * 10s
+                        } as Project
+                        projects.push(p)
                     }
                     if (projectLen == 0) {
-                        reqOtherProjects.more = false
+                        reqProjectsByFund.more = false
                     }
-                    reqOtherProjects.offset += projectLen
+                    reqProjectsByFund.pageIndex += 1
                     console.log("load other projects over")
                 }).catch(err => {
                         Notify({type: 'danger', message: err});
@@ -178,11 +176,10 @@
                 )
             }
 
-
             // create new project
             function toCreateProject() {
                 let args: IFundArgs = {
-                    FundAddress: fundsId.value,
+                    FundAddress: fundAddr.value,
                 }
                 let p: IPageParam = {
                     Name: "CreateProject",
@@ -197,7 +194,7 @@
             function SubmitSaveETH() {
                 const params = {
                     Type: SubmitType.Save,
-                    Fund: fundsId.value,
+                    Fund: fundAddr.value,
                     Project: "",
                 } as IOperationSlot
                 emit(params)
@@ -206,7 +203,7 @@
             function SubmitWithdrawETH() {
                 const params = {
                     Type: SubmitType.WithDraw,
-                    Fund: fundsId.value,
+                    Fund: fundAddr.value,
                     Project: "",
                     Limit: MyDeposit.unlock,
                 } as IOperationSlot
@@ -216,9 +213,35 @@
             function SubmitWithdrawToken() {
                 const params = {
                     Type: SubmitType.WithDrawFundToken,
-                    Fund: fundsId.value,
+                    Fund: fundAddr.value,
                     Project: "",
                     Limit: MyDeposit.unlock,
+                } as IOperationSlot
+                emit(params)
+            }
+
+            function SubmitToProject(p: Project) {
+                let type = SubmitType.Guarantee
+                // 1：guarantee 2:invest 3:over
+                switch (p.stage) {
+                    case 1:
+                        type = SubmitType.Guarantee;
+                        break
+                    case 2:
+                        type = SubmitType.Invest;
+                        break
+                    case 3:
+                        Notify({type: 'danger', message: "不支持此种类型"});
+                        return
+
+                }
+
+                let limit = "none"
+                const params = {
+                    Type: type,
+                    Fund: fundAddr.value,
+                    Project: p.token,
+                    Limit: limit,
                 } as IOperationSlot
                 emit(params)
             }
@@ -228,14 +251,16 @@
             }
 
             return {
-                FundsInfo,
+                FundInfo,
                 SubmitSaveETH,
                 SubmitWithdrawETH,
                 SubmitWithdrawToken,
+                SubmitToProject,
                 toCreateProject,
                 MyDeposit,
                 MyFundToken,
-                Login
+                Login,
+                projects
             }
         }
     })

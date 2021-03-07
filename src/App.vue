@@ -11,7 +11,7 @@
         setup() {
             provide<WClient>("walletConnect", new WClient())
             provide<ContractManager>("abi", new ContractManager(String(process.env.VUE_APP_DREAM_MAKE)))
-            provide<string>("fundsToken", String(process.env.VUE_APP_DREAM_MAKE))
+            provide<string>("makeDream", String(process.env.VUE_APP_DREAM_MAKE))
         }
     })
 </script>

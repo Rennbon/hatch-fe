@@ -2,7 +2,7 @@
     <div>
         <div class="dm-body">
             <div class="dm-pod">
-                <div class="dm-container" @click="toFund(fundsToken,'DreamDAO-Fund')">
+                <div class="dm-container" @click="toFund(MDToken,'DreamDAO-Fund')">
                     <div>DreamDAO</div>
                     <div>{{ convertAmountToCommon(dreamDao.amount) }}</div>
                     <div>ETH</div>
@@ -41,7 +41,8 @@
             </div>
             <van-divider dashed>other Startup</van-divider>
             <div class="dm-pod">
-                <div class="dm-container" :key="index" v-for="(pro,index) in otherProjects">
+                <div class="dm-container" :key="index" v-for="(pro,index) in otherProjects"
+                     @click="toProject(pro)">
                     {{ pro.fundName }}
                     {{ pro.name }}
                     {{ pro.price }}
@@ -56,7 +57,7 @@
     import {Notify} from "vant";
     import {defineComponent, inject, onMounted, reactive, ref} from "vue";
     // eslint-disable-next-line no-unused-vars
-    import {IFundArgs, IPageParam} from "../../pgcommon/common";
+    import {IFundArgs, IPageParam, IProjectArgs} from "../../pgcommon/common";
     import {BackendApi} from "../../chain/backendApi";
     // eslint-disable-next-line no-unused-vars
     import {WClient} from "../../chain/walletconnect";
@@ -83,10 +84,11 @@
     }
 
     interface Project {
-        //oken: string
+        token: string
         name: string
         price: string
         fundName: string
+        fundToken: string
 
         //0:none
         //1: Profitable
@@ -105,7 +107,7 @@
         },
         setup(props, context) {
             const account = ref("")
-            const fundsToken = inject<string>("fundsToken", "")
+            const MDToken = inject<string>("makeDream", "")
             const wcli = inject<WClient>("walletConnect")
 
 
@@ -211,11 +213,15 @@
                 changeView(p)
             }
 
-            function toProject(proAddr: string, proName: string) {
+            function toProject(pro: Project) {
+                let args: IProjectArgs = {
+                    ProjectAddress: pro.token,
+                    FundAddress: pro.fundToken,
+                }
                 let p: IPageParam = {
                     Name: "Project",
-                    Title: proName,
-                    Args: {},
+                    Title: pro.name,
+                    Args: args,
                     NewPage: true,
                 }
                 changeView(p)
@@ -231,7 +237,7 @@
                 getMyPage,
                 getOtherProjects,
                 dreamDao,
-                fundsToken,
+                MDToken,
                 otherProjects
             }
         }

@@ -18,7 +18,7 @@
     import CreateProject from "@/components/content/CreateProject.vue"
     import {defineComponent, onMounted, provide, ref} from "vue";
     // eslint-disable-next-line no-unused-vars
-    import {IFundArgs, IOperationSlot, IPageParam} from "@/pgcommon/common";
+    import {IFundArgs, IOperationSlot, IPageParam, IProjectArgs} from "@/pgcommon/common";
     import Operation from "@/components/bar/Operation.vue"
 
     export default defineComponent({
@@ -38,6 +38,13 @@
                 fnNavBar("DreamDAO-Nav")
                 console.log("load page")
             })
+            const curFundId = ref("")
+            provide("fund", curFundId)
+            const curProjectId = ref("")
+            provide("project", curProjectId)
+
+
+            // unified scheduling
             const pMap = new Map<string, any>([
                 ["Fund", Fund],
                 ["Nav", Nav],
@@ -72,10 +79,12 @@
             function provideValue(p: IPageParam) {
                 switch (p.Name) {
                     case "Fund":
-                        curFundsId.value = (p.Args as IFundArgs).FundAddress
-
+                        curFundId.value = (p.Args as IFundArgs).FundAddress
                         break
                     case "Project":
+                        curFundId.value = (p.Args as IProjectArgs).FundAddress
+                        curProjectId.value = (p.Args as IProjectArgs).ProjectAddress
+                        break
                     default:
                         break;
                 }
@@ -103,8 +112,6 @@
                 RefOperation.value.open(p)
             }
 
-            const curFundsId = ref("")
-            provide("funds", curFundsId)
 
             return {
                 currentPage,

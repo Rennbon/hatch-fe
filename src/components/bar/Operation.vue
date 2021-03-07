@@ -23,19 +23,20 @@
     export default defineComponent({
         name: "Operation",
         setup() {
+            const wcli = inject<WClient>('walletConnect')
             const Show = ref(false)
             const Title = ref("")
             const To = ref("")
             const Amount = ref("")
-            const wcli = inject<WClient>('walletConnect')
-            let methodType: SubmitType
+
             let abi: ContractManager
             const account = ref("")
+            let param: IOperationSlot
 
             function open(p: IOperationSlot) {
+                param = p
                 account.value = wcli!.state.address
                 abi = new ContractManager(p.Fund)
-                methodType = p.Type
                 switch (p.Type) {
                     case SubmitType.Save:
                         Title.value = "ETH存入"
@@ -47,6 +48,13 @@
                         Title.value = "基金币提现"
                         break
                     case SubmitType.Invest:
+                        Title.value = "投资"
+                        break
+                    case SubmitType.Guarantee:
+                        Title.value = "担保"
+                        break
+                    case SubmitType.Sell:
+                        break
                     default:
                         break
                 }
@@ -55,7 +63,7 @@
 
             async function SubmitMethod() {
                 let tx: ITxData
-                switch (methodType) {
+                switch (param.Type) {
                     case SubmitType.Save:
                         tx = await abi.Deposit(account.value, Amount.value)
                         break;
@@ -64,6 +72,15 @@
                         break
                     case SubmitType.WithDrawFundToken:
                         tx = await abi.WithdrawFundToken(account.value, Amount.value)
+                        break
+                    case SubmitType.Sell:
+                        tx = await abi.SellProject(account.value, param.Project, Amount.value)
+                        break
+                    case SubmitType.Guarantee:
+                        tx = await abi.GuaranteeProject(account.value, param.Project, Amount.value)
+                        break
+                    case SubmitType.Invest:
+                        tx = await abi.InvestProject(account.value, param.Project, Amount.value)
                         break
                     default:
                         throw new Error("异常方法")

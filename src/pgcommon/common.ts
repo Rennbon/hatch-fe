@@ -17,6 +17,10 @@ export interface IFundArgs extends IPageArgs {
     FundAddress: string
 }
 
+export interface IProjectArgs extends IFundArgs {
+    ProjectAddress: string
+}
+
 export interface IOperationSlot {
     Type: SubmitType
     Project: string
@@ -33,15 +37,16 @@ export interface IMyAsset {
     Decimals: number
     Symbol: string
 }
-export interface ISetProjectParam{
-    From:string
-    Token:string
-    SellPrice:string
-    SoftCap:string
-    HardCap:string
-    TargetPrice:string
-    SetupHeight:string
-    WhitePaper:string
+
+export interface ISetProjectParam {
+    From: string
+    Token: string
+    SellPrice: string
+    SoftCap: string
+    HardCap: string
+    TargetPrice: string
+    SetupHeight: string
+    WhitePaper: string
     Web: string,
 }
 
@@ -51,6 +56,7 @@ export enum SubmitType {
     WithDrawFundToken,
     Invest,
     Sell,
+    Guarantee,
 
 }
 
