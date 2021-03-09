@@ -2,8 +2,8 @@
     <div>
         <div id="project-info">
             <div>FundName</div>
-            <div>+10%</div>
-            <div>16.29 ETH</div>
+            <div>{{ fundDaily.percent }}%</div>
+            <div>{{ fundDaily.amount }} ETH</div>
         </div>
         <div>
             <div>AAA</div>
@@ -16,36 +16,43 @@
             <div>白皮书</div>
         </div>
         <div>
-            <div>invest Price:</div>
-            <div>soft-hard cap:</div>
-            <div>gaurantee:</div>
-            <div>target price:</div>
-            <div>launch block:</div>
-            <div>launch time:</div>
+            <div>invest Price:{{ projectInfo.price }}</div>
+            <div>soft-hard cap:{{ projectInfo.softCap }}</div>
+            <div>gaurantee:{{ projectInfo.guarantee }}</div>
+            <div>target price:{{ projectInfo.targetPrice }}</div>
+            <div>launch block:{{ projectInfo.setupHeight }}</div>
+            <div>launch time:{{ projectInfo.deadline }}</div>
         </div>
         <div>
-            <div>持仓：</div>
-            <div>投入成本：</div>
-            <div>盈利：</div>
-            <div>价值：</div>
-            <div>投入时间：</div>
-            <div>剩余时间：</div>
+            <div>持仓：{{ myPosition.position }}</div>
+            <div>投入成本：{{ myPosition.inputCost }}</div>
+            <div>盈利：{{ myPosition.profits }}</div>
+            <div>价值：{{ myPosition.value }}</div>
+            <div>投入时间：{{ myPosition.openTime }}</div>
+            <div>剩余时间：{{ projectInfo.deadline }}</div>
 
         </div>
         <div>
-            <van-button type="info">投资</van-button>
+            <van-button v-if="buttons.guarantee" type="info">担保</van-button>
+            <van-button v-if="buttons.invest" type="info">投资</van-button>
+            <van-button v-if="buttons.refund" type="info">退出投资</van-button>
         </div>
         <div>
-            <div>0xasdadasd 10eth</div>
-            <div>0xasdadasd 10eth</div>
-            <div>0xasdadasd 10eth</div>
+            <div>投资</div>
+            <div :key="index" v-for="(log,index) in investLogs">
+                <div>{{ log.id }}
+                    {{ log.from }}
+                    {{ log.amount }}
+                </div>
+            </div>
+            <div>卖出</div>
+            <div :key="index" v-for="(log,index) in sellLogs">
+                <div>{{ log.id }}
+                    {{ log.from }}
+                    {{ log.amount }}
+                </div>
+            </div>
 
-        </div>
-        <div>
-            <div>0xasdadasd 10eth</div>
-            <div>0xasdadasd 10eth</div>
-            <div>0xasdadasd 10eth</div>
-            <div>0xasdadasd 10eth</div>
         </div>
     </div>
 </template>
@@ -59,6 +66,13 @@
     import {Notify} from "vant";
     import {add} from "@/chain/bignumber"
     import {ApiManager} from "@/chain/api"
+
+    interface ILog {
+        id: number
+        blockHeight: number
+        from: string
+        amount: string
+    }
 
     export default defineComponent({
         name: "Project",
@@ -86,7 +100,9 @@
                 price: "0",
                 softCap: "0",
                 hardCap: "",
+                targetPrice: "",
                 setupHeight: 0,
+                deadline: 0,
                 guarantee: "0",
                 web: "",
                 whitePaper: "",
@@ -94,6 +110,12 @@
             const fundDaily = reactive({
                 amount: "0",
                 percent: "0",
+            })
+
+            const buttons = reactive({
+                guarantee: false,
+                invest: false,
+                refund: false,
             })
             onMounted(async () => {
                 currentHeight.value = await ApiManager.GetBlockNumber()
@@ -107,6 +129,12 @@
                     myPosition.position = await abi.InvestProjectTokenAmount(account.value, projectAddr.value)
                 }
                 getProjectInfo()
+                projectInfo.deadline = projectInfo.setupHeight - currentHeight.value
+                if (projectInfo.deadline < 0) {
+                    projectInfo.deadline = 0
+                }
+                getProjectSellLog()
+                getProjectInvestLog()
             })
 
 
@@ -120,22 +148,112 @@
                     let one = res.data.one
                     projectInfo.name = one.name
                     projectInfo.stage = one.stage
+                    // 1：guarantee 2:invest 3:over
+                    switch (projectInfo.stage) {
+                        case 1:
+                            buttons.guarantee = true
+                            break
+                        case 2:
+                            buttons.invest = true
+                            break
+                        default:
+                            break
+                    }
+                    if (buttons.invest && myPosition.inputCost != "0") {
+                        buttons.refund = true
+                    }
+
                     projectInfo.price = one.price
                     projectInfo.softCap = one.softCap
                     projectInfo.hardCap = one.hardCap
                     projectInfo.setupHeight = one.setupHeight
                     projectInfo.guarantee = one.guarantee
                     projectInfo.web = one.web
+                    projectInfo.targetPrice = one.targetPrice
                     projectInfo.whitePaper = one.whitePaper
 
                     let daily = res.data.fundDaily
                     fundDaily.amount = daily.amount
                     fundDaily.percent = daily.percent
-                    console.log("load other projects over")
                 }).catch(err => {
                         Notify({type: 'danger', message: err});
                     }
                 )
+            }
+
+
+            // sellLog start
+            const reqSellLog = reactive({
+                pageIndex: 1,
+                pageSize: 10,
+                more: true,
+                methodNum: 3,
+            })
+            const sellLogs: ILog[] = []
+
+            function getProjectSellLog() {
+                if (!reqSellLog.more) {
+                    return
+                }
+                BackendApi.getProjectMethodLogs({
+                    "pageIndex": reqSellLog.pageIndex,
+                    "pageSize": reqSellLog.pageSize,
+                    "methodNum": reqSellLog.methodNum,
+                    "project": projectAddr.value,
+                    "fund": fundAddr.value
+                }).then(res => {
+                    if (res.data.array.length > 0) {
+                        sellLogs.concat(res.data.array)
+                        reqSellLog.pageIndex++
+                    } else {
+                        reqSellLog.more = false
+                    }
+
+                }).catch(err => {
+                        Notify({type: 'danger', message: err});
+                    }
+                )
+            }
+
+            // invest log  start
+            const reqInvestLog = reactive({
+                pageIndex: 1,
+                pageSize: 10,
+                more: true,
+                methodNum: 2,
+            })
+            const investLogs: ILog[] = []
+
+            function getProjectInvestLog() {
+                if (!reqInvestLog.more) {
+                    return
+                }
+                BackendApi.getProjectMethodLogs({
+                    "pageIndex": reqInvestLog.pageIndex,
+                    "pageSize": reqInvestLog.pageSize,
+                    "methodNum": reqInvestLog.methodNum,
+                    "project": projectAddr.value,
+                    "fund": fundAddr.value
+                }).then(res => {
+                    if (res.data.array.length > 0) {
+                        investLogs.concat(res.data.array)
+                        reqInvestLog.pageIndex++
+                    } else {
+                        reqInvestLog.more = false
+                    }
+
+                }).catch(err => {
+                        Notify({type: 'danger', message: err});
+                    }
+                )
+            }
+
+
+            return {
+                fundDaily, projectInfo, myPosition, currentHeight,
+                sellLogs, investLogs,
+                getProjectSellLog, getProjectInvestLog,
+                buttons
             }
 
         }

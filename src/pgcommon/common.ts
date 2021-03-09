@@ -21,6 +21,7 @@ export interface IProjectArgs extends IFundArgs {
     ProjectAddress: string
 }
 
+
 export interface IOperationSlot {
     Type: SubmitType
     Project: string

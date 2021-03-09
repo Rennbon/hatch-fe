@@ -303,7 +303,7 @@ export class ContractManager {
         let overrides = {
             from: account,
         }
-        let res = await contract.functions.guaranteeProjectValue(overrides, project)
+        let res = await contract.functions.guaranteeProjectValue(project, overrides)
         return convertAmountToCommon(res)
     }
 
@@ -313,7 +313,7 @@ export class ContractManager {
         let overrides = {
             from: account,
         }
-        let res = await contract.functions.investProjectValue(overrides, project)
+        let res = await contract.functions.investProjectValue(project, overrides)
         return convertAmountToCommon(res)
     }
 
@@ -323,7 +323,7 @@ export class ContractManager {
         let overrides = {
             from: account,
         }
-        let res = await contract.functions.investProjectTokenAmount(overrides, project)
+        let res = await contract.functions.investProjectTokenAmount(project, overrides)
         return convertAmountToCommon(res)
     }
 
@@ -333,7 +333,7 @@ export class ContractManager {
         let overrides = {
             from: account,
         }
-        let res = await contract.functions.investProjectIncome(overrides, project)
+        let res = await contract.functions.investProjectIncome(project, overrides)
         return convertAmountToCommon(res)
     }
 

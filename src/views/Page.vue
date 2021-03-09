@@ -1,6 +1,6 @@
 <template>
     <div>
-        <NavBar ref="RefNavBar" @backPre="handlePreView"></NavBar>
+        <NavBar ref="RefNavBar" @changeView="handleChangeView" @backPre="handlePreView"></NavBar>
         <component @openOperation="handleOpenOperation" @changeView="handleChangeView" :is="currentPage"
                    :jsonParams="pageParam.Args"></component>
         <Operation ref="RefOperation"></Operation>
@@ -20,6 +20,7 @@
     // eslint-disable-next-line no-unused-vars
     import {IFundArgs, IOperationSlot, IPageParam, IProjectArgs} from "@/pgcommon/common";
     import Operation from "@/components/bar/Operation.vue"
+    import ForkFund from "@/components/content/ForkFund.vue"
 
     export default defineComponent({
         name: "Page",
@@ -30,7 +31,8 @@
             Fund,
             Project,
             Nav,
-            CreateProject
+            CreateProject,
+            ForkFund
         },
         props: {},
         setup() {
@@ -49,7 +51,8 @@
                 ["Fund", Fund],
                 ["Nav", Nav],
                 ["Project", Project],
-                ["CreateProject", CreateProject]
+                ["CreateProject", CreateProject],
+                ["ForkFund", ForkFund]
             ])
             const currentPage = ref<any>(Nav)
             const preParams: IPageParam[] = [{
