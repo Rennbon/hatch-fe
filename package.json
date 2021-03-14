@@ -11,6 +11,8 @@
     "bignumber.js": "^9.0.1",
     "core-js": "^3.6.5",
     "ethers": "^5.0.24",
+    "postcss": "^8.2.8",
+    "postcss-pxtorem": "5.1.1",
     "secure-ls": "^1.2.6",
     "vant": "^3.0.0-rc.3",
     "vue": "^3.0.0",

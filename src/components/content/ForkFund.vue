@@ -90,12 +90,20 @@
 </template>
 
 <script lang="ts">
-    import {defineComponent, reactive} from "vue";
+    import {defineComponent, inject, onMounted, reactive, ref} from "vue";
+    // eslint-disable-next-line no-unused-vars
+    import {WClient} from "@/chain/walletconnect";
+    import {ContractManager} from "@/chain/erc20";
+    // eslint-disable-next-line no-unused-vars
+    import {IForkFundParam} from "@/pgcommon/common";
+    import {Notify} from "vant";
 
     export default defineComponent({
         name: "ForkFund",
         setup() {
-
+            const wcli = inject<WClient>("walletConnect")
+            const abi = inject<ContractManager>("abi", new ContractManager())
+            const account = ref("")
             const fund = reactive({
                 symbol: "",
                 desc: "",
@@ -110,9 +118,30 @@
                 keepHeight: 0,
 
             })
+            onMounted(() => {
+                if (wcli === undefined) {
+                    return
+                }
+                account.value = wcli.state.address
+            })
+
+            // todo: 实现forkFund，目前是假的
+            async function ForkFund() {
+                let params = {} as IForkFundParam
+                let tx = await abi.ForkFund(params)
+                wcli!.state.connector!.sendTransaction(tx).then(
+                    () => {
+                        Notify({type: 'success', message: '交易发送成功'});
+                        //context.emit("backPre", "createProject")
+                    }
+                ).catch(res => {
+                    Notify(res)
+                })
+            }
 
             return {
-                fund
+                fund,
+                ForkFund
             }
         }
     })

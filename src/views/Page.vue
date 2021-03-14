@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="main">
         <NavBar ref="RefNavBar" @changeView="handleChangeView" @backPre="handlePreView"></NavBar>
         <component @openOperation="handleOpenOperation" @changeView="handleChangeView" :is="currentPage"
                    :jsonParams="pageParam.Args"></component>
@@ -37,7 +37,7 @@
         props: {},
         setup() {
             onMounted(() => {
-                fnNavBar("DreamDAO-Nav")
+                fnNavBar("DreamDAO-Nav", 0)
                 console.log("load page")
             })
             const curFundId = ref("")
@@ -75,7 +75,7 @@
                     provideValue(p)
                     currentPage.value = pMap.get(p.Name)
                     pageParam.value = p
-                    fnNavBar(p.Title)
+                    fnNavBar(p.Title, p.Name === "Nav" ? 0 : 1)
                 }
             }
 
@@ -104,8 +104,8 @@
             }
 
             const RefNavBar = ref()
-            const fnNavBar = (title: string) => {
-                RefNavBar.value.setTitle(title)
+            const fnNavBar = (title: string, barStyle: number) => {
+                RefNavBar.value.setTitle(title, barStyle)
             }
 
             const RefOperation = ref()
@@ -131,5 +131,7 @@
 </script>
 
 <style scoped>
-
+#main{
+    overflow: hidden;
+}
 </style>

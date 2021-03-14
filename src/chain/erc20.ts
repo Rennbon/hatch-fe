@@ -12,7 +12,7 @@ import {
     subtract
 } from "./bignumber";
 import {ITxData} from "./types";
-import {IMyAsset, ISetProjectParam} from "@/pgcommon/common";
+import {IForkFundParam, IMyAsset, ISetProjectParam} from "@/pgcommon/common";
 
 interface INumberAndAddress {
     Number: string;
@@ -31,7 +31,11 @@ export class ContractManager {
     token: string;
     chainId: number;
 
-    constructor(fundsAddr: string) {
+
+    constructor(fundsAddr?: string) {
+        if (fundsAddr == undefined || fundsAddr === "") {
+            fundsAddr = String(process.env.VUE_APP_DREAM_MAKE)
+        }
         console.log(process.env.VUE_APP_CHAIN_URL)
         this.provider = new ethers.providers.JsonRpcProvider(String(process.env.VUE_APP_CHAIN_URL))
         //String(process.env.VUE_APP_DREAM_MAKE)
@@ -335,6 +339,12 @@ export class ContractManager {
         }
         let res = await contract.functions.investProjectIncome(project, overrides)
         return convertAmountToCommon(res)
+    }
+
+    public async ForkFund(param: IForkFundParam): Promise<ITxData> {
+
+        const tx = {} as ITxData
+        return tx
     }
 
 

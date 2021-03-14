@@ -1,15 +1,16 @@
 <template>
-    <van-action-bar>
-        <div v-if="connectStatus===false" class="wc-border" @click="connectWallet">
-            <img id="wc_logo" src="../../assets/walletConnect.jpeg"/>
-            <div id="wc_desc">Wallet Connect</div>
+    <van-action-bar id="wc-bar" :class="connectStatus===false?'':'wc-bar-color'">
+        <div v-if="connectStatus===false" style="margin: auto" @click="connectWallet">
+            <img id="wc-img" src="/img/2x/wallet-connect.png"/>
         </div>
-        <div v-if="connectStatus" class="wc-border">
+        <div v-if="connectStatus" style="margin: auto">
+            <div id="account">{{ account }}</div>
+            <div id="balance">{{ balance }} ETH</div>
+            <button id="disconnect" @click="disconnect">断开连接</button>
 
-            <div>{{ account }}</div>
-            <div>{{ balance }}<van-button width="80px;" type="primary" @click="disconnect">断开</van-button></div>
 
         </div>
+
     </van-action-bar>
 </template>
 
@@ -94,28 +95,51 @@
 </script>
 
 <style scoped>
-    .wc-border {
+    #wc-bar {
+        height: 100px;
+        border-radius: 10px 10px 0px 0px;
+        box-shadow: 0 0 7px rgba(0, 0, 0, .25), 0 0 7px rgba(0, 0, 0, .25);
+        position: absolute;
+        z-index: 3000;
+    }
+
+    .wc-bar-color {
+        background-image: linear-gradient(to bottom right, #0575DF, #00EB60);
+    }
+
+    #wc-img {
+        height: 22px;
+        width: 232px;
+    }
+
+    #account {
         position: relative;
-        height: 40px;
-        width: 55%;
-        border: 1px solid #cccccc;
-        margin: 0 auto;
-        border-radius: 4px;
-    }
-
-    #wc_logo {
-        position: absolute;
-        left: 10px;
-        width: 36px;
-        display: inline-block;
-    }
-
-    #wc_desc {
-        position: absolute;
-        top: 0px;
-        left: 60px;
+        top: -24px;
+        color: white;
+        font-family: PingFangSC-Regular, sans-serif;
         font-size: 14px;
-        line-height: 40px;
     }
 
+    #balance {
+        position: absolute;
+        top: 48px;
+        left: 24px;
+        color: white;
+        font-size: 24px;
+        font-family: PingFangSC-Semibold, sans-serif;
+    }
+
+    #disconnect {
+        position: absolute;
+        top: 48px;
+        right: 24px;
+        font-family: PingFangSC-Semibold, sans-serif;
+        font-size: 20px;
+        background: #eeeeee;
+        color: #666666;
+        border: none;
+        height: 32px;
+        width: 122px;
+        border-radius: 5px 5px 5px 5px;
+    }
 </style>

@@ -51,6 +51,13 @@ export interface ISetProjectParam {
     Web: string,
 }
 
+
+export interface IForkFundParam {
+    From: string
+    Name: string
+    FundIntroduction:string
+}
+
 export enum SubmitType {
     Save,
     WithDraw,

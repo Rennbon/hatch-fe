@@ -1,6 +1,7 @@
 <template>
-    <div>
-        <div class="dm-body">
+    <div class="dm-body">
+        <div id="bg"></div>
+        <div id="dm-pods">
             <div class="dm-pod">
                 <div class="dm-container" @click="toFund(MDToken,'DreamDAO-Fund')">
                     <div>DreamDAO</div>
@@ -246,8 +247,33 @@
 </script>
 
 <style scoped>
+    .dm-body {
+        position: relative;
+    }
+
+    #bg {
+        position: absolute;
+        width: 100%;
+        height: 64px;
+        background-color: #3682FF;
+        z-index: 500;
+    }
+
+    #dm-pods{
+        position: relative;
+        top: 16px;
+        z-index: 600;
+        height: calc(100vh - 166px);
+        overflow: scroll;
+    }
+
     .dm-pod {
+        background-color: white;
+        border-radius: 10px;
+        width: 330px;
+        box-shadow: 0 0 7px rgba(0, 0, 0, .25), 0 0 7px rgba(0, 0, 0, .25);
         padding: 20px 30px;
+        margin: auto;
         display: flex;
         flex-wrap: wrap;
         justify-content: flex-start;
@@ -261,9 +287,4 @@
         border: 1px solid black;
     }
 
-    .dm-body {
-        height: calc(100vh - 46px - 50px);
-        border: 1px solid red;
-        overflow: scroll;
-    }
 </style>

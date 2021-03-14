@@ -1,14 +1,15 @@
 <template>
     <div>
-        <van-nav-bar
-                :title="curTitle"
-                left-text="返回"
-                right-text="按钮"
-                @click-right="showPopup"
-                @click-left="back"
-                left-arrow
-        >
-        </van-nav-bar>
+        <div id="nav-border-0" v-if="barStyle===0">
+            <img id="logo" src="/img/2x/logo.png"/>
+            <div id="name">Dream DAO</div>
+            <img @click="showPopup" class="menu" src="/img/2x/menu-w.png"/>
+        </div>
+        <div id="nav-border" v-if="barStyle===1">
+            <img @click="back" id="back" src="/img/2x/arrow-left.png"/>
+            <img @click="showPopup" class="menu" src="/img/2x/menu.png"/>
+            <div id="title">{{ curTitle }}</div>
+        </div>
         <van-popup v-model:show="display" teleport="body" :style="{height:'100%',width:'40%'}" position="right">
             <van-cell @click="toHomePage">HomePage</van-cell>
             <van-cell @click="toForkFund">创建基金</van-cell>
@@ -31,11 +32,14 @@
         props: {},
         setup(props, context) {
             const curTitle = ref("")
+            const barStyle = ref(0)
             const display = ref(false)
             const router = useRouter()
 
-            function setTitle(title: string) {
+            function setTitle(title: string, style: number = 0) {
                 curTitle.value = title
+                barStyle.value = style
+                console.log(style)
             }
 
 
@@ -77,6 +81,7 @@
                 toHomePage,
                 toForkFund,
                 back,
+                barStyle,
                 curTitle,
                 display
             }
@@ -86,5 +91,56 @@
 </script>
 
 <style scoped>
+    #nav-border {
+        position: relative;
+        height: 50px;
+        border-radius: 0px 0px 5px 5px;
+        box-shadow: 0 0 7px rgba(0, 0, 0, .25), 0 0 7px rgba(0, 0, 0, .25);
+    }
 
+    #nav-border-0 {
+        position: relative;
+        height: 50px;
+        background-color: #3682FF;
+    }
+
+    #back {
+        position: absolute;
+        top: 14px;
+        left: 19px;
+        z-index: 1000;
+        height: 18px;
+    }
+
+    #title {
+        font-family: PingFangSC-Medium;
+        color: #666666;
+        font-size: 16px;
+        position: relative;
+        top: 14px;
+    }
+
+    #logo {
+        position: absolute;
+        left: 22px;
+        top: 10px;
+        height: 25px;
+    }
+
+    #name {
+        font-size: 14px;
+        font-family: PingFangSC-Semibold, sans-serif;
+        color: white;
+        position: absolute;
+        left: 57px;
+        top: 20px;
+    }
+
+    .menu {
+        position: absolute;
+        top: 14px;
+        right: 19px;
+        z-index: 1000;
+        height: 18px;
+    }
 </style>
