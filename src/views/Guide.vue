@@ -1,21 +1,23 @@
 <template>
     <div>
         <NavBar :title="title"></NavBar>
-        <div id="tmp-container">
-            <div class="container-border">
-                <div>DreamDAO</div>
-                <div>1000.23</div>
-                <div>eth</div>
+        <div id="guide-border">
+            <div id="tmp-container">
+                <div class="container-border">
+                    <div id="dm-name">Dream DAO</div>
+                    <div id="dm-amount">1000.23</div>
+                    <div id="dm-unit">ETH</div>
+                </div>
+                <template :key="index" v-for="(t,index) in tickers">
+                    <component @change="choose" @destory="handleDestroy" :ref="t.tag" :tag="t.tag" :is="t.tmp">
+                        <template v-slot:content>
+                            {{ t.content }}
+                        </template>
+                    </component>
+                </template>
             </div>
-            <template :key="index" v-for="(t,index) in tickers">
-                <component @change="choose" @destory="handleDestroy" :ref="t.tag" :tag="t.tag" :is="t.tmp">
-                    <template v-slot:content>
-                        {{ t.content }}
-                    </template>
-                </component>
-            </template>
+            <component class="guide-cp" :is="currentView" @change="choose"></component>
         </div>
-        <component :is="currentView" @change="choose"></component>
     </div>
 </template>
 <script>
@@ -45,7 +47,7 @@
         },
         data() {
             return {
-                title:"使用指南",
+                title: "使用指南",
                 currentView: P1,
                 currentIndex: '1',
                 tickers: [],
@@ -104,18 +106,58 @@
     }
 </script>
 <style scoped>
+    div {
+        padding: 0;
+        margin: 0;
+    }
+
+    #guide-border {
+        position: relative;
+        width: calc(100vw);
+        height: calc(100vh - 100px);
+        padding: 0px;
+        margin: 0px;
+    }
+
     #tmp-container {
         display: flex;
         flex-wrap: wrap;
         justify-content: flex-start;
-        margin: 0px 20px;
+        position: absolute;
+        width: 100%;
+        z-index: 1000;
+    }
+
+
+    .guide-cp {
+        position: absolute;
     }
 
     .container-border {
-        margin: calc((100% - 276px) / 6);
-        height: 90px;
-        width: 90px;
-        border: 1px solid black;
+        margin: calc((100% - 588px) / 6);
+        height: 196px;
+        width: 196px;
+        border-radius: 20px 20px 20px 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, .25), 0 0 10px rgba(0, 0, 0, .25);
+    }
+
+    #dm-name {
+        font-family: Helvetica;
+        font-size: 28px;
+        font-weight: bold;
+        margin-top: 36px;
+    }
+
+    #dm-amount {
+        font-family: Helvetica;
+        font-size: 24px;
+        margin-top: 10px;
+    }
+
+    #dm-unit {
+        font-family: Helvetica;
+        font-size: 28px;
+        margin-top: 10px;
     }
 
     .container-ticker {

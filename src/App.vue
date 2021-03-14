@@ -22,6 +22,7 @@
         -moz-osx-font-smoothing: grayscale;
         text-align: center;
         color: #2c3e50;
+
     }
 
     #nav {
@@ -35,5 +36,60 @@
 
     #nav a.router-link-exact-active {
         color: #42b983;
+    }
+
+    div {
+        color: #666666;
+    }
+
+    .guide-border {
+        background-image: linear-gradient(to right, #0575DF, #00EB60);
+        height: 520px;
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+        width: 100%;
+        box-shadow: 0 0 28px rgba(0, 0, 0, .25), 0 0 28px rgba(0, 0, 0, .25);
+        border-radius: 20px 20px 0 0 ;
+        color: white;
+    }
+
+    .guide-bt {
+        margin-top: 38px;
+        z-index: 3000;
+        color: white;
+        background-color: #eeeeee;
+        box-shadow: 0 0 28px rgba(0, 0, 0, .25), 0 0 28px rgba(0, 0, 0, .25);
+        border-radius: 20px;
+        height: 110px;
+        width: 650px;
+        border: 0;
+        color: #666666;
+    }
+
+    .guide-how {
+        font-size: 48px;
+        color: white;
+        position: absolute;
+        left: 50px;
+        top: 44px;
+        font-weight: bold;
+
+    }
+
+    .guide-how-border {
+        position: absolute;
+        top: 110px;
+        left: 50px;
+    }
+
+    .guide-content {
+        text-align: left;
+        font-weight: 500;
+        color: white;
+        top: 90px;
+        left: 50px;
+        font-size: 24px;
+        line-height: 30px;
     }
 </style>

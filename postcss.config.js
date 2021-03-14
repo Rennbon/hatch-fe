@@ -4,7 +4,7 @@ module.exports = {
             browsers: ['Android >= 4.0', 'iOS >= 7']
         },
         'postcss-pxtorem': {
-            rootValue: 16,//结果为：设计稿元素尺寸/16，比如元素宽320px,最终页面会换算成 20rem
+            rootValue: 37.5,//结果为：设计稿元素尺寸/16，比如元素宽320px,最终页面会换算成 20rem
             propList: ['*'],
             unitPrecision: 5, //保留rem小數點多少位
             //selectorBlackList: ['.radius'],  //則是一個對css選擇器進行過濾的陣列，比如你設定為['fs']，那例如fs-xl類名，裡面有關px的樣式將不被轉換，這裡也支援正則寫法。

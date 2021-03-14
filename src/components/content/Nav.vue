@@ -4,25 +4,65 @@
         <div id="dm-pods">
             <div class="dm-pod">
                 <div class="dm-container" @click="toFund(MDToken,'DreamDAO-Fund')">
-                    <div>DreamDAO</div>
-                    <div>{{ convertAmountToCommon(dreamDao.amount) }}</div>
-                    <div>ETH</div>
+                    <div id="dm-name">DreamDAO</div>
+                    <div id="dm-amount">{{ convertAmountToCommon(dreamDao.amount) }}</div>
+                    <div id="dm-uint">ETH</div>
+                </div>
+
+                <div class="dm-container" @click="toFund('fx1231231a','MyFund-Fund')">
+                    <div class="fund-src">Fund</div>
+                    <div class="fund-name">ABE</div>
+                    <div class="fund-percent">+10%</div>
+                    <div class="fund-inc">0.123311</div>
+                    <div class="fund-amount">1299999</div>
+                    <div class="fund-uint">ETH</div>
                 </div>
                 <div class="dm-container" @click="toFund('fx1231231a','MyFund-Fund')">
-                    <div>Fund</div>
-                    <div>ABE</div>
-                    <div>+10%</div>
-                    <div>1299999 ETH</div>
+                    <div class="fund-src">Fund</div>
+                    <div class="fund-name">ABE</div>
+                    <div class="fund-percent">+10%</div>
+                    <div class="fund-inc">0.123311</div>
+                    <div class="fund-amount">1299999</div>
+                    <div class="fund-uint">ETH</div>
                 </div>
-                <div class="dm-container" @click="toProject('px12312301','MyProject-Fund')">
-                    <div>AAA</div>
-                    <div>9.6</div>
-                    <div>ETH</div>
-                    <div>盈利</div>
-                    <div>DreamDAO</div>
+                <div class="dm-container" @click="toFund('fx1231231a','MyFund-Fund')">
+                    <div class="fund-src">Fund</div>
+                    <div class="fund-name">ABE</div>
+                    <div class="fund-percent">+10%</div>
+                    <div class="fund-inc">0.123311</div>
+                    <div class="fund-amount">1299999</div>
+                    <div class="fund-uint">ETH</div>
+                </div>
+                <div class="dm-container dm-pro" @click="toProject('px12312301','MyProject-Fund')">
+                    <div class="pro-name">AAA</div>
+                    <div class="pro-price">9.6</div>
+                    <div class="pro-uint">ETH</div>
+                    <div class="pro-state">盈利</div>
+                    <div class="pro-fund">DreamDAO</div>
+                </div>
+                <div class="dm-container dm-pro" @click="toProject('px12312301','MyProject-Fund')">
+                    <div class="pro-name">AAA</div>
+                    <div class="pro-price">9.6</div>
+                    <div class="pro-uint">ETH</div>
+                    <div class="pro-state">盈利</div>
+                    <div class="pro-fund">DreamDAO</div>
+                </div>
+                <div class="dm-container dm-pro" @click="toProject('px12312301','MyProject-Fund')">
+                    <div class="pro-name">AAA</div>
+                    <div class="pro-price">9.6</div>
+                    <div class="pro-uint">ETH</div>
+                    <div class="pro-state">盈利</div>
+                    <div class="pro-fund">DreamDAO</div>
+                </div>
+                <div class="dm-container dm-pro" @click="toProject('px12312301','MyProject-Fund')">
+                    <div class="pro-name">AAA</div>
+                    <div class="pro-price">9.6</div>
+                    <div class="pro-uint">ETH</div>
+                    <div class="pro-state">盈利</div>
+                    <div class="pro-fund">DreamDAO</div>
                 </div>
                 <div class="dm-container">
-
+                    <div id="more1">More</div>
                 </div>
             </div>
             <van-divider dashed>other Funds</van-divider>
@@ -259,7 +299,7 @@
         z-index: 500;
     }
 
-    #dm-pods{
+    #dm-pods {
         position: relative;
         top: 16px;
         z-index: 600;
@@ -269,10 +309,10 @@
 
     .dm-pod {
         background-color: white;
-        border-radius: 10px;
-        width: 330px;
-        box-shadow: 0 0 7px rgba(0, 0, 0, .25), 0 0 7px rgba(0, 0, 0, .25);
-        padding: 20px 30px;
+        border-radius: 20px;
+        width: 660px;
+        box-shadow: 0 0 14px rgba(0, 0, 0, .25), 0 0 14px rgba(0, 0, 0, .25);
+        padding: 10px 16px;
         margin: auto;
         display: flex;
         flex-wrap: wrap;
@@ -281,10 +321,112 @@
     }
 
     .dm-container {
-        margin: calc((100% - 276px) / 6);
-        width: 90px;
-        height: 90px;
-        border: 1px solid black;
+        margin: calc((100% - 540px) / 6);
+        width: 180px;
+        height: 180px;
+        border-radius: 20px;
+        box-shadow: 0 0 14px rgba(0, 0, 0, .25), 0 0 14px rgba(0, 0, 0, .25);
+        position: relative;
+    }
+    .dm-pro {
+        background-image: url("/img/2x/win-gray.png");
+        background-size: 100% 100%;
+    }
+    #dm-name {
+        font-size: 30px;
+        font-weight: bold;
+        position: relative;
+        top: 36px;
     }
 
+    #dm-amount {
+        font-size: 28px;
+        position: relative;
+        top: 60px;
+    }
+
+    #dm-uint {
+        font-size: 18px;
+        position: relative;
+        top: 60px;
+    }
+
+    .fund-src {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .fund-name {
+        position: relative;
+        font-size: 32px;
+        top: 32px;
+        font-weight: bold;
+    }
+
+    .fund-percent {
+        font-size: 20px;
+        position: relative;
+        top: 24px;
+    }
+
+    .fund-inc {
+        font-size: 20px;
+        position: relative;
+        top: 20px;
+    }
+
+    .fund-amount {
+        font-size: 28px;
+        position: relative;
+        top: 20px;
+    }
+
+    .fund-uint {
+        font-size: 18px;
+        position: relative;
+        top: 12px;
+    }
+
+    .pro-name {
+        font-size: 32px;
+        font-weight: bold;
+        position: relative;
+        top: 12px;
+
+    }
+
+    .pro-price {
+        font-size: 36px;
+        position: relative;
+        top: 6px;
+    }
+
+    .pro-uint {
+        font-size: 24px;
+        position: relative;
+        top: 0px;
+    }
+
+    .pro-state {
+        font-size: 32px;
+        position: relative;
+    }
+
+    .pro-fund {
+        font-size: 16px;
+        font-weight: bold;
+        position: absolute;
+        margin: 0 auto;
+        bottom: 4px;
+        left: 4px;
+        writing-mode: vertical-lr;
+    }
+    #more1{
+        font-size: 36px;
+        font-weight: bold;
+        line-height: 180px;
+    }
 </style>

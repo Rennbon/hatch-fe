@@ -32,15 +32,15 @@
 </script>
 
 <style scoped>
-    #blank-header {
+/*    #blank-header {
         height: 84px;
-        border-radius: 0 0 5px 5px;
-        box-shadow: 0 0 7px rgba(0, 0, 0, .25), 0 0 7px rgba(0, 0, 0, .25)
-    }
+        border-radius: 0 0 10px 10px;
+        box-shadow: 0 0 14px rgba(0, 0, 0, .25), 0 0 14px rgba(0, 0, 0, .25)
+    }*/
 
     #logo {
-        margin-top: 120px;
-        height: 120px;
+        margin-top: 240px;
+        height: 240px;
     }
 
     #name {
@@ -50,40 +50,40 @@
     }
 
     .content {
-        font-size: 12px;
+        font-size: 24px;
         font-family: Helvetica-Light;
         font-weight: bold;
-        padding: 4px;
+        padding: 8px;
     }
 
     .content:nth-child(1) {
-        margin-top: 32px;
+        margin-top: 65px;
     }
 
     #info-bt {
-        margin-top: 60px;
+        margin-top: 120px;
         border: none;
-        height: 38px;
-        width: 311px;
+        height: 75px;
+        width: 625px;
         background-image: linear-gradient(to right, #0575DF, #00EB60);
         background-size: 100% 100%;
         color: white;
-        font-size: 16px;
+        font-size: 32px;
         font-family: "PingFang SB";
         font-weight: bold;
-        border-radius: 5px;
+        border-radius: 10px;
     }
 
     #guide-bt {
-        margin-top: 10px;
+        margin-top: 20px;
         border: none;
-        height: 38px;
-        width: 311px;
+        height: 75px;
+        width: 625px;
         background-color: #0575DF;
         color: white;
-        font-size: 16px;
+        font-size: 32px;
         font-family: "PingFang SB";
-        border-radius: 5px;
+        border-radius: 10px;
         font-weight: bold;
     }
 </style>

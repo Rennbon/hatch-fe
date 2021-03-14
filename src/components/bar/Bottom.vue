@@ -96,9 +96,9 @@
 
 <style scoped>
     #wc-bar {
-        height: 100px;
-        border-radius: 10px 10px 0px 0px;
-        box-shadow: 0 0 7px rgba(0, 0, 0, .25), 0 0 7px rgba(0, 0, 0, .25);
+        height: 200px;
+        border-radius: 20px 20px 0px 0px;
+        box-shadow: 0 0 14px rgba(0, 0, 0, .25), 0 0 14px rgba(0, 0, 0, .25);
         position: absolute;
         z-index: 3000;
     }
@@ -108,38 +108,38 @@
     }
 
     #wc-img {
-        height: 22px;
-        width: 232px;
+        height: 45px;
+        width: 465px;
     }
 
     #account {
         position: relative;
-        top: -24px;
+        top: -48px;
         color: white;
         font-family: PingFangSC-Regular, sans-serif;
-        font-size: 14px;
+        font-size: 28px;
     }
 
     #balance {
         position: absolute;
-        top: 48px;
-        left: 24px;
+        top: 96px;
+        left: 48px;
         color: white;
-        font-size: 24px;
+        font-size: 48px;
         font-family: PingFangSC-Semibold, sans-serif;
     }
 
     #disconnect {
         position: absolute;
-        top: 48px;
-        right: 24px;
+        top: 96px;
+        right: 48px;
         font-family: PingFangSC-Semibold, sans-serif;
-        font-size: 20px;
+        font-size: 40px;
         background: #eeeeee;
         color: #666666;
         border: none;
-        height: 32px;
-        width: 122px;
-        border-radius: 5px 5px 5px 5px;
+        height: 65px;
+        width: 245px;
+        border-radius: 10px;
     }
 </style>

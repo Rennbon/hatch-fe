@@ -14,13 +14,17 @@ function setRem() {
     //得到html的Dom元素
     let htmlDom = document.getElementsByTagName('html')[0];
     //设置根元素字体大小
-    console.log(htmlWidth)
-    if (htmlWidth > 400) {
-        htmlDom.style.fontSize = htmlWidth / 16 + 'px';
-    } else {
-        htmlDom.style.fontSize = htmlWidth / 27 + 'px';
-    }
 
+    console.log(htmlWidth)
+    if ( htmlWidth >= 425){
+        htmlDom.style.fontSize = htmlWidth / 20 + 'px';
+    }else if ( htmlWidth >= 375){
+        htmlDom.style.fontSize = htmlWidth / 19 + 'px';
+    }else if (htmlWidth>=340){
+        htmlDom.style.fontSize = htmlWidth / 18 + 'px';
+    }else{
+        htmlDom.style.fontSize = htmlWidth / 16 + 'px';
+    }
 }
 
 setRem()

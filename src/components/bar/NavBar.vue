@@ -93,54 +93,54 @@
 <style scoped>
     #nav-border {
         position: relative;
-        height: 50px;
-        border-radius: 0px 0px 5px 5px;
-        box-shadow: 0 0 7px rgba(0, 0, 0, .25), 0 0 7px rgba(0, 0, 0, .25);
+        height: 100px;
+        border-radius: 0px 0px 10px 10px;
+        box-shadow: 0 0 14px rgba(0, 0, 0, .25), 0 0 14px rgba(0, 0, 0, .25);
     }
 
     #nav-border-0 {
         position: relative;
-        height: 50px;
+        height: 100px;
         background-color: #3682FF;
     }
 
     #back {
         position: absolute;
-        top: 14px;
-        left: 19px;
+        top: 28px;
+        left: 38px;
         z-index: 1000;
-        height: 18px;
+        height: 36px;
     }
 
     #title {
         font-family: PingFangSC-Medium;
         color: #666666;
-        font-size: 16px;
+        font-size: 32px;
         position: relative;
-        top: 14px;
+        top: 28px;
     }
 
     #logo {
         position: absolute;
-        left: 22px;
-        top: 10px;
-        height: 25px;
+        left: 45px;
+        top: 20px;
+        height: 50px;
     }
 
     #name {
-        font-size: 14px;
+        font-size: 28px;
         font-family: PingFangSC-Semibold, sans-serif;
         color: white;
         position: absolute;
-        left: 57px;
-        top: 20px;
+        left: 114px;
+        top: 40px;
     }
 
     .menu {
         position: absolute;
-        top: 14px;
-        right: 19px;
+        top: 28px;
+        right: 38px;
         z-index: 1000;
-        height: 18px;
+        height: 36px;
     }
 </style>
