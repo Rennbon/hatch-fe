@@ -44,6 +44,9 @@
             Ticker,
             NavBar
         },
+        mounted() {
+
+        },
         data() {
             return {
                 title: "使用指南",
@@ -156,15 +159,9 @@
     }
 </script>
 <style scoped>
-    div {
-        padding: 0;
-        margin: 0;
-    }
-
     #guide-border {
         position: relative;
         width: calc(100vw);
-        height: calc(100vh - 100px);
         padding: 0px;
         margin: 0px;
     }
