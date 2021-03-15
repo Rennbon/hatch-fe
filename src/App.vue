@@ -50,20 +50,20 @@
         left: 0px;
         width: 100%;
         box-shadow: 0 0 28px rgba(0, 0, 0, .25), 0 0 28px rgba(0, 0, 0, .25);
-        border-radius: 20px 20px 0 0 ;
+        border-radius: 20px 20px 0 0;
         color: white;
     }
 
     .guide-bt {
         margin-top: 38px;
         z-index: 3000;
-        color: white;
         background-color: #eeeeee;
         box-shadow: 0 0 28px rgba(0, 0, 0, .25), 0 0 28px rgba(0, 0, 0, .25);
         border-radius: 20px;
         height: 110px;
         width: 650px;
         border: 0;
+        font-weight: bold;
         color: #666666;
     }
 
@@ -74,6 +74,7 @@
         left: 50px;
         top: 44px;
         font-weight: bold;
+        line-height: 38px;
 
     }
 

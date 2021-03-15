@@ -1,14 +1,13 @@
 <template>
     <div id="guide">
         <div class="guide-border">
-            <div class="guide-how">What is Dream DAO?</div>
+            <div class="guide-how">How to startups get money?</div>
             <div class="guide-how-border">
-                <div class="guide-content">To new player:</div>
-                <div class="guide-content">1. 任何创业者都可以得到投资。</div>
-                <div class="guide-content">2. Safe Invest: 任何人都可以安全投资</div>
-                <div class="guide-content">3. Trust Rank: 创业者得到信任证明</div>
-                <div class="guide-content">4. 投资人得到价值回报</div>
-                <button class="guide-bt" @click="next">How to Play?</button>
+                <div class="guide-content">To startups:</div>
+                <div class="guide-content">1. 提交项目信息。</div>
+                <div class="guide-content">2. 拿到投资款，开始工作。</div>
+                <div class="guide-content">3. 达到目标价，得到好评，未达到目标价，得到差评。</div>
+                <button class="guide-bt" @click="next">How do investors make money?</button>
             </div>
         </div>
     </div>

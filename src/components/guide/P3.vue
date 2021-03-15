@@ -1,14 +1,13 @@
 <template>
     <div id="guide">
         <div class="guide-border">
-            <div class="guide-how">What is Dream DAO?</div>
+            <div class="guide-how">How to Play bigger?</div>
             <div class="guide-how-border">
-                <div class="guide-content">To new player:</div>
-                <div class="guide-content">1. 任何创业者都可以得到投资。</div>
-                <div class="guide-content">2. Safe Invest: 任何人都可以安全投资</div>
-                <div class="guide-content">3. Trust Rank: 创业者得到信任证明</div>
-                <div class="guide-content">4. 投资人得到价值回报</div>
-                <button class="guide-bt" @click="next">How to Play?</button>
+                <div class="guide-content">To big investors:</div>
+                <div class="guide-content">1. 为项目担获得2倍挖矿效率。</div>
+                <div class="guide-content">2. 当项目方未达目标，担保人将出现损失。</div>
+                <div class="guide-content">3. 担保人会获得佣金奖励。</div>
+                <button class="guide-bt" @click="next">How to startups get money?</button>
             </div>
         </div>
     </div>

@@ -11,7 +11,7 @@
                 <template :key="index" v-for="(t,index) in tickers">
                     <component @change="choose" @destory="handleDestroy" :ref="t.tag" :tag="t.tag" :is="t.tmp">
                         <template v-slot:content>
-                            {{ t.content }}
+                            <div class="ticker-cnt" :style="{transform:`${t.translate}`}">{{ t.content }}</div>
                         </template>
                     </component>
                 </template>
@@ -29,7 +29,6 @@
     import P6 from "@/components/guide/P6.vue"
     import P7 from "@/components/guide/P7.vue"
     import Ticker from "@/components/guide/Ticker.vue"
-    import {Notify} from "vant";
     import NavBar from "@/components/bar/NavBar";
 
     export default {
@@ -52,15 +51,49 @@
                 currentIndex: '1',
                 tickers: [],
 
+
             }
         },
         methods: {
             appendPrevBlock(index) {
+                let ct = this.getContent(index)
+                let prvIndex = "1"
+                let translate = "translate(-50%,25%)"
+                switch (index) {
+                    case '2':
+                        translate = "translate(-50%,25%)"
+                        prvIndex = '1';
+                        break
+                    case '3':
+                        translate = "translate(-50%,85%)"
+                        prvIndex = '2';
+                        break
+                    case '4':
+                        translate = "translate(-50%,45%)"
+                        prvIndex = '3';
+                        break
+                    case '5':
+                        prvIndex = '4';
+                        break
+                    case '6':
+                        prvIndex = '5';
+                        break
+                    case '7':
+                        translate = "translate(-50%,5%)"
+                        prvIndex = '6';
+                        break
+                    default :
+                        translate = "translate(-50%,55%)"
+                        prvIndex = '7';
+                        break
+                }
                 this.tickers.push(
                     {
                         tmp: 'Ticker',
-                        content: index,
-                        tag: index
+                        content: ct,
+                        tag: prvIndex,
+                        translate: translate,
+
                     }
                 )
             },
@@ -68,8 +101,25 @@
                 console.log(tag)
                 this.tickers.splice(0, 1)
             },
+            getContent(index) {
+                switch (index) {
+                    case '2':
+                        return "What is Dream DAO?"
+                    case '3':
+                        return "How to Play?"
+                    case '4':
+                        return "How to Play bigger?"
+                    case '5':
+                        return "How to startups get money?"
+                    case '6':
+                        return "How do investors make money?"
+                    case '7':
+                        return "What startups wanna to capitalized from DFund?"
+                    default :
+                        return "Create my fund"
+                }
+            },
             choose(index) {
-                Notify({type: 'success', message: index});
                 this.appendPrevBlock(index)
                 switch (index) {
                     case '1':
@@ -165,4 +215,16 @@
         width: 10px;
         font-size: 10px;
     }
+
+    .ticker-cnt {
+        position: absolute;
+        left: 50%; /* 定位父级的50% */
+        top: 50%;
+        font-size: 26px;
+        padding: 4px;
+        font-weight: bold;
+        font-family: Helvetica;
+        align-items: center;
+    }
+
 </style>

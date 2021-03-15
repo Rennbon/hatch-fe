@@ -1,14 +1,14 @@
 <template>
     <div id="guide">
         <div class="guide-border">
-            <div class="guide-how">What is Dream DAO?</div>
+            <div class="guide-how">How to Play?</div>
             <div class="guide-how-border">
-                <div class="guide-content">To new player:</div>
-                <div class="guide-content">1. 任何创业者都可以得到投资。</div>
-                <div class="guide-content">2. Safe Invest: 任何人都可以安全投资</div>
-                <div class="guide-content">3. Trust Rank: 创业者得到信任证明</div>
-                <div class="guide-content">4. 投资人得到价值回报</div>
-                <button class="guide-bt" @click="next">How to Play?</button>
+                <div class="guide-content">To investors:</div>
+                <div class="guide-content">1. 存ETH挖Fund治理币。</div>
+                <div class="guide-content">2. 在创业项目列表中挑选并投资。</div>
+                <div class="guide-content">3. 出售项目代币并帮助Fund治理币升值。</div>
+                <div class="guide-content">4. 卖出Fund治理代币得到价值回报。</div>
+                <button class="guide-bt" @click="next">How to Play bigger?</button>
             </div>
         </div>
     </div>

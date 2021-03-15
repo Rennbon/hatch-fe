@@ -1,7 +1,7 @@
 <template>
     <div @click="jumpTo" class="container-border">
         <div class="container-ticker">{{ num }}</div>
-        <div>
+        <div class="ticker-border">
             <slot name="content"></slot>
         </div>
     </div>
@@ -41,9 +41,21 @@
 </script>
 
 <style scoped>
-    .container-ticker {
-        height: 10px;
-        width: 10px;
-        font-size: 10px;
+    .container-border{
+        position: relative;
     }
+    .container-ticker {
+        position: absolute;
+        right: 15px;
+        top:15px;
+        height: 20px;
+        width: 20px;
+        font-size: 20px;
+        font-weight: bold;
+        font-family: PingFangSC-Medium;
+    }
+    .ticker-border{
+        position: relative;
+    }
+
 </style>

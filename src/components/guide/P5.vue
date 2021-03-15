@@ -1,14 +1,14 @@
 <template>
     <div id="guide">
         <div class="guide-border">
-            <div class="guide-how">What is Dream DAO?</div>
+            <div class="guide-how">How do investors make money?</div>
             <div class="guide-how-border">
-                <div class="guide-content">To new player:</div>
-                <div class="guide-content">1. 任何创业者都可以得到投资。</div>
-                <div class="guide-content">2. Safe Invest: 任何人都可以安全投资</div>
-                <div class="guide-content">3. Trust Rank: 创业者得到信任证明</div>
-                <div class="guide-content">4. 投资人得到价值回报</div>
-                <button class="guide-bt" @click="next">How to Play?</button>
+                <div class="guide-content">To investors:</div>
+                <div class="guide-content">1. 投资的项目的代币价格是否达到目标。</div>
+                <div class="guide-content">2. 若达到则卖出代币，本金自动返还。</div>
+                <div class="guide-content">3. 若未达到目标，可以选择从担保金中退回本金。</div>
+                <div class="guide-content">4. 若盈利，则小部分奖励给基金创始人。</div>
+                <button class="guide-bt" @click="next">Why startups wanna to capitalized from DreamDAO?</button>
             </div>
         </div>
     </div>
