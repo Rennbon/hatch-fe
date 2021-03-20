@@ -1,5 +1,5 @@
 <template>
-    <div id="guide">
+    <van-action-bar id="guide">
         <div class="guide-border">
             <div class="guide-how">What startups wanna to capitalized from DFund?</div>
             <div class="guide-how-border">
@@ -9,7 +9,7 @@
                 <button class="guide-bt" @click="next">Sign in with Wallet Connect</button>
             </div>
         </div>
-    </div>
+    </van-action-bar>
 </template>
 
 <script>
@@ -27,7 +27,9 @@
     #guide {
         position: absolute;
         width: calc(100vw);
-        height: calc(100vh - 100px);
+        height: calc(100vh - 100px - 200px);
+        padding-bottom: 200px;
+        overflow: hidden;
         background: url("/img/2x/guide5.png") center center fixed;
         -webkit-background-size: cover;
         -moz-background-size: cover;

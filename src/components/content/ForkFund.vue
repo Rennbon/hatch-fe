@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="fork-border">
         <van-form>
             <van-field
                     v-model="fund.symbol"
@@ -82,9 +82,7 @@
                     placeholder="选填"
                     :rules="[{ }]"
             />
-            <div style="margin: 16px;">
-                <van-button round block type="info" @click="createProject" native-type="submit">提交</van-button>
-            </div>
+            <van-button id="bt" round block type="info" @click="createProject" native-type="submit">提交</van-button>
         </van-form>
     </div>
 </template>
@@ -148,5 +146,40 @@
 </script>
 
 <style scoped>
+    #fork-border {
+        position: relative;
+        height: calc(100vh - 300px);
+        overflow: scroll;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
 
+    /deep/ .van-cell {
+
+    }
+
+    /deep/ .van-field__label {
+        font-size: 28px;
+        font-weight: bold;
+        padding-left: 20px;
+        width: 360px;
+    }
+
+    #bt{
+        color: white !important;
+        width: 620px;
+        height: 80px;
+        margin: auto;
+        border: 0px;
+        font-family: PingFangSC;
+        font-weight: bold;
+        background-color: #0575DF;
+        border-radius: 10px;
+        font-size: 40px;
+        position: relative;
+        top: 16px;
+    }
+    /deep/ .van-button__text{
+        color: white;
+    }
 </style>

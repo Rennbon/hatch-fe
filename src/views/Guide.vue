@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <NavBar :title="title"></NavBar>
+    <div id="main-border">
+        <NavBar ref="RefNavBar"></NavBar>
         <div id="guide-border">
             <div id="tmp-container">
                 <div class="container-border">
@@ -45,11 +45,10 @@
             NavBar
         },
         mounted() {
-
+            this.$refs.RefNavBar.setTitle("使用指南", 1)
         },
         data() {
             return {
-                title: "使用指南",
                 currentView: P1,
                 currentIndex: '1',
                 tickers: [],
@@ -159,12 +158,14 @@
     }
 </script>
 <style scoped>
-    #guide-border {
-        position: relative;
-        width: calc(100vw);
-        padding: 0px;
-        margin: 0px;
+    #main-border {
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        position: fixed;
     }
+
+
 
     #tmp-container {
         display: flex;

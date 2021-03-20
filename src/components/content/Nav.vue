@@ -1,5 +1,5 @@
 <template>
-    <div class="dm-body">
+    <div id="dm-body">
         <div id="bg"></div>
         <div id="dm-pods">
             <div class="dm-pod">
@@ -62,34 +62,95 @@
                     <div class="pro-fund">DreamDAO</div>
                 </div>
                 <div class="dm-container">
-                    <div id="more1">More</div>
+                    <div class="more">More
+                        <van-icon class="more-icon" name="play"/>
+                    </div>
                 </div>
             </div>
             <van-divider dashed>other Funds</van-divider>
             <div class="dm-pod">
-                <div class="dm-container">
-
+                <div class="dm-container" @click="toFund('fx1231231a','MyFund-Fund')">
+                    <div class="fund-src">Fund</div>
+                    <div class="fund-name">ABE</div>
+                    <div class="fund-percent">+10%</div>
+                    <div class="fund-inc">0.123311</div>
+                    <div class="fund-amount">1299999</div>
+                    <div class="fund-uint">ETH</div>
+                </div>
+                <div class="dm-container" @click="toFund('fx1231231a','MyFund-Fund')">
+                    <div class="fund-src">Fund</div>
+                    <div class="fund-name">ABE</div>
+                    <div class="fund-percent">+10%</div>
+                    <div class="fund-inc">0.123311</div>
+                    <div class="fund-amount">1299999</div>
+                    <div class="fund-uint">ETH</div>
+                </div>
+                <div class="dm-container" @click="toFund('fx1231231a','MyFund-Fund')">
+                    <div class="fund-src">Fund</div>
+                    <div class="fund-name">ABE</div>
+                    <div class="fund-percent">+10%</div>
+                    <div class="fund-inc">0.123311</div>
+                    <div class="fund-amount">1299999</div>
+                    <div class="fund-uint">ETH</div>
+                </div>
+                <div class="dm-container" @click="toFund('fx1231231a','MyFund-Fund')">
+                    <div class="fund-src">Fund</div>
+                    <div class="fund-name">ABE</div>
+                    <div class="fund-percent">+10%</div>
+                    <div class="fund-inc">0.123311</div>
+                    <div class="fund-amount">1299999</div>
+                    <div class="fund-uint">ETH</div>
+                </div>
+                <div class="dm-container" @click="toFund('fx1231231a','MyFund-Fund')">
+                    <div class="fund-src">Fund</div>
+                    <div class="fund-name">ABE</div>
+                    <div class="fund-percent">+10%</div>
+                    <div class="fund-inc">0.123311</div>
+                    <div class="fund-amount">1299999</div>
+                    <div class="fund-uint">ETH</div>
+                </div>
+                <div class="dm-container" @click="toFund('fx1231231a','MyFund-Fund')">
+                    <div class="fund-src">Fund</div>
+                    <div class="fund-name">ABE</div>
+                    <div class="fund-percent">+10%</div>
+                    <div class="fund-inc">0.123311</div>
+                    <div class="fund-amount">1299999</div>
+                    <div class="fund-uint">ETH</div>
+                </div>
+                <div class="dm-container" @click="toFund('fx1231231a','MyFund-Fund')">
+                    <div class="fund-src">Fund</div>
+                    <div class="fund-name">ABE</div>
+                    <div class="fund-percent">+10%</div>
+                    <div class="fund-inc">0.123311</div>
+                    <div class="fund-amount">1299999</div>
+                    <div class="fund-uint">ETH</div>
+                </div>
+                <div class="dm-container" @click="toFund('fx1231231a','MyFund-Fund')">
+                    <div class="fund-src">Fund</div>
+                    <div class="fund-name">ABE</div>
+                    <div class="fund-percent">+10%</div>
+                    <div class="fund-inc">0.123311</div>
+                    <div class="fund-amount">1299999</div>
+                    <div class="fund-uint">ETH</div>
                 </div>
                 <div class="dm-container">
-
-                </div>
-                <div class="dm-container">
-
-                </div>
-                <div class="dm-container">
-
+                    <div class="more">More
+                        <van-icon class="more-icon" name="play"/>
+                    </div>
                 </div>
             </div>
             <van-divider dashed>other Startup</van-divider>
             <div class="dm-pod">
-                <div class="dm-container" :key="index" v-for="(pro,index) in otherProjects"
+                <div class="dm-container dm-pro" :key="index" v-for="(pro,index) in otherProjects"
                      @click="toProject(pro)">
-                    {{ pro.fundName }}
-                    {{ pro.name }}
-                    {{ pro.price }}
-                    {{ pro.status }}
+                    <div class="pro-name"> {{ pro.name }}</div>
+                    <div class="pro-price">{{ pro.price }}</div>
+                    <div class="pro-uint">ETH</div>
+                    <div class="pro-state"> {{ pro.status }}</div>
+                    <div class="pro-fund">{{ pro.fundName }}</div>
                 </div>
             </div>
+            <div style="height: 30px"></div>
         </div>
     </div>
 </template>
@@ -287,8 +348,12 @@
 </script>
 
 <style scoped>
-    .dm-body {
+    #dm-body {
         position: relative;
+        height: calc(100vh - 300px - 200px);
+        overflow-y: scroll;
+        overflow-x: hidden;
+        padding-bottom: 200px;
     }
 
     #bg {
@@ -303,8 +368,6 @@
         position: relative;
         top: 16px;
         z-index: 600;
-        height: calc(100vh - 166px);
-        overflow: scroll;
     }
 
     .dm-pod {
@@ -325,13 +388,15 @@
         width: 180px;
         height: 180px;
         border-radius: 20px;
-        box-shadow: 0 0 14px rgba(0, 0, 0, .25), 0 0 14px rgba(0, 0, 0, .25);
+        box-shadow: 0 0px 10px rgba(0, 0, 0, .10), 0 0px 10px rgba(0, 0, 0, .10);
         position: relative;
     }
+
     .dm-pro {
         background-image: url("/img/2x/win-gray.png");
         background-size: 100% 100%;
     }
+
     #dm-name {
         font-size: 30px;
         font-weight: bold;
@@ -424,9 +489,18 @@
         left: 4px;
         writing-mode: vertical-lr;
     }
-    #more1{
+
+    .more {
         font-size: 36px;
         font-weight: bold;
         line-height: 180px;
+        margin-right: 10px;
+    }
+
+    .more-icon {
+        color: #666666;
+        position: absolute;
+        top: 70px;
+        right: 14px;
     }
 </style>

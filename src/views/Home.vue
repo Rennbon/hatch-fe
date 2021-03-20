@@ -1,5 +1,5 @@
 <template>
-    <div class="home">
+    <div id="home">
         <Index></Index>
         <Bottom></Bottom>
     </div>
@@ -17,3 +17,11 @@
         },
     }
 </script>
+<style scoped>
+    #home {
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        position: fixed;
+    }
+</style>

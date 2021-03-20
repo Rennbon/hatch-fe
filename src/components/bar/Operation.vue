@@ -1,11 +1,14 @@
 <template>
-    <van-action-sheet :round="false" id="op-border" v-model:show="Show">
+    <van-action-sheet :round="false" :style="{'height':'300px'}" v-model:show="Show">
         <div id="title">{{ Title }}</div>
-        <div>
-            <van-cell-group id="content">
-                <van-field v-model="Amount" label="金额" placeholder="请输入金额"/>
-            </van-cell-group>
-            <van-button width="80px;" type="primary" @click="SubmitMethod">提交</van-button>
+        <div id="neck"></div>
+        <div id="content">
+            <van-field id="input" label-class="label" v-model="Amount" label="金额"
+                       type="number"
+                       :rules="[{ pattern: /^([1-9]\d{0,9}|0)(\.\d{1,5})?$/, required:true, message: '格式不正确' }]"
+                       placeholder="请输入金额"/>
+            <div id="uint">单位: ETH</div>
+            <button id="op-bt" @click="SubmitMethod">提交</button>
         </div>
     </van-action-sheet>
 </template>
@@ -25,7 +28,7 @@
         setup() {
             const wcli = inject<WClient>('walletConnect')
             const Show = ref(false)
-            const Title = ref("")
+            const Title = ref("title")
             const To = ref("")
             const Amount = ref("")
 
@@ -97,6 +100,7 @@
                 })
             }
 
+
             return {
                 Show,
                 Title,
@@ -110,19 +114,57 @@
 </script>
 
 <style scoped>
+
     #title {
-        font-size: 18px;
-        height: 40px;
+        font-size: 44px;
+        font-weight: bolder;
+        height: 60px;
         padding: 10px;
     }
 
-    #content {
-        height: 60px;
-        padding: 5px;
+    #neck {
+        height: 24px;
+        background-color: #dddddd;
     }
 
-    #op-border {
-        height: 200px;
-        border: 1px solid red;
+    #content {
+        height: 100px;
+        padding: 5px;
+        position: relative;
+    }
+
+    #op-bt {
+        position: relative;
+        margin-top: 20px;
+        height: 75px;
+        width: 625px;
+        background-color: #0575DF;
+        border: 0px;
+        color: white;
+        font-size: 40px;
+        font-family: PingFangSC;
+        font-weight: bold;
+        border-radius: 10px;
+    }
+
+    /deep/ .van-cell {
+        width: 650px;
+        border: 0px;
+    }
+
+
+    /deep/ .van-field__label {
+        font-size: 32px;
+        line-height: 50px;
+        font-family: PingFangSC;
+        font-weight: bold;
+        margin-left: 20px;
+    }
+
+    #uint {
+        position: absolute;
+        top: 28px;
+        right: 20px;
+        font-size: 28px;
     }
 </style>

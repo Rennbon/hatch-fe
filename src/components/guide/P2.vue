@@ -1,5 +1,5 @@
 <template>
-    <div id="guide">
+    <van-action-bar id="guide">
         <div class="guide-border">
             <div class="guide-how">How to Play?</div>
             <div class="guide-how-border">
@@ -11,7 +11,7 @@
                 <button class="guide-bt" @click="next">How to Play bigger?</button>
             </div>
         </div>
-    </div>
+    </van-action-bar>
 </template>
 
 <script>
@@ -29,7 +29,9 @@
     #guide {
         position: absolute;
         width: calc(100vw);
-        height: calc(100vh - 100px);
+        height: calc(100vh - 100px - 200px);
+        padding-bottom: 200px;
+        overflow: hidden;
         background: url("/img/2x/guide2.png") center center fixed;
         -webkit-background-size: cover;
         -moz-background-size: cover;

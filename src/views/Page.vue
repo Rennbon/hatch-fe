@@ -131,7 +131,10 @@
 </script>
 
 <style scoped>
-#main{
-    overflow: hidden;
-}
+    #main {
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        position: fixed;
+    }
 </style>

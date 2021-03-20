@@ -10,12 +10,42 @@
             <img @click="showPopup" class="menu" src="/img/2x/menu.png"/>
             <div id="title">{{ curTitle }}</div>
         </div>
-        <van-popup v-model:show="display" teleport="body" :style="{height:'100%',width:'40%'}" position="right">
-            <van-cell @click="toHomePage">HomePage</van-cell>
-            <van-cell @click="toForkFund">创建基金</van-cell>
-            <van-cell>使用指南</van-cell>
-            <van-cell>白皮书</van-cell>
-            <van-cell>联系我们</van-cell>
+        <van-popup v-model:show="display" teleport="body" id="right-menu"
+                   :style="{
+                        height:'100%',width:'73%','z-index':'20000',
+                        'overflow':'hidden',
+                        'border-radius':'0 0 0 20px',  'background-color':'#3682FF'
+                    }"
+                   position="right">
+            <div id="right-menu-head">
+                <div id="right-menu-title">Menu</div>
+            </div>
+            <div id="menu-body">
+                <div class="menu-cell" @click="toHomePage">
+                    <img class="menu-cell-img" src="/img/2x/menu-1.png"/>
+                    <div class="menu-cell-font">HomePage</div>
+                </div>
+                <div class="menu-cell" @click="toForkFund">
+                    <img class="menu-cell-img" src="/img/2x/menu-2.png"/>
+                    <div class="menu-cell-font">创建基金</div>
+                </div>
+                <div class="menu-cell">
+                    <img class="menu-cell-img" src="/img/2x/menu-3.png"/>
+                    <div class="menu-cell-font">使用指南</div>
+                </div>
+                <div class="menu-cell">
+                    <img class="menu-cell-img" src="/img/2x/menu-4.png"/>
+                    <div class="menu-cell-font">白皮书</div>
+                </div>
+                <div class="menu-cell">
+                    <img class="menu-cell-img" src="/img/2x/menu-5.png"/>
+                    <div class="menu-cell-font">Github</div>
+                </div>
+                <div class="menu-cell">
+                    <img class="menu-cell-img" src="/img/2x/menu-6.png"/>
+                    <div class="menu-cell-font">联系我们</div>
+                </div>
+            </div>
         </van-popup>
 
     </div>
@@ -93,6 +123,7 @@
 <style scoped>
     #nav-border {
         position: relative;
+        z-index:10000;
         height: 100px;
         border-radius: 0px 0px 10px 10px;
         box-shadow: 0 0 14px rgba(0, 0, 0, .25), 0 0 14px rgba(0, 0, 0, .25);
@@ -142,5 +173,60 @@
         right: 38px;
         z-index: 1000;
         height: 36px;
+    }
+
+    #right-menu {
+        border-radius: 20px;
+        background-color: #3682FF;
+    }
+
+    #right-menu-head {
+        height: 116px;
+        position: relative;
+    }
+
+    #right-menu-title {
+        color: white;
+        font-size: 36px;
+        font-family: Helvetica;
+        font-weight: 400;
+        position: relative;
+        top: 50px;
+        left: 66px;
+    }
+
+    #menu-body {
+        background-color: white;
+        border-radius: 20px 20px 0 0;
+        height: 100%;
+    }
+
+
+    .menu-cell {
+        height: 110px;
+        width: 100%;
+        border-bottom: 2px solid #cccccc;
+        position: relative;
+    }
+
+    .menu-cell:nth-last-child(1) {
+        border: none;
+    }
+
+    .menu-cell-img {
+        height: 48px;
+        width: 48px;
+        position: absolute;
+        left: 66px;
+        top: 31px;
+    }
+
+    .menu-cell-font {
+        font-size: 32px;
+        font-family: PingFangSC;
+        font-weight: 400;
+        position: absolute;
+        left: 146px;
+        top: 38px;
     }
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <div id="guide">
+    <van-action-bar id="guide">
         <div class="guide-border">
             <div class="guide-how">What is Dream DAO?</div>
             <div class="guide-how-border">
@@ -10,8 +10,9 @@
                 <div class="guide-content">4. 投资人得到价值回报</div>
                 <button class="guide-bt" @click="next">How to Play?</button>
             </div>
+
         </div>
-    </div>
+    </van-action-bar>
 </template>
 
 <script>
@@ -29,7 +30,9 @@
     #guide {
         position: absolute;
         width: calc(100vw);
-        height: calc(100vh - 100px);
+        height: calc(100vh - 100px - 200px);
+        padding-bottom: 200px;
+        overflow: hidden;
         background: url("/img/2x/guide1.png") center center fixed;
         -webkit-background-size: cover;
         -moz-background-size: cover;

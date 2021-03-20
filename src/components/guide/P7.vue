@@ -1,5 +1,5 @@
 <template>
-    <div id="guide">
+    <van-action-bar id="guide">
         <div class="guide-border">
             <div class="guide-how">Create my fund</div>
             <div class="guide-how-border">
@@ -8,11 +8,11 @@
                 <div class="guide-content">2. 该功能仅开放给有足够多资金的用户。</div>
                 <div class="guide-content">3. 作为基金创建者需要承担发展重任。</div>
                 <div class="guide-content">4. 若您有足够经验，开始体验新世界吧。</div>
-                <button>start>>></button>
-                <button class="guide-bt" @click="next">No, thanks?</button>
+                <button class="guide-bt guide-bt1">start</button>
+                <button class="guide-bt guide-bt2 " @click="next">No, thanks?</button>
             </div>
         </div>
-    </div>
+    </van-action-bar>
 </template>
 
 <script>
@@ -30,11 +30,25 @@
     #guide {
         position: absolute;
         width: calc(100vw);
-        height: calc(100vh - 100px);
+        height: calc(100vh - 100px - 200px);
+        padding-bottom: 200px;
+        overflow: hidden;
         background: url("/img/2x/guide5.png") center center fixed;
         -webkit-background-size: cover;
         -moz-background-size: cover;
         -o-background-size: cover;
         background-size: cover;
+    }
+
+    .guide-bt1 {
+        width: 300px;
+        position: relative;
+        right: 20px;
+    }
+
+    .guide-bt2 {
+        width: 300px;
+        position: relative;
+        left: 20px;
     }
 </style>
