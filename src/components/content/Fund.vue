@@ -41,7 +41,7 @@
                             <div class="fm-left-span">
                                 <img class="fm-left-icon" src="/img/2x/ficon1.png">
                                 <div class="fm-left-label">锁定量:</div>
-                                <div class="fm-left-val">{{ MyDeposit.lock }} ETH</div>
+                                <div class="fm-left-val">{{ convertAmountToCommon(MyDeposit.lock) }} ETH</div>
                             </div>
                         </div>
                         <div id="fm-right">
@@ -65,6 +65,54 @@
                 <div class="pro-border">
                     <div class="pro-line"></div>
                     <div class="pro-star"></div>
+                    <div class="pro-name">
+                        <div>{{ pro.name }}</div>
+                    </div>
+                    <div class="pro-info">
+                        <div class="pro-info-left">
+                            <div>
+                                <div class="pro-info-title">Invest Price</div>
+                                <div class="pro-info-val">{{ convertAmountToCommon(pro.price) }} ETH</div>
+                            </div>
+                            <div>
+                                <div class="pro-info-title">Target Price</div>
+                                <div class="pro-info-val">{{ convertAmountToCommon(pro.targetPrice) }} ETH</div>
+                            </div>
+                            <div>
+                                <div class="pro-info-title">Launch Block</div>
+                                <div class="pro-info-val">{{ pro.setupHeight }}</div>
+                            </div>
+                        </div>
+                        <div class="pro-info-right">
+                            <div>
+                                <div class="pro-info-title">Soft-Hard Price</div>
+                                <div class="pro-info-val"> {{
+                                        convertAmountToCommon(pro.softCap) + " - " + convertAmountToCommon(pro.hardCap)
+                                    }} ETH
+                                </div>
+                            </div>
+                            <div>
+                                <div class="pro-info-title">Guarantee</div>
+                                <div class="pro-info-val">{{ convertAmountToCommon(pro.guarantee) }} ETH</div>
+                            </div>
+                            <div>
+                                <div class="pro-info-title">Launch Time</div>
+                                <div class="pro-info-val">{{ pro.deadline }}</div>
+                            </div>
+                        </div>
+                        <div class="pro-info-border" :style="{'background-color':pro.stageColor}">
+                            <div class="pro-info-bt">
+                                {{ pro.stageFont }}
+                            </div>
+                        </div>
+                        <!--
+                         <van-button type="info" @click="SubmitToProject(pro)">{{ pro.stage }}</van-button>
+                        -->
+                    </div>
+                </div>
+                <!--<div class="pro-border">
+                    <div class="pro-line"></div>
+                    <div class="pro-star"></div>
                     <div class="pro-name">AAA</div>
                     <div class="pro-info">
                         <div class="pro-info-left">
@@ -96,9 +144,9 @@
                             </div>
                         </div>
                         <button class="pro-info-bt">担保</button>
-                        <!--
+                        &lt;!&ndash;
                          <van-button type="info" @click="SubmitToProject(pro)">{{ pro.stage }}</van-button>
-                        -->
+                        &ndash;&gt;
                     </div>
                 </div>
                 <div class="pro-border">
@@ -135,50 +183,11 @@
                             </div>
                         </div>
                         <button class="pro-info-bt">担保</button>
-                        <!--
+                        &lt;!&ndash;
                          <van-button type="info" @click="SubmitToProject(pro)">{{ pro.stage }}</van-button>
-                        -->
+                        &ndash;&gt;
                     </div>
-                </div>
-                <div class="pro-border">
-                    <div class="pro-line"></div>
-                    <div class="pro-star"></div>
-                    <div class="pro-name">AAA</div>
-                    <div class="pro-info">
-                        <div class="pro-info-left">
-                            <div>
-                                <div class="pro-info-title">Invest Price</div>
-                                <div class="pro-info-val">0.001 ETH</div>
-                            </div>
-                            <div>
-                                <div class="pro-info-title">Target Price</div>
-                                <div class="pro-info-val">0.002 ETH</div>
-                            </div>
-                            <div>
-                                <div class="pro-info-title"> Launch Block</div>
-                                <div class="pro-info-val">420001</div>
-                            </div>
-                        </div>
-                        <div class="pro-info-right">
-                            <div>
-                                <div class="pro-info-title">Invest Price</div>
-                                <div class="pro-info-val">0.001 ETH</div>
-                            </div>
-                            <div>
-                                <div class="pro-info-title">Target Price</div>
-                                <div class="pro-info-val">0.002 ETH</div>
-                            </div>
-                            <div>
-                                <div class="pro-info-title"> Launch Block</div>
-                                <div class="pro-info-val">420001</div>
-                            </div>
-                        </div>
-                        <button class="pro-info-bt">担保</button>
-                        <!--
-                         <van-button type="info" @click="SubmitToProject(pro)">{{ pro.stage }}</van-button>
-                        -->
-                    </div>
-                </div>
+                </div>-->
             </div>
         </div>
         <!--   <div id="fi-desc">
@@ -227,7 +236,10 @@
         symbol: string
         token: string
         stage: number
+        stageFont: string
+        stageColor: string
         price: string
+        targetPrice: string
         softCap: string
         hardCap: string
         guarantee: string
@@ -305,9 +317,10 @@
             })
 
 
-            const projects: Project[] = []
+            const projects: Project[] = reactive([])
 
             function getProjectsByFund() {
+
                 BackendApi.getProjectsByFund({
                     "fund": fundAddr.value,
                     "pageIndex": reqProjectsByFund.pageIndex,
@@ -316,22 +329,43 @@
                     let projectLen = res.data.array.length
                     for (let i = 0; i < projectLen; i++) {
                         let proTmp = res.data.array[i]
+                        // 1:guarantee 2:invest 3:over
+                        let stageFont = ""
+                        let stageColor = ""
+                        switch (proTmp.stage) {
+                            case 1:
+                                stageFont = "担保"
+                                // background-image: ;
+                                stageColor = "#EC5A4C"
+                                break
+                            case 2:
+                                stageFont = "投资"
+                                stageColor = "#00EB60"
+                                break
+                            case 3:
+                                stageFont = "结束"
+                                stageColor = "#666666"
+                                break
+                        }
                         let p = {
                             name: proTmp.name,
                             symbol: proTmp.symbol,
                             token: proTmp.token,
                             stage: proTmp.stage,
-                            price: proTmp.price,
-                            softCap: proTmp.softCap,
-                            hardCap: proTmp.hardCap,
-                            guarantee: proTmp.guarantee,
+                            stageFont: stageFont,
+                            stageColor: stageColor,
+                            price: proTmp.price === "" ? "0" : proTmp.price,
+                            softCap: proTmp.softCap === "" ? "0" : proTmp.softCap,
+                            hardCap: proTmp.hardCap === "" ? "0" : proTmp.hardCap,
+                            guarantee: proTmp.guarantee === "" ? "0" : proTmp.guarantee,
                             guaranteePercent: "0", // tmp
+                            targetPrice: proTmp.targetPrice === "" ? "0" : proTmp.targetPrice,
                             setupHeight: proTmp.setupHeight,
                             deadline: 0 //tmp = ( setupHeight - currentHeight ) * 10s
                         } as Project
                         projects.push(p)
                     }
-                    if (projectLen == 0) {
+                    if (projectLen === 0) {
                         reqProjectsByFund.more = false
                     }
                     reqProjectsByFund.pageIndex += 1
@@ -628,14 +662,16 @@
 
     .pro-name {
         font-family: PingFangSC;
-        font-size: 40px;
-        width: 100px;
+        width: 110px;
         height: inherit;
         position: absolute;
-        top: 90px;
-        left: 20px;
-        font-weight: bold;
+        top: 99px;
+        left: 10px;
+        word-break: break-all;
+        font-size: 30px;
+        font-weight: 900;
         color: #3682FF;
+
     }
 
     .pro-info {
@@ -684,6 +720,8 @@
     .pro-info-title {
         padding-top: 10px;
         font-family: PingFangSC;
+        color: #333333;
+        width: 200px;
         font-size: 24px;
         font-weight: bold;
         height: 30px;
@@ -695,27 +733,32 @@
         font-family: PingFangSC;
         font-size: 20px;
         line-height: 12px;
+        width: 200px;
         height: 32px;
         text-align: left;
         padding-top: 8px;
         padding-left: 30px;
         z-index: 100;
     }
-
-    .pro-info-bt {
-        background-image: url("/img/2x/win-fb-red.png");
-        background-size: 100% 100%;
+    .pro-info-border{
         height: 100px;
         width: 100px;
-        border: none;
-        padding: 0;
-        margin: 0;
-        color: white;
-        font-size: 40px;
-        font-family: PingFangSC;
+        border-radius: 10px;
         position: absolute;
         top: 70px;
         right: 14px;
+    }
+    .pro-info-bt {
+        background: url("/img/2x/bt-pro.png") no-repeat bottom;
+        background-size:100% auto;
+        width: inherit;
+        height: inherit;
+        line-height: 100px;
+        color: white;
+        font-size: 40px;
+        font-family: PingFangSC;
+        border-radius: 10px;
+        z-index: 200;
     }
 
     /* #project-list {

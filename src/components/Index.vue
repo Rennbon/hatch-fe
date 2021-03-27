@@ -8,13 +8,18 @@
             <div class="content">decentralized combinator</div>
             <div class="content">in the world</div>
         </div>
-        <button id="info-bt" @click="toPage">不连接钱包直接阅览</button>
+        <button id="info-bt" @click="toPage">{{ btLabel }}</button>
         <button id="guide-bt" @click="toP1">What is DreamDAO?</button>
     </div>
 </template>
 
-<script>
-    export default {
+<script lang="ts">
+    import {defineComponent, inject, onMounted, ref} from "vue";
+    // eslint-disable-next-line no-unused-vars
+    import {WClient} from "../chain/walletconnect";
+
+
+    export default defineComponent({
         name: "Index",
         methods: {
             toP1() {
@@ -28,15 +33,29 @@
                 })
             }
         },
-    }
+        setup() {
+            const btLabel = ref("不连接钱包直接阅览")
+            const wcli = inject < WClient > ("walletConnect")
+            onMounted(() => {
+                if (wcli != undefined && wcli.state.connector != null && wcli.state.connector.session != null) {
+                    if (wcli.state.connector.session.connected) {
+                        btLabel.value = "阅览"
+                    }
+                }
+            })
+            return {
+                btLabel
+            }
+        }
+    })
 </script>
 
 <style scoped>
-/*    #blank-header {
-        height: 84px;
-        border-radius: 0 0 10px 10px;
-        box-shadow: 0 0 14px rgba(0, 0, 0, .25), 0 0 14px rgba(0, 0, 0, .25)
-    }*/
+    /*    #blank-header {
+            height: 84px;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 0 14px rgba(0, 0, 0, .25), 0 0 14px rgba(0, 0, 0, .25)
+        }*/
 
     #logo {
         margin-top: 240px;

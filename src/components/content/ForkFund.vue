@@ -1,88 +1,121 @@
 <template>
-    <div id="fork-border">
-        <van-form>
+    <div id="ff-main">
+        <van-form id="v-form" @failed="onFailed">
             <van-field
                     v-model="fund.symbol"
                     name="symbol"
                     label="基金名称"
-                    placeholder="ERC20合约地址（42位长度）"
-                    :rules="[{ required:true, message:'请填写ERC20合约地址'}]"
+                    label-width="100"
+                    placeholder="请输入基金会名称"
+                    :rules="[{ required:true, message:'必填'}]"
             />
             <van-field
                     v-model="fund.desc"
                     name="desc"
                     label="介绍"
-                    :rules="[{ }]"
-                    readonly/>
+                    placeholder="请输入基金会介绍"
+                    :rules="[{ required:true, message:'必填'}]"
+            />
+            <van-divider content-position="left"
+                         :style="{ color: '#3682FF', borderColor: '#3682FF', padding: '0 16px' }"
+            >挖矿合约设置
+            </van-divider>
             <van-field
                     v-model="fund.unitProduction"
+                    type="digit"
                     name="unitProduction"
                     label="单位块高生产数"
-                    placeholder="单位：ETH"
-                    :rules="[{ required:true, message: '售价填写不正确' }]"
+                    placeholder="请输入单位块高生产数"
+                    label-width="180"
+                    :rules="[{ pattern:AmountPattern,required:true,  message: '必填（数字）' }]"
             />
             <van-field
                     v-model="fund.halfLife"
-                    type="number"
+                    type="digit"
                     name="halfLife"
                     label="减半周期区块数"
-                    placeholder="单位：ETH"
-                    :rules="[{  required:true, message: '软顶填写不正确' }]"
+                    label-width="180"
+                    placeholder="请输入减半周期区块数"
+                    :rules="[{pattern:/^[1-9]\d*$/,required:true,  message: '必填（大于0的整数）' }]"
             />
             <van-field
                     v-model="fund.fundAmount"
-                    type="number"
+                    type="digit"
                     name="fundAmount"
                     label="基金治理币总数"
-                    placeholder="单位：ETH"
-                    :rules="[{ required:true,  message: '请填写硬顶' }]"
+                    placeholder="请输入基金治理币总数"
+                    label-width="180"
+                    :rules="[{ pattern:AmountPattern,required:true,  message: '必填（数字）' }]"
             />
             <van-field
                     v-model="fund.minerEfficiency"
-                    type="number"
+                    type="digit"
                     name="minerEfficiency"
                     label="担保挖矿效率"
-                    placeholder="单位：ETH"
-                    :rules="[{ required:true,  message: '请填写目标价格' }]"
+                    placeholder="请输入担保挖矿效率"
+                    label-width="180"
+                    :rules="[{ pattern:AmountPattern,required:true,  message: '必填（数字）' }]"
             />
+            <van-divider content-position="left"
+                         :style="{ color: '#3682FF', borderColor: '#3682FF', padding: '0 16px' }"
+            >担保合约设置
+            </van-divider>
             <van-field
                     v-model="fund.guaranteeCommissionPercent"
-                    type="guaranteeCommissionPercent"
-                    name="percent"
+                    name="guaranteeCommissionPercent"
+                    type="digit"
                     label="担保佣金比例"
-                    placeholder="必填，单位：ETH区块高度"
-                    :rules="[{pattern:/^[1-9]\d*$/,required:true,  message: '请填写上架时间' }]"
+                    label-width="180"
+                    placeholder="请输入担保佣金比例"
+                    :rules="[{pattern:/^([1-9]|[1-9]\\d)$/,required:true,  message: '必填（1-99)' }]"
             />
+            <van-divider content-position="left"
+                         :style="{ color: '#3682FF', borderColor: '#3682FF', padding: '0 16px' }"
+            >投资合约设置
+            </van-divider>
             <van-field
                     v-model="fund.financingPeriod"
                     name="financingPeriod"
-                    model-value="保持2.1万个ETH区块"
+                    type="digit"
                     label="融资持续区块数"
-                    :rules="[{ }]"
-                    readonly
+                    placeholder="请输入融资持续区块数"
+                    label-width="180"
+                    :rules="[{pattern:/^[1-9]\d*$/,required:true,  message: '必填(大于0的整数)' }]"
             />
             <van-field
                     v-model="fund.investmentProtection"
-                    name="Web"
+                    name="investmentProtection"
                     label="投资额保护区块数"
-                    placeholder="选填"
-                    :rules="[{ }]"
+                    type="digit"
+                    placeholder="请输入投资额保护区块数"
+                    label-width="180"
+                    :rules="[{pattern:/^[1-9]\d*$/,required:true,  message: '必填(大于0的整数)' }]"
             />
+            <van-divider content-position="left"
+                         :style="{ color: '#3682FF', borderColor: '#3682FF', padding: '0 16px' }"
+            >DAO合约设置
+            </van-divider>
             <van-field
                     v-model="fund.keepHeight"
                     name="keepHeight"
                     label="保价持续区块数"
-                    placeholder="选填"
-                    :rules="[{ }]"
+                    type="digit"
+                    placeholder="请输入保价持续区块数"
+                    label-width="200"
+                    :rules="[{pattern:/^[1-9]\d*$/,required:true,  message: '必填(大于0的整数)' }]"
             />
             <van-field
                     v-model="fund.donatePercent"
                     name="donatePercent"
                     label="盈利捐赠DreamDAI比例"
-                    placeholder="选填"
-                    :rules="[{ }]"
+                    type="digit"
+                    placeholder="请输入盈利捐赠DreamDAI比例"
+                    label-width="200"
+                    :rules="[{pattern:/^([1-9]|[1-9]\\d)$/,required:true,  message: '必填(1-99)' }]"
             />
-            <van-button id="bt" round block type="info" @click="createProject" native-type="submit">提交</van-button>
+            <van-button id="bt" round block type="info"
+                        @click="forkFund"
+                        native-type="submit">提交</van-button>
         </van-form>
     </div>
 </template>
@@ -102,18 +135,19 @@
             const wcli = inject<WClient>("walletConnect")
             const abi = inject<ContractManager>("abi", new ContractManager())
             const account = ref("")
+            const AmountPattern = /^([1-9]\d{0,9}|0)(\.\d{1,5})?$/
             const fund = reactive({
-                symbol: "",
-                desc: "",
-                unitProduction: 0,
-                halfLife: 0,
-                fundAmount: "0",
-                minerEfficiency: 0,
-                guaranteeCommissionPercent: 0,
-                financingPeriod: 0,
-                investmentProtection: 0,
-                donatePercent: 1,
-                keepHeight: 0,
+                symbol: "",// fund name
+                desc: "", // introduction
+                unitProduction: "", //  produce amount per block height
+                halfLife: "",
+                fundAmount: "", // total fund amount
+                minerEfficiency: "", // miner efficiency
+                guaranteeCommissionPercent: "",  //todo: not find in abi
+                financingPeriod: "",
+                investmentProtection: "",
+                donatePercent: "1",
+                keepHeight: "",
 
             })
             onMounted(() => {
@@ -125,7 +159,20 @@
 
             // todo: 实现forkFund，目前是假的
             async function ForkFund() {
-                let params = {} as IForkFundParam
+                let params = {
+                    From: account.value,
+                    FundSymbols: fund.symbol,
+                    FundIntroduction: fund.desc,
+                    PerAmount: fund.unitProduction,
+                    Durations: fund.halfLife,
+                    TokenAmount: fund.fundAmount,
+                    GuaranteeReward: fund.minerEfficiency,
+                    GuaranteeFee: fund.guaranteeCommissionPercent,
+                    ProjectTime: fund.financingPeriod,
+                    InvestTime: fund.investmentProtection,
+                    SellTime: fund.keepHeight,
+                    DonateFee: fund.donatePercent,
+                } as IForkFundParam
                 let tx = await abi.ForkFund(params)
                 wcli!.state.connector!.sendTransaction(tx).then(
                     () => {
@@ -136,9 +183,12 @@
                     Notify(res)
                 })
             }
-
+            const onFailed = (errorInfo: any) => {
+                console.log('failed', errorInfo);
+            };
             return {
-                fund,
+                onFailed,
+                fund,AmountPattern,
                 ForkFund
             }
         }
@@ -146,26 +196,26 @@
 </script>
 
 <style scoped>
-    #fork-border {
-        position: relative;
-        height: calc(100vh - 300px);
-        overflow: scroll;
-        padding-top: 10px;
-        padding-bottom: 10px;
+    #ff-main {
+        height: calc(100vh - 500px);
+        padding-bottom: 300px;
+        overflow-y: scroll;
+        overflow-x: hidden;
     }
 
     /deep/ .van-cell {
 
     }
 
+
     /deep/ .van-field__label {
         font-size: 28px;
         font-weight: bold;
         padding-left: 20px;
-        width: 360px;
+        height: 48px;
     }
 
-    #bt{
+    #bt {
         color: white !important;
         width: 620px;
         height: 80px;
@@ -179,7 +229,8 @@
         position: relative;
         top: 16px;
     }
-    /deep/ .van-button__text{
+
+    /deep/ .van-button__text {
         color: white;
     }
 </style>

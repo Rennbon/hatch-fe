@@ -5,17 +5,19 @@
     </div>
 </template>
 
-<script>
-    import Bottom from "@/components/bar/Bottom";
-    import Index from "@/components/Index";
+<script lang="ts">
+    import Bottom from "@/components/bar/Bottom.vue";
+    import Index from "@/components/Index.vue";
+    import {defineComponent} from "vue";
 
-    export default {
+    export default defineComponent({
         name: 'Home',
         components: {
             Index,
             Bottom,
         },
-    }
+
+    })
 </script>
 <style scoped>
     #home {

@@ -75,7 +75,18 @@
                     provideValue(p)
                     currentPage.value = pMap.get(p.Name)
                     pageParam.value = p
-                    fnNavBar(p.Title, p.Name === "Nav" ? 0 : 1)
+                    let barStyle = 1
+                    switch (p.Name) {
+                        case "Nav":
+                            barStyle = 0;
+                            break
+                        case "Project":
+                            barStyle = 2;
+                            break
+                        default:
+                            break
+                    }
+                    fnNavBar(p.Title, barStyle)
                 }
             }
 

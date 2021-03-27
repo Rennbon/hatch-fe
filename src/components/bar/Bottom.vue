@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-    import {defineComponent, inject, onBeforeMount, ref} from "vue";
+    import {defineComponent, inject, onMounted, ref, watch} from "vue";
     // @ts-ignore
     import useStore from '../../store/index.js'
     // eslint-disable-next-line no-unused-vars
@@ -31,16 +31,27 @@
             const store = useStore()
             //const cmgr: dreamManager.ContractManager = new dreamManager.ContractManager()
 
-
-            onBeforeMount(async () => {
+            watch(
+                (): boolean => {
+                    return wcli?.state.connected === true
+                },
+                value => {
+                    // 当otherName中的 firstName或者lastName发生变化时，都会进入这个函数
+                    console.log("connect status :", value)
+                    connectStatus.value = value
+                }
+            )
+            onMounted(async () => {
                 // when refresh reload walletconnect state
                 if (store.state.connected && !connectStatus.value) {
                     await connectWallet()
                 }
-                if (wcli != undefined && wcli.state.connector?.connected) {
+                console.log("aaaa", wcli?.state.connector?.session.connected)
+                if (wcli != undefined && wcli.state.connector?.session.connected) {
                     connectStatus.value = true
                     account.value = wcli.state.address
                     balance.value = wcli.state.asset
+                    console.log("bbbbbbbbb", wcli.state.asset)
                 }
             })
 
@@ -49,7 +60,7 @@
                     throw new Error("出错了")
                 }
                 await wcli.walletConnectInit()
-                if (wcli.state.connected) {
+                if (wcli.state.connector?.session.connected) {
                     store.commit("updateConnected", true)
                     account.value = wcli.state.address
                     balance.value = wcli.state.asset

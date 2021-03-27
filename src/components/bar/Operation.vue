@@ -58,6 +58,8 @@
                         break
                     case SubmitType.Sell:
                         break
+                    case SubmitType.Exit:
+                        break
                     default:
                         break
                 }

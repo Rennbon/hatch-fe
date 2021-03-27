@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="cp-main">
         <van-form @failed="onFailed">
             <van-field
                     v-model="ProjectInfo.Token"
@@ -74,6 +74,14 @@
                     placeholder="选填"
                     :rules="[{ }]"
             />
+            <div>
+                <div class="warning">注意：</div>
+                <div class="warning-content">
+                    该融资申请不会经过任何人审核，仅当有投资人愿意承担风险为该项目提供担保，并且担保金额达到软顶之后，该项目会自动上架，并允许其它投资人进行投资。
+                    若您未在承诺的ETH区块时间完成上架Uniswap，或未达到承诺目标价格，则系统将自动将该项目评级为“违约”或“亏损”。
+                    友善提醒，为避免DFund Trust Rank对您的项目造成不利影响，请务必详细了解规则。
+                </div>
+            </div>
             <div style="margin: 16px;">
                 <van-button round block type="info" @click="createProject" native-type="submit">提交</van-button>
             </div>
@@ -146,7 +154,9 @@
                     WhitePaper: ProjectInfo.WhitePaper,
                     Web: ProjectInfo.Web,
                 } as ISetProjectParam
+
                 let tx = await abi.SetProject(params)
+                console.log(tx)
                 wcli!.state.connector!.sendTransaction(tx).then(
                     () => {
                         Notify({type: 'success', message: '交易发送成功'});
@@ -170,5 +180,54 @@
 </script>
 
 <style scoped>
+    /deep/ .van-cell {
 
+    }
+
+    /deep/ .van-field__label {
+        font-size: 32px;
+        font-weight: bold;
+        padding-left: 20px;
+        width: 360px;
+        font-family: PingFangSC;
+        width: 260px;
+        height: 48px;
+    }
+
+    /deep/ .van-button__text {
+        color: white;
+        border: none;
+
+    }
+
+    /deep/ .van-button {
+        border: none;
+        border-radius: 10px;
+        background-color: #3682FF;
+        font-family: PingFangSC;
+        font-size: 40px;
+    }
+
+    .warning {
+        padding-top: 40px;
+        font-family: PingFangSC;
+        font-size: 20px;
+        font-weight: bold;
+        text-align: left;
+        padding-left: 50px;
+    }
+
+    .warning-content {
+        margin: auto;
+        font-family: PingFangSC;
+        font-size: 20px;
+        width: 620px;
+    }
+
+    #cp-main {
+        height: calc(100vh - 500px);
+        padding-bottom: 200px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
 </style>

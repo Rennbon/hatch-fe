@@ -3,65 +3,78 @@
         <div id="bg"></div>
         <div id="dm-pods">
             <div class="dm-pod">
-                <div class="dm-container" @click="toFund(MDToken,'DreamDAO-Fund')">
-                    <div id="dm-name">DreamDAO</div>
-                    <div id="dm-amount">{{ convertAmountToCommon(dreamDao.amount) }}</div>
-                    <div id="dm-uint">ETH</div>
+                <div id="dm-container" @click="toFund(MDToken,'DreamDAO')">
+                    <div class="fund-name">DreamDAO</div>
+                    <div class="fund-percent" style="color: #00EB60">+10%</div>
+                    <div class="fund-inc" style="color: #00EB60">0.123311</div>
+                    <div class="fund-amount">{{ convertAmountToCommon(dreamDao.amount) }}</div>
+                    <div class="fund-uint">ETH</div>
+                </div>
+                <div class="fund-container" @click="toFund('fx1231231a','MyFund-Fund')">
+                    <div class="fund-src">Fund</div>
+                    <div class="fund-name">ABE</div>
+                    <div class="fund-percent" style="color: #EC5A4C">+10%</div>
+                    <div class="fund-inc" style="color: #EC5A4C">0.123311</div>
+                    <div class="fund-amount">1299999</div>
+                    <div class="fund-uint">ETH</div>
+                </div>
+                <div class="fund-container" @click="toFund('fx1231231a','MyFund-Fund')">
+                    <div class="fund-src">Fund</div>
+                    <div class="fund-name">ABE</div>
+                    <div class="fund-percent">+10%</div>
+                    <div class="fund-inc">0.123311</div>
+                    <div class="fund-amount">1299999</div>
+                    <div class="fund-uint">ETH</div>
+                </div>
+                <div class="fund-container" @click="toFund('fx1231231a','MyFund-Fund')">
+                    <div class="fund-src">Fund</div>
+                    <div class="fund-name">ABE</div>
+                    <div class="fund-percent">+10%</div>
+                    <div class="fund-inc">0.123311</div>
+                    <div class="fund-amount">1299999</div>
+                    <div class="fund-uint">ETH</div>
                 </div>
 
-                <div class="dm-container" @click="toFund('fx1231231a','MyFund-Fund')">
-                    <div class="fund-src">Fund</div>
-                    <div class="fund-name">ABE</div>
-                    <div class="fund-percent">+10%</div>
-                    <div class="fund-inc">0.123311</div>
-                    <div class="fund-amount">1299999</div>
-                    <div class="fund-uint">ETH</div>
-                </div>
-                <div class="dm-container" @click="toFund('fx1231231a','MyFund-Fund')">
-                    <div class="fund-src">Fund</div>
-                    <div class="fund-name">ABE</div>
-                    <div class="fund-percent">+10%</div>
-                    <div class="fund-inc">0.123311</div>
-                    <div class="fund-amount">1299999</div>
-                    <div class="fund-uint">ETH</div>
-                </div>
-                <div class="dm-container" @click="toFund('fx1231231a','MyFund-Fund')">
-                    <div class="fund-src">Fund</div>
-                    <div class="fund-name">ABE</div>
-                    <div class="fund-percent">+10%</div>
-                    <div class="fund-inc">0.123311</div>
-                    <div class="fund-amount">1299999</div>
-                    <div class="fund-uint">ETH</div>
-                </div>
-                <div class="dm-container dm-pro" @click="toProject('px12312301','MyProject-Fund')">
-                    <div class="pro-name">AAA</div>
-                    <div class="pro-price">9.6</div>
+                <div class="fund-container"
+                     :style="{'background-image' : pro.bg, 'background-size': '100% 100%'}"
+                     :key="index" v-for="(pro,index) in myProjects"
+                     @click="toProject(pro)">
+                    <div class="pro-name"> {{ pro.name }}</div>
+                    <div class="pro-price" :style="{'color':pro.font}">{{ convertAmountToCommon(pro.price) }}</div>
                     <div class="pro-uint">ETH</div>
-                    <div class="pro-state">盈利</div>
-                    <div class="pro-fund">DreamDAO</div>
+                    <div class="pro-state" :style="{'color':pro.status==='违约'?'white':'#666666'}">{{ pro.status }}</div>
+                    <div class="pro-fund">{{ pro.fundName }}DreamDAO</div>
                 </div>
-                <div class="dm-container dm-pro" @click="toProject('px12312301','MyProject-Fund')">
-                    <div class="pro-name">AAA</div>
-                    <div class="pro-price">9.6</div>
-                    <div class="pro-uint">ETH</div>
-                    <div class="pro-state">盈利</div>
-                    <div class="pro-fund">DreamDAO</div>
-                </div>
-                <div class="dm-container dm-pro" @click="toProject('px12312301','MyProject-Fund')">
-                    <div class="pro-name">AAA</div>
-                    <div class="pro-price">9.6</div>
-                    <div class="pro-uint">ETH</div>
-                    <div class="pro-state">盈利</div>
-                    <div class="pro-fund">DreamDAO</div>
-                </div>
-                <div class="dm-container dm-pro" @click="toProject('px12312301','MyProject-Fund')">
-                    <div class="pro-name">AAA</div>
-                    <div class="pro-price">9.6</div>
-                    <div class="pro-uint">ETH</div>
-                    <div class="pro-state">盈利</div>
-                    <div class="pro-fund">DreamDAO</div>
-                </div>
-                <div class="dm-container">
+
+                <!-- <div class="fund-container dm-pro" @click="toProject('px12312301','MyProject-Fund')">
+                     <div class="pro-name">AAA</div>
+                     <div class="pro-price">9.6</div>
+                     <div class="pro-uint">ETH</div>
+                     <div class="pro-state">盈利</div>
+                     <div class="pro-fund">DreamDAO</div>
+                 </div>
+                 <div class="fund-container dm-pro" @click="toProject('px12312301','MyProject-Fund')">
+                     <div class="pro-name">AAA</div>
+                     <div class="pro-price">9.6</div>
+                     <div class="pro-uint">ETH</div>
+                     <div class="pro-state">盈利</div>
+                     <div class="pro-fund">DreamDAO</div>
+                 </div>
+                 <div class="fund-container dm-pro" @click="toProject('px12312301','MyProject-Fund')">
+                     <div class="pro-name">AAA</div>
+                     <div class="pro-price">9.6</div>
+                     <div class="pro-uint">ETH</div>
+                     <div class="pro-state">盈利</div>
+                     <div class="pro-fund">DreamDAO</div>
+                 </div>
+                 <div class="fund-container dm-pro" @click="toProject('px12312301','MyProject-Fund')">
+                     <div class="pro-name">AAA</div>
+                     <div class="pro-price">9.6</div>
+                     <div class="pro-uint">ETH</div>
+                     <div class="pro-state">盈利</div>
+                     <div class="pro-fund">DreamDAO</div>
+                 </div>-->
+                <div class="fund-container">
                     <div class="more">More
                         <van-icon class="more-icon" name="play"/>
                     </div>
@@ -69,7 +82,7 @@
             </div>
             <van-divider dashed>other Funds</van-divider>
             <div class="dm-pod">
-                <div class="dm-container" @click="toFund('fx1231231a','MyFund-Fund')">
+                <div class="fund-container" @click="toFund('fx1231231a','MyFund-Fund')">
                     <div class="fund-src">Fund</div>
                     <div class="fund-name">ABE</div>
                     <div class="fund-percent">+10%</div>
@@ -77,7 +90,7 @@
                     <div class="fund-amount">1299999</div>
                     <div class="fund-uint">ETH</div>
                 </div>
-                <div class="dm-container" @click="toFund('fx1231231a','MyFund-Fund')">
+                <div class="fund-container" @click="toFund('fx1231231a','MyFund-Fund')">
                     <div class="fund-src">Fund</div>
                     <div class="fund-name">ABE</div>
                     <div class="fund-percent">+10%</div>
@@ -85,7 +98,7 @@
                     <div class="fund-amount">1299999</div>
                     <div class="fund-uint">ETH</div>
                 </div>
-                <div class="dm-container" @click="toFund('fx1231231a','MyFund-Fund')">
+                <div class="fund-container" @click="toFund('fx1231231a','MyFund-Fund')">
                     <div class="fund-src">Fund</div>
                     <div class="fund-name">ABE</div>
                     <div class="fund-percent">+10%</div>
@@ -93,7 +106,7 @@
                     <div class="fund-amount">1299999</div>
                     <div class="fund-uint">ETH</div>
                 </div>
-                <div class="dm-container" @click="toFund('fx1231231a','MyFund-Fund')">
+                <div class="fund-container" @click="toFund('fx1231231a','MyFund-Fund')">
                     <div class="fund-src">Fund</div>
                     <div class="fund-name">ABE</div>
                     <div class="fund-percent">+10%</div>
@@ -101,7 +114,7 @@
                     <div class="fund-amount">1299999</div>
                     <div class="fund-uint">ETH</div>
                 </div>
-                <div class="dm-container" @click="toFund('fx1231231a','MyFund-Fund')">
+                <div class="fund-container" @click="toFund('fx1231231a','MyFund-Fund')">
                     <div class="fund-src">Fund</div>
                     <div class="fund-name">ABE</div>
                     <div class="fund-percent">+10%</div>
@@ -109,7 +122,7 @@
                     <div class="fund-amount">1299999</div>
                     <div class="fund-uint">ETH</div>
                 </div>
-                <div class="dm-container" @click="toFund('fx1231231a','MyFund-Fund')">
+                <div class="fund-container" @click="toFund('fx1231231a','MyFund-Fund')">
                     <div class="fund-src">Fund</div>
                     <div class="fund-name">ABE</div>
                     <div class="fund-percent">+10%</div>
@@ -117,7 +130,7 @@
                     <div class="fund-amount">1299999</div>
                     <div class="fund-uint">ETH</div>
                 </div>
-                <div class="dm-container" @click="toFund('fx1231231a','MyFund-Fund')">
+                <div class="fund-container" @click="toFund('fx1231231a','MyFund-Fund')">
                     <div class="fund-src">Fund</div>
                     <div class="fund-name">ABE</div>
                     <div class="fund-percent">+10%</div>
@@ -125,7 +138,7 @@
                     <div class="fund-amount">1299999</div>
                     <div class="fund-uint">ETH</div>
                 </div>
-                <div class="dm-container" @click="toFund('fx1231231a','MyFund-Fund')">
+                <div class="fund-container" @click="toFund('fx1231231a','MyFund-Fund')">
                     <div class="fund-src">Fund</div>
                     <div class="fund-name">ABE</div>
                     <div class="fund-percent">+10%</div>
@@ -133,7 +146,7 @@
                     <div class="fund-amount">1299999</div>
                     <div class="fund-uint">ETH</div>
                 </div>
-                <div class="dm-container">
+                <div class="fund-container">
                     <div class="more">More
                         <van-icon class="more-icon" name="play"/>
                     </div>
@@ -141,13 +154,20 @@
             </div>
             <van-divider dashed>other Startup</van-divider>
             <div class="dm-pod">
-                <div class="dm-container dm-pro" :key="index" v-for="(pro,index) in otherProjects"
+                <div class="fund-container"
+                     :style="{'background-image' : pro.bg, 'background-size': '100% 100%'}"
+                     :key="index" v-for="(pro,index) in otherProjects"
                      @click="toProject(pro)">
                     <div class="pro-name"> {{ pro.name }}</div>
-                    <div class="pro-price">{{ pro.price }}</div>
+                    <div class="pro-price" :style="{'color':pro.font}">{{ convertAmountToCommon(pro.price) }}</div>
                     <div class="pro-uint">ETH</div>
-                    <div class="pro-state"> {{ pro.status }}</div>
-                    <div class="pro-fund">{{ pro.fundName }}</div>
+                    <div class="pro-state" :style="{'color':pro.status==='违约'?'white':'#666666'}">{{ pro.status }}</div>
+                    <div class="pro-fund">{{ pro.fundName }}DreamDAO</div>
+                </div>
+                <div class="fund-container" v-if="reqOtherProjects.more" @click="getOtherProjects">
+                    <div class="more">More
+                        <van-icon class="more-icon" name="play"/>
+                    </div>
                 </div>
             </div>
             <div style="height: 30px"></div>
@@ -185,12 +205,19 @@
 
     }
 
+    interface ContainCss {
+        status: string
+        font: string
+        bg: string
+    }
+
     interface Project {
         token: string
         name: string
         price: string
         fundName: string
         fundToken: string
+        css: string
 
         //0:none
         //1: Profitable
@@ -217,7 +244,7 @@
             const dreamDao = reactive({amount: "0"})
             //const myFunds = reactive({list: []})
 
-            const myProjects: Project[] = []
+            const myProjects: Project[] = reactive([])
             onMounted(() => {
                 if (wcli != undefined) {
                     account.value = wcli.state.address
@@ -265,6 +292,10 @@
                         reqMyPage.offset += projectLen
                         for (let i = 0; i < projectLen; i++) {
                             let proTmp = res.data.projects[i]
+                            let cc = calcCss(proTmp.status)
+                            proTmp.status = cc.status
+                            proTmp.font = cc.font
+                            proTmp.bg = cc.bg
                             myProjects.push(proTmp)
                         }
                     }
@@ -278,8 +309,41 @@
                 more: true,
             })
 
+            function calcCss(status: Number): ContainCss {
+                let obj = {} as ContainCss
+                switch (status) {
+                    case 0:
+                        obj.status = "暂无评分";
+                        obj.font = "#666666"
+                        obj.bg = "url('/img/2x/win-gray.png')"
+                        break
+                    case 1:
+                        obj.status = "盈利";
+                        obj.font = "#00EB60"
+                        obj.bg = "url('/img/2x/win-green.png')"
+                        break
+                    case 2:
+                        obj.status = "盈利但未达到预期";
+                        obj.font = "#666666"
+                        obj.bg = "url('/img/2x/win-yellow.png')"
+                        break
+                    case 3:
+                        obj.status = "亏损";
+                        obj.font = "#EC5A4C"
+                        obj.bg = "url('/img/2x/win-red.png')"
+                        break
+                    case 4:
+                        obj.status = "违约";
+                        obj.font = "#666666"
+                        obj.bg = "url('/img/2x/win-white.png')"
+                        break
+                    default:
+                        break
+                }
+                return obj
+            }
 
-            const otherProjects: Project[] = []
+            const otherProjects: Project[] = reactive([])
 
             function getOtherProjects() {
                 BackendApi.getOtherProjects({
@@ -289,13 +353,24 @@
                     let projectLen = res.data.array.length
                     for (let i = 0; i < projectLen; i++) {
                         let proTmp = res.data.array[i]
+                        //0:none
+                        //1: Profitable
+                        //2: Profitable but not on target
+                        //3: loss
+                        //4: break the contract
+                        let cc = calcCss(proTmp.status)
+                        proTmp.status = cc.status
+                        proTmp.font = cc.font
+                        proTmp.bg = cc.bg
                         otherProjects.push(proTmp)
                     }
-                    if (projectLen == 0) {
+                    if (reqOtherProjects.offset === 0 && projectLen < 8) {
+                        reqOtherProjects.more = false
+                    } else if (reqOtherProjects.offset > 0 && projectLen < 9) {
                         reqOtherProjects.more = false
                     }
                     reqOtherProjects.offset += projectLen
-                    console.log("load other projects over")
+                    console.log("otherProject len", otherProjects.length)
                 }).catch(err => {
                         Notify({type: 'danger', message: err});
                     }
@@ -340,7 +415,8 @@
                 getOtherProjects,
                 dreamDao,
                 MDToken,
-                otherProjects
+                otherProjects, myProjects,
+                reqOtherProjects
             }
         }
     })
@@ -380,15 +456,27 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: flex-start;
-
     }
 
-    .dm-container {
+    #dm-container {
         margin: calc((100% - 540px) / 6);
         width: 180px;
         height: 180px;
         border-radius: 20px;
-        box-shadow: 0 0px 10px rgba(0, 0, 0, .10), 0 0px 10px rgba(0, 0, 0, .10);
+        box-shadow: 0 6px 10px rgba(0, 0, 0, .10);
+        position: relative;
+        background-image: url("/img/2x/win-dm.png");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: bottom;
+    }
+
+    .fund-container {
+        margin: calc((100% - 540px) / 6);
+        width: 180px;
+        height: 180px;
+        border-radius: 20px;
+        box-shadow: 0 6px 10px rgba(0, 0, 0, .10);
         position: relative;
     }
 
@@ -434,17 +522,19 @@
     .fund-percent {
         font-size: 20px;
         position: relative;
-        top: 24px;
+        top: 28px;
+        font-weight: 500;
     }
 
     .fund-inc {
         font-size: 20px;
         position: relative;
-        top: 20px;
+        top: 22px;
+        font-weight: 500;
     }
 
     .fund-amount {
-        font-size: 28px;
+        font-size: 24px;
         position: relative;
         top: 20px;
     }

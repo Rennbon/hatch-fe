@@ -33,7 +33,7 @@
         height: calc(100vh - 100px - 200px);
         padding-bottom: 200px;
         overflow: hidden;
-        background: url("/img/2x/guide5.png") center center fixed;
+        background: url("/img/2x/guide7.png") center center fixed;
         -webkit-background-size: cover;
         -moz-background-size: cover;
         -o-background-size: cover;

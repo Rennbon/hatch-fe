@@ -7,7 +7,6 @@ import {
     convertAmountToCommon,
     convertAmountToRawNumber,
     convertHexToString,
-    convertNumberToString,
     convertStringToHex,
     subtract
 } from "./bignumber";
@@ -202,9 +201,9 @@ export class ContractManager {
     }
 
     public async SetProject(param: ISetProjectParam): Promise<ITxData> {
-        const nonce = await ApiManager.GetAccountNonce(param.From,);
+        const nonce = await ApiManager.GetAccountNonce(param.From);
         const gasPrice = await ApiManager.GetGasPrice();
-        const _gasLimit = 21000;
+        const _gasLimit = 210000;
         const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
 
         const _value = 0;
@@ -212,11 +211,12 @@ export class ContractManager {
 
         const input1 = param.Token
 
+
         const input2 = utils.parseEther(param.SellPrice)
         const input3 = utils.parseEther(param.SoftCap)
         const input4 = utils.parseEther(param.HardCap)
         const input5 = utils.parseEther(param.TargetPrice)
-        const input6 = convertNumberToString(param.SetupHeight)
+        const input6 = convertStringToHex(param.SetupHeight)
         const input7 = [param.Web, param.WhitePaper]
 
         const data = this.dreamMakeAbi.encodeFunctionData("setProject", [input1, input2, input3, input4, input5, input6, input7])
@@ -235,13 +235,13 @@ export class ContractManager {
     public async SellProject(from: string, token: string, amount: string): Promise<ITxData> {
         const nonce = await ApiManager.GetAccountNonce(from);
         const gasPrice = await ApiManager.GetGasPrice();
-        const _gasLimit = 21000;
+        const _gasLimit = 210000;
         const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
 
         const _value = 0;
         const value = sanitizeHex(convertStringToHex(_value));
 
-        const input = convertStringToHex(amount)
+        const input = utils.parseEther(amount)
         const data = this.dreamMakeAbi.encodeFunctionData("sellProject", [token, input])
         const tx = {
             from,
@@ -258,13 +258,13 @@ export class ContractManager {
     public async InvestProject(from: string, token: string, amount: string): Promise<ITxData> {
         const nonce = await ApiManager.GetAccountNonce(from,);
         const gasPrice = await ApiManager.GetGasPrice();
-        const _gasLimit = 21000;
+        const _gasLimit = 210000;
         const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
 
         const _value = 0;
         const value = sanitizeHex(convertStringToHex(_value));
 
-        const input = convertStringToHex(amount)
+        const input = utils.parseEther(amount)
         const data = this.dreamMakeAbi.encodeFunctionData("investProject", [token, input])
         const tx = {
             from,
@@ -281,13 +281,14 @@ export class ContractManager {
     public async GuaranteeProject(from: string, token: string, amount: string): Promise<ITxData> {
         const nonce = await ApiManager.GetAccountNonce(from);
         const gasPrice = await ApiManager.GetGasPrice();
-        const _gasLimit = 21000;
+        const _gasLimit = 210000;
         const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
 
         const _value = 0;
         const value = sanitizeHex(convertStringToHex(_value));
 
-        const input = convertStringToHex(amount)
+        console.log(amount)
+        const input = utils.parseEther(amount)
         const data = this.dreamMakeAbi.encodeFunctionData("guaranteeProject", [token, input])
         const tx = {
             from,
@@ -308,7 +309,8 @@ export class ContractManager {
             from: account,
         }
         let res = await contract.functions.guaranteeProjectValue(project, overrides)
-        return convertAmountToCommon(res)
+        let val = convertAmountToCommon(res)
+        return val
     }
 
     // get one's invest amount of the project
@@ -318,7 +320,8 @@ export class ContractManager {
             from: account,
         }
         let res = await contract.functions.investProjectValue(project, overrides)
-        return convertAmountToCommon(res)
+        let val = convertAmountToCommon(res)
+        return val
     }
 
     // earn token profit from the project
@@ -328,7 +331,8 @@ export class ContractManager {
             from: account,
         }
         let res = await contract.functions.investProjectTokenAmount(project, overrides)
-        return convertAmountToCommon(res)
+        let val = convertAmountToCommon(res)
+        return val
     }
 
     // earn eth profit from the project
@@ -338,12 +342,47 @@ export class ContractManager {
             from: account,
         }
         let res = await contract.functions.investProjectIncome(project, overrides)
-        return convertAmountToCommon(res)
+        let val = convertAmountToCommon(res)
+        return val
     }
 
     public async ForkFund(param: IForkFundParam): Promise<ITxData> {
+        const nonce = await ApiManager.GetAccountNonce(param.From);
+        const gasPrice = await ApiManager.GetGasPrice();
+        const _gasLimit = 210000;
+        const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
 
-        const tx = {} as ITxData
+        const _value = 0;
+        const value = sanitizeHex(convertStringToHex(_value));
+
+
+        const input1 = [param.FundSymbols, param.FundIntroduction]
+        const input2 = [
+            utils.parseUnits(param.PerAmount),
+            utils.parseUnits(param.Durations),
+            utils.parseUnits(param.TokenAmount),
+            utils.parseUnits(param.GuaranteeReward)
+        ]
+        const input3 = [utils.parseUnits(param.GuaranteeFee)]
+        const input4 = [
+            utils.parseUnits(param.ProjectTime),
+            utils.parseUnits(param.InvestTime)
+        ]
+        const input5 = [
+            utils.parseUnits(param.SellTime),
+            utils.parseUnits(param.DonateFee)
+        ]
+
+        const data = this.dreamMakeAbi.encodeFunctionData("guaranteeProject", [input1, input2, input3, input4, input5])
+        const tx = {
+            from: param.From,
+            to: this.token,
+            nonce,
+            gasPrice,
+            gasLimit,
+            value,
+            data,
+        } as ITxData
         return tx
     }
 

@@ -5,11 +5,15 @@
             <div id="name">Dream DAO</div>
             <img @click="showPopup" class="menu" src="/img/2x/menu-w.png"/>
         </div>
-        <div id="nav-border" v-if="barStyle===1">
-            <img @click="back" id="back" src="/img/2x/arrow-left.png"/>
-            <img @click="showPopup" class="menu" src="/img/2x/menu.png"/>
-            <div id="title">{{ curTitle }}</div>
+        <div :id="barStyle==1?'nav-border':'nav-border-0'" v-if="barStyle===1||barStyle==2">
+            <img @click="back" :style="{'color':barStyle==2?'white':'#666666'}" id="back"
+                 :src="barStyle==2?'/img/2x/arrow-w.png':'/img/2x/arrow-left.png'"/>
+            <img @click="showPopup" :style="{'color':barStyle==2?'white':'#666666'}"
+                 class="menu"
+                 :src="barStyle==2?'/img/2x/menu-w.png':'/img/2x/menu.png'"/>
+            <div id="title" :style="{'color':barStyle==2?'white':'#666666'}" >{{ curTitle }}</div>
         </div>
+
         <van-popup v-model:show="display" teleport="body" id="right-menu"
                    :style="{
                         height:'100%',width:'73%','z-index':'20000',
@@ -62,6 +66,7 @@
         props: {},
         setup(props, context) {
             const curTitle = ref("")
+            // 0:logo blue 1:white 2:blue
             const barStyle = ref(0)
             const display = ref(false)
             const router = useRouter()
@@ -123,7 +128,7 @@
 <style scoped>
     #nav-border {
         position: relative;
-        z-index:10000;
+        z-index: 10000;
         height: 100px;
         border-radius: 0px 0px 10px 10px;
         box-shadow: 0 0 14px rgba(0, 0, 0, .25), 0 0 14px rgba(0, 0, 0, .25);
