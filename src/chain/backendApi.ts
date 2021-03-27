@@ -28,6 +28,12 @@ export const BackendApi = {
                 params: params
             })
     },
+    getOtherFunds(params: object){
+        return apiManager.get(
+            '/otherFunds', {
+                params: params
+            })
+    },
     getOtherProjects(params: object) {
         return apiManager.get(
             '/otherProjects', {

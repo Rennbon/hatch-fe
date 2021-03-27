@@ -22,8 +22,8 @@
             </van-divider>
             <van-field
                     v-model="fund.unitProduction"
-                    type="digit"
                     name="unitProduction"
+                    type="number"
                     label="单位块高生产数"
                     placeholder="请输入单位块高生产数"
                     label-width="180"
@@ -31,8 +31,8 @@
             />
             <van-field
                     v-model="fund.halfLife"
-                    type="digit"
                     name="halfLife"
+                    type="number"
                     label="减半周期区块数"
                     label-width="180"
                     placeholder="请输入减半周期区块数"
@@ -40,8 +40,8 @@
             />
             <van-field
                     v-model="fund.fundAmount"
-                    type="digit"
                     name="fundAmount"
+                    type="number"
                     label="基金治理币总数"
                     placeholder="请输入基金治理币总数"
                     label-width="180"
@@ -49,8 +49,8 @@
             />
             <van-field
                     v-model="fund.minerEfficiency"
-                    type="digit"
                     name="minerEfficiency"
+                    type="number"
                     label="担保挖矿效率"
                     placeholder="请输入担保挖矿效率"
                     label-width="180"
@@ -63,11 +63,11 @@
             <van-field
                     v-model="fund.guaranteeCommissionPercent"
                     name="guaranteeCommissionPercent"
-                    type="digit"
+                    type="number"
                     label="担保佣金比例"
                     label-width="180"
                     placeholder="请输入担保佣金比例"
-                    :rules="[{pattern:/^([1-9]|[1-9]\\d)$/,required:true,  message: '必填（1-99)' }]"
+                    :rules="[{pattern:/^([1-9]\d|\d)$/,required:true,  message: '必填（1-99)' }]"
             />
             <van-divider content-position="left"
                          :style="{ color: '#3682FF', borderColor: '#3682FF', padding: '0 16px' }"
@@ -76,7 +76,7 @@
             <van-field
                     v-model="fund.financingPeriod"
                     name="financingPeriod"
-                    type="digit"
+                    type="number"
                     label="融资持续区块数"
                     placeholder="请输入融资持续区块数"
                     label-width="180"
@@ -85,8 +85,8 @@
             <van-field
                     v-model="fund.investmentProtection"
                     name="investmentProtection"
+                    type="number"
                     label="投资额保护区块数"
-                    type="digit"
                     placeholder="请输入投资额保护区块数"
                     label-width="180"
                     :rules="[{pattern:/^[1-9]\d*$/,required:true,  message: '必填(大于0的整数)' }]"
@@ -98,8 +98,8 @@
             <van-field
                     v-model="fund.keepHeight"
                     name="keepHeight"
+                    type="number"
                     label="保价持续区块数"
-                    type="digit"
                     placeholder="请输入保价持续区块数"
                     label-width="200"
                     :rules="[{pattern:/^[1-9]\d*$/,required:true,  message: '必填(大于0的整数)' }]"
@@ -107,15 +107,18 @@
             <van-field
                     v-model="fund.donatePercent"
                     name="donatePercent"
+                    type="number"
                     label="盈利捐赠DreamDAI比例"
-                    type="digit"
                     placeholder="请输入盈利捐赠DreamDAI比例"
                     label-width="200"
-                    :rules="[{pattern:/^([1-9]|[1-9]\\d)$/,required:true,  message: '必填(1-99)' }]"
+                    :rules="[{pattern:/^([1-9]\d|\d)$/,required:true,  message: '必填(1-99)' }]"
             />
-            <van-button id="bt" round block type="info"
-                        @click="forkFund"
-                        native-type="submit">提交</van-button>
+            <div>
+                <van-button id="bt" round block type="info"
+                            @click="ForkFund" loading-type="spinner"
+                            native-type="submit">提交
+                </van-button>
+            </div>
         </van-form>
     </div>
 </template>
@@ -151,14 +154,15 @@
 
             })
             onMounted(() => {
-                if (wcli === undefined) {
-                    return
+                if (wcli != undefined && wcli.state.connector?.session.connected) {
+                    account.value = wcli.state.address
                 }
-                account.value = wcli.state.address
+                console.log("fork fund account:", account.value)
             })
 
             // todo: 实现forkFund，目前是假的
             async function ForkFund() {
+                console.log("forkFund")
                 let params = {
                     From: account.value,
                     FundSymbols: fund.symbol,
@@ -174,6 +178,7 @@
                     DonateFee: fund.donatePercent,
                 } as IForkFundParam
                 let tx = await abi.ForkFund(params)
+                console.log(tx)
                 wcli!.state.connector!.sendTransaction(tx).then(
                     () => {
                         Notify({type: 'success', message: '交易发送成功'});
@@ -183,12 +188,14 @@
                     Notify(res)
                 })
             }
+
             const onFailed = (errorInfo: any) => {
                 console.log('failed', errorInfo);
-            };
+            }
+
             return {
                 onFailed,
-                fund,AmountPattern,
+                fund, AmountPattern,
                 ForkFund
             }
         }

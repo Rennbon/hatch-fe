@@ -358,22 +358,22 @@ export class ContractManager {
 
         const input1 = [param.FundSymbols, param.FundIntroduction]
         const input2 = [
-            utils.parseUnits(param.PerAmount),
-            utils.parseUnits(param.Durations),
-            utils.parseUnits(param.TokenAmount),
-            utils.parseUnits(param.GuaranteeReward)
+            param.PerAmount,
+            param.Durations,
+            param.TokenAmount,
+            param.GuaranteeReward
         ]
-        const input3 = [utils.parseUnits(param.GuaranteeFee)]
+        const input3 = [param.GuaranteeFee]
         const input4 = [
-            utils.parseUnits(param.ProjectTime),
-            utils.parseUnits(param.InvestTime)
+            param.ProjectTime,
+            param.InvestTime
         ]
         const input5 = [
-            utils.parseUnits(param.SellTime),
-            utils.parseUnits(param.DonateFee)
+            param.SellTime,
+            param.DonateFee
         ]
 
-        const data = this.dreamMakeAbi.encodeFunctionData("guaranteeProject", [input1, input2, input3, input4, input5])
+        const data = this.dreamMakeAbi.encodeFunctionData("mockFork", [input1, input2, input3, input4, input5])
         const tx = {
             from: param.From,
             to: this.token,

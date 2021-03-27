@@ -237,7 +237,7 @@
                 await getProjectInfo()
                 currentHeight.value = await ApiManager.GetBlockNumber()
                 const abi = new ContractManager(fundAddr.value)
-                if (wcli != undefined) {
+                if (wcli != undefined && wcli.state.connector?.session.connected) {
                     account.value = wcli.state.address
                     myPosition.guarantee = await abi.GuaranteeProjectValue(account.value, projectAddr.value)
                     myPosition.inputCost = await abi.InvestProjectValue(account.value, projectAddr.value)
