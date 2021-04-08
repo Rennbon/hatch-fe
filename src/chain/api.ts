@@ -1,5 +1,6 @@
 import axios, {AxiosInstance} from "axios";
 import {convertAmountFromRawNumber} from "@/chain/bignumber";
+import {ITxData} from "@/chain/types";
 
 const api: AxiosInstance = axios.create({
     baseURL: process.env.VUE_APP_CHAIN_URL,
@@ -56,12 +57,25 @@ async function GetGasPrice(): Promise<string> {
     return result;
 }
 
-async function GetGasLimit(): Promise<string> {
+async function GetEstimateGas(tx: ITxData): Promise<string> {
+    const response = await api.post("",
+        {
+            "jsonrpc": "2.0",
+            "method": "eth_estimateGas",
+            "params": [tx],
+            "id": Number(process.env.VUE_APP_CHAIN_ID)
+        }
+    );
+    const {result} = response.data;
+    return result;
+}
+
+async function GetGasLimit(tx: ITxData): Promise<string> {
     const response = await api.post("",
         {
             "jsonrpc": "2.0",
             "method": "eth_gasPrice",
-            "params": [],
+            "params": [tx],
             "id": Number(process.env.VUE_APP_CHAIN_ID)
         }
     );
@@ -86,7 +100,8 @@ export const ApiManager = {
     GetAccountBalance,
     GetAccountNonce,
     GetGasPrice,
-    GetBlockNumber
+    GetBlockNumber,
+    GetEstimateGas
 }
 
 

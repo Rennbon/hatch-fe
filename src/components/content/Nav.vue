@@ -4,16 +4,15 @@
         <div id="dm-pods">
             <!-- connected start -->
             <div class="dm-pod" v-if="account!=''">
-                <div class="dm-container" @click="toFund(MDToken,'DreamDAO')">
+                <div class="fund-container fund-win" @click="toFund(MDToken,'DreamDAO')">
                     <div class="fund-name">DreamDAO</div>
-                    <div class="fund-percent" style="color: #00EB60">+10%</div>
-                    <div class="fund-inc" style="color: #00EB60">0.123311</div>
+                    <div class="fund-percent" :style="{'color': dreamDao.color}">{{ dreamDao.percent }}%</div>
+                    <div class="fund-inc" :style="{'color': dreamDao.color}">{{ dreamDao.inc }} ETH</div>
                     <div class="fund-amount">{{ convertAmountToCommon(dreamDao.amount) }}</div>
                     <div class="fund-uint">ETH</div>
                 </div>
-                <div class="fund-container" :key="index" v-for="(fund,index) in myFunds"
+                <div class="fund-container fund-win" :key="index" v-for="(fund,index) in myFunds"
                      @click="toFund(fund.token,fund.name)">
-                    <div class="fund-src">Fund</div>
                     <div class="fund-name">{{ fund.name }}</div>
                     <div class="fund-percent" :style="{'color': fund.color}">{{ fund.percent }}%</div>
                     <div class="fund-inc" :style="{'color': fund.color}">
@@ -47,12 +46,12 @@
             <div class="dm-pod" v-if="account===''">
                 <div class="dm-container" @click="toFund(MDToken,'DreamDAO')">
                     <div class="fund-name">DreamDAO</div>
-                    <div class="fund-percent" style="color: #00EB60">+10%</div>
-                    <div class="fund-inc" style="color: #00EB60">0.123311</div>
+                    <div class="fund-percent" :style="{'color': dreamDao.color}">{{ dreamDao.percent }}</div>
+                    <div class="fund-inc" :style="{'color': dreamDao.color}">{{ dreamDao.inc }} ETH</div>
                     <div class="fund-amount">{{ convertAmountToCommon(dreamDao.amount) }}</div>
                     <div class="fund-uint">ETH</div>
                 </div>
-                <div class="fund-container" :key="index" v-for="(fund,index) in otherFunds"
+                <div class="fund-container fund-win" :key="index" v-for="(fund,index) in otherFunds"
                      @click="toFund(fund.token,fund.name)">
                     <div class="fund-src">Fund</div>
                     <div class="fund-name">{{ fund.name }}</div>
@@ -65,8 +64,8 @@
                     <div class="fund-amount">{{ convertAmountToCommon(fund.amount) }}</div>
                     <div class="fund-uint">ETH</div>
                 </div>
-                <div class="fund-container" v-if="reqOtherFunds.more"  @click="getOtherFunds">
-                    <div class="more" >More
+                <div class="fund-container" v-if="reqOtherFunds.more" @click="getOtherFunds">
+                    <div class="more">More
                         <van-icon class="more-icon" name="play"/>
                     </div>
                 </div>
@@ -75,10 +74,11 @@
 
             <van-divider v-if="account!=''" dashed>other Funds</van-divider>
             <div v-if="account!=''" class="dm-pod">
-                <div style="height: 100px;font-family: PingFangSC;font-size: 32px;margin: auto;line-height:100px;" v-if="otherFunds.length===0">
+                <div style="height: 100px;font-family: PingFangSC;font-size: 32px;margin: auto;line-height:100px;"
+                     v-if="otherFunds.length===0">
                     暂无数据
                 </div>
-                <div class="fund-container" :key="index" v-for="(fund,index) in otherFunds"
+                <div class="fund-container fund-win" :key="index" v-for="(fund,index) in otherFunds"
                      @click="toFund(fund.token,fund.name)">
                     <div class="fund-src">Fund</div>
                     <div class="fund-name">{{ fund.name }}</div>
@@ -91,15 +91,16 @@
                     <div class="fund-amount">{{ convertAmountToCommon(fund.amount) }}</div>
                     <div class="fund-uint">ETH</div>
                 </div>
-                <div class="fund-container" v-if="reqOtherFunds.more"  @click="getOtherFunds">
-                    <div class="more" >More
+                <div class="fund-container" v-if="reqOtherFunds.more" @click="getOtherFunds">
+                    <div class="more">More
                         <van-icon class="more-icon" name="play"/>
                     </div>
                 </div>
             </div>
             <van-divider dashed>other Startup</van-divider>
             <div class="dm-pod">
-                <div style="height: 100px;font-family: PingFangSC;font-size: 32px;margin: auto;line-height:100px;" v-if="otherProjects.length===0">
+                <div style="height: 100px;font-family: PingFangSC;font-size: 32px;margin: auto;line-height:100px;"
+                     v-if="otherProjects.length===0">
                     暂无数据
                 </div>
                 <div class="fund-container"
@@ -132,6 +133,9 @@
     // eslint-disable-next-line no-unused-vars
     import {WClient} from "../../chain/walletconnect";
     import {convertAmountToCommon, greaterThan} from "@/chain/bignumber"
+    // @ts-ignore
+    import useStore from "@/store";
+
 
     class ReqMyPage {
         //1:funds still exist 2:project
@@ -186,21 +190,22 @@
             greaterThan
         },
         setup(props, context) {
+            const store = useStore()
             const account = ref("")
             const MDToken = inject<string>("makeDream", "")
             const wcli = inject<WClient>("walletConnect")
 
 
             const myFunds: Funds[] = reactive([])
-            const dreamDao = reactive({amount: "0"})
+            const dreamDao = reactive({amount: "0", percent: "0%", inc: "0", color: ""})
             //const myFunds = reactive({list: []})
 
             const myProjects: Project[] = reactive([])
-            onMounted(() => {
-                if (wcli != undefined && wcli.state.connector?.session.connected) {
+            onMounted(async () => {
+                if (wcli != undefined && store.state.connected) {
+                    await wcli.walletConnectInit()
                     account.value = wcli.state.address
                 }
-
                 getMyPage()
                 getOtherFunds()
                 getOtherProjects()
@@ -220,74 +225,87 @@
                         "sign": reqMyPage.sign,
                         "offset": reqMyPage.offset
                     }).then(res => {
-                    if (reqMyPage.sign === 0 && reqMyPage.offset == 0) {
-                        dreamDao.amount = res.data.amount
-                    }
-                    let fundsLen = res.data.funds.length
-                    let projectLen = res.data.projects.length
-                    if (fundsLen === 0 && projectLen === 0) {
-                        reqMyPage.more = false
-                        return
-                    }
-                    if (reqMyPage.sign === 0 || reqMyPage.sign === 1) {
-                        for (let i = 0; i < fundsLen; i++) {
-                            let fundTmp = res.data.funds[i]
-                            let cmp = greaterThan(fundTmp.increment, 0)
-                            if (cmp) {
-                                fundTmp.color = "#00EB60"
+                        if (reqMyPage.sign === 0 && reqMyPage.offset == 0) {
+                            dreamDao.amount = res.data.amount
+                            dreamDao.percent = res.data.percent
+                            dreamDao.inc = res.data.increment
+                            if (dreamDao.inc === "0" || dreamDao.inc === "") {
+                                dreamDao.color = "#666666"
+                            } else if (greaterThan(dreamDao.inc, 0)) {
+                                dreamDao.color = "#00EB60"
                             } else {
-                                fundTmp.color = "#EC5A4C"
+                                dreamDao.color = "#EC5A4C"
                             }
-                            myFunds.push(fundTmp)
+
                         }
-                        let nextSign = false
-                        if (reqMyPage.offset === 0) {
-                            if (fundsLen < 7) {
-                                nextSign = true
+                        let fundsLen = res.data.funds.length
+                        let projectLen = res.data.projects.length
+                        if (fundsLen === 0 && projectLen === 0) {
+                            reqMyPage.more = false
+                            return
+                        }
+                        if (reqMyPage.sign === 0 || reqMyPage.sign === 1) {
+                            for (let i = 0; i < fundsLen; i++) {
+                                let fundTmp = res.data.funds[i]
+                                if (fundTmp.increment === "0" || fundTmp.increment === "") {
+                                    fundTmp.color = "#666666"
+                                } else if (greaterThan(fundTmp.increment, 0)) {
+                                    fundTmp.color = "#00EB60"
+                                } else {
+                                    fundTmp.color = "#EC5A4C"
+                                }
+                                myFunds.push(fundTmp)
                             }
-                        } else {
-                            if (fundsLen < 9) {
-                                nextSign = true
+                            let nextSign = false
+                            if (reqMyPage.offset === 0) {
+                                if (fundsLen < 7) {
+                                    nextSign = true
+                                }
+                            } else {
+                                if (fundsLen < 9) {
+                                    nextSign = true
+                                }
+                            }
+                            if (nextSign) {
+                                reqMyPage.sign = 2
+                                reqMyPage.offset = 0
+                            } else {
+                                reqMyPage.sign = 1
+                                reqMyPage.offset = reqMyPage.offset + fundsLen
                             }
                         }
-                        if (nextSign) {
+                        if (projectLen > 0) {
                             reqMyPage.sign = 2
-                            reqMyPage.offset = 0
-                        } else {
-                            reqMyPage.sign = 1
-                            reqMyPage.offset = reqMyPage.offset + fundsLen
+                            reqMyPage.offset += projectLen
+                            for (let i = 0; i < projectLen; i++) {
+                                let proTmp = res.data.projects[i]
+                                let cc = calcCss(proTmp.status)
+                                proTmp.status = cc.status
+                                proTmp.font = cc.font
+                                proTmp.bg = cc.bg
+                                myProjects.push(proTmp)
+                            }
+                            if (projectLen < 9) {
+                                reqMyPage.more = false
+                            }
                         }
-                    }
-                    if (projectLen > 0) {
-                        reqMyPage.sign = 2
-                        reqMyPage.offset += projectLen
-                        for (let i = 0; i < projectLen; i++) {
-                            let proTmp = res.data.projects[i]
-                            let cc = calcCss(proTmp.status)
-                            proTmp.status = cc.status
-                            proTmp.font = cc.font
-                            proTmp.bg = cc.bg
-                            myProjects.push(proTmp)
-                        }
-                        if (projectLen < 9) {
+                        if (res.data.remain === false) {
                             reqMyPage.more = false
                         }
+                        console.log(reqMyPage)
                     }
-                    if (res.data.remain === false) {
-                        reqMyPage.more = false
-                    }
-                    console.log(reqMyPage)
-                }).catch(err => {
+                ).catch(err => {
                     Notify({type: 'danger', message: err});
                 })
             }
 
 
-            const otherFunds : Funds[] = reactive([])
-            const reqOtherFunds= reactive({
+            const otherFunds: Funds[] = reactive([])
+            const reqOtherFunds = reactive({
                 offset: 0,
                 more: true,
             })
+
             function getOtherFunds() {
                 BackendApi.getOtherFunds({
                     "account": account.value,
@@ -296,8 +314,10 @@
                     let projectLen = res.data.array.length
                     for (let i = 0; i < projectLen; i++) {
                         let fundTmp = res.data.array[i]
-                        let cmp = greaterThan(fundTmp.increment, 0)
-                        if (cmp) {
+
+                        if (fundTmp.increment === "0" || fundTmp.increment === "") {
+                            fundTmp.color = "#666666"
+                        } else if (greaterThan(fundTmp.increment, 0)) {
                             fundTmp.color = "#00EB60"
                         } else {
                             fundTmp.color = "#EC5A4C"
@@ -316,10 +336,6 @@
                     }
                 )
             }
-
-
-
-
 
 
             const reqOtherProjects = reactive({
@@ -431,11 +447,11 @@
                 account,
                 toFund,
                 toProject,
-                getMyPage,getOtherProjects,getOtherFunds,
+                getMyPage, getOtherProjects, getOtherFunds,
                 dreamDao,
                 MDToken,
-                otherProjects, myProjects, myFunds,otherFunds,
-                reqOtherProjects, reqMyPage,reqOtherFunds
+                otherProjects, myProjects, myFunds, otherFunds,
+                reqOtherProjects, reqMyPage, reqOtherFunds
             }
         }
     })
@@ -484,7 +500,7 @@
         border-radius: 20px;
         box-shadow: 0 6px 10px rgba(0, 0, 0, .10);
         position: relative;
-        background-image: url("/img/2x/win-dm.png");
+        background-image: url("/img/2x/win-fund.png");
         background-size: contain;
         background-repeat: no-repeat;
         background-position: bottom;
@@ -497,6 +513,14 @@
         border-radius: 20px;
         box-shadow: 0 6px 10px rgba(0, 0, 0, .10);
         position: relative;
+
+    }
+
+    .fund-win {
+        background-image: url("/img/2x/win-fund.png");
+        background-size: 180px 60px;
+        background-repeat: no-repeat;
+        background-position: bottom;
     }
 
     .dm-pro {
@@ -533,35 +557,42 @@
 
     .fund-name {
         position: relative;
-        font-size: 32px;
-        top: 32px;
+        color: #3682FF;
+        font-size: 24px;
+        height: 24px;
+        line-height: 24px;
+        top: 28px;
         font-weight: bold;
     }
 
     .fund-percent {
-        font-size: 20px;
         position: relative;
-        top: 28px;
+        height: 24px;
+        font-size: 32px;
+        line-height: 24px;
+        top: 36px;
         font-weight: 500;
     }
 
     .fund-inc {
         font-size: 20px;
         position: relative;
-        top: 22px;
+        top: 36px;
         font-weight: 500;
     }
 
     .fund-amount {
-        font-size: 24px;
+        font-size: 20px;
         position: relative;
-        top: 20px;
+        color: white;
+        top: 54px;
     }
 
     .fund-uint {
-        font-size: 18px;
+        font-size: 20px;
         position: relative;
-        top: 12px;
+        top: 46px;
+        color: white;
     }
 
     .pro-name {

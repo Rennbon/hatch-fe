@@ -1,10 +1,10 @@
 <template>
-    <div id="main-border">
+    <div id="fund-border" class="infinite-list" v-infinite-scroll="getProjectsByFund" style="overflow:auto">
         <div id="fund-info">
-            <div id="color-border">
+            <div id="color-border" :style="{'background-color':dailyFund.color}">
                 <img id="fund-bg" src="/img/2x/fund-bg.png"/>
-                <div id="daily-percent">+10%</div>
-                <div id="daily-inc">6.7 ETH</div>
+                <div id="daily-percent">{{ dailyFund.percent }}</div>
+                <div id="daily-inc">{{ dailyFund.inc }} ETH</div>
                 <div id="cb-bottom">
                     <div class="cb-flex">
                         <div class="cb-flex-1">{{ FundInfo.totalDeposit }}</div>
@@ -61,7 +61,8 @@
             </div>
         </div>
         <div id="project-list">
-            <div :key="index" v-for="(pro,index) in projects">
+            <div :key="index" class="infinite-list-item" @click="toProject(pro.token,pro.symbol)"
+                 v-for="(pro,index) in projects">
                 <div class="pro-border">
                     <div class="pro-line"></div>
                     <div class="pro-star"></div>
@@ -105,89 +106,8 @@
                                 {{ pro.stageFont }}
                             </div>
                         </div>
-                        <!--
-                         <van-button type="info" @click="SubmitToProject(pro)">{{ pro.stage }}</van-button>
-                        -->
                     </div>
                 </div>
-                <!--<div class="pro-border">
-                    <div class="pro-line"></div>
-                    <div class="pro-star"></div>
-                    <div class="pro-name">AAA</div>
-                    <div class="pro-info">
-                        <div class="pro-info-left">
-                            <div>
-                                <div class="pro-info-title">Invest Price</div>
-                                <div class="pro-info-val">0.001 ETH</div>
-                            </div>
-                            <div>
-                                <div class="pro-info-title">Target Price</div>
-                                <div class="pro-info-val">0.002 ETH</div>
-                            </div>
-                            <div>
-                                <div class="pro-info-title"> Launch Block</div>
-                                <div class="pro-info-val">420001</div>
-                            </div>
-                        </div>
-                        <div class="pro-info-right">
-                            <div>
-                                <div class="pro-info-title">Invest Price</div>
-                                <div class="pro-info-val">0.001 ETH</div>
-                            </div>
-                            <div>
-                                <div class="pro-info-title">Target Price</div>
-                                <div class="pro-info-val">0.002 ETH</div>
-                            </div>
-                            <div>
-                                <div class="pro-info-title"> Launch Block</div>
-                                <div class="pro-info-val">420001</div>
-                            </div>
-                        </div>
-                        <button class="pro-info-bt">担保</button>
-                        &lt;!&ndash;
-                         <van-button type="info" @click="SubmitToProject(pro)">{{ pro.stage }}</van-button>
-                        &ndash;&gt;
-                    </div>
-                </div>
-                <div class="pro-border">
-                    <div class="pro-line"></div>
-                    <div class="pro-star"></div>
-                    <div class="pro-name">AAA</div>
-                    <div class="pro-info">
-                        <div class="pro-info-left">
-                            <div>
-                                <div class="pro-info-title">Invest Price</div>
-                                <div class="pro-info-val">0.001 ETH</div>
-                            </div>
-                            <div>
-                                <div class="pro-info-title">Target Price</div>
-                                <div class="pro-info-val">0.002 ETH</div>
-                            </div>
-                            <div>
-                                <div class="pro-info-title"> Launch Block</div>
-                                <div class="pro-info-val">420001</div>
-                            </div>
-                        </div>
-                        <div class="pro-info-right">
-                            <div>
-                                <div class="pro-info-title">Invest Price</div>
-                                <div class="pro-info-val">0.001 ETH</div>
-                            </div>
-                            <div>
-                                <div class="pro-info-title">Target Price</div>
-                                <div class="pro-info-val">0.002 ETH</div>
-                            </div>
-                            <div>
-                                <div class="pro-info-title"> Launch Block</div>
-                                <div class="pro-info-val">420001</div>
-                            </div>
-                        </div>
-                        <button class="pro-info-bt">担保</button>
-                        &lt;!&ndash;
-                         <van-button type="info" @click="SubmitToProject(pro)">{{ pro.stage }}</van-button>
-                        &ndash;&gt;
-                    </div>
-                </div>-->
             </div>
         </div>
         <!--   <div id="fi-desc">
@@ -224,11 +144,12 @@
     import {defineComponent, inject, onMounted, reactive, ref} from "vue";
     import {ContractManager} from "@/chain/erc20";
     // eslint-disable-next-line no-unused-vars
-    import {IFundArgs, IOperationSlot, IPageParam, SubmitType} from "../../pgcommon/common";
+    import {IFundArgs, IOperationSlot, IPageParam, IProjectArgs, SubmitType} from "../../pgcommon/common";
     // eslint-disable-next-line no-unused-vars
     import {WClient} from "@/chain/walletconnect";
-    import {convertAmountToCommon} from "@/chain/bignumber"
+    import {convertAmountToCommon, greaterThan} from "@/chain/bignumber"
     import {BackendApi} from "@/chain/backendApi";
+    // eslint-disable-next-line no-unused-vars
     import {Notify} from "vant";
 
     interface Project {
@@ -252,7 +173,7 @@
         name: "Fund",
         components: {},
         methods: {
-            convertAmountToCommon
+            convertAmountToCommon,
         },
         setup(props, context) {
             const wcli = inject<WClient>("walletConnect")
@@ -304,10 +225,35 @@
                 FundInfo.countInvests = await abi.CountInvests()
                 FundInfo.countProjects = await abi.CountProjects()
                 FundInfo.totalFundsToken = await abi.TotalFundToken()
-
+                getDailyFund()
 
             })
 
+
+            const dailyFund = reactive({
+                inc: "0",
+                percent: "0%",
+                color: "",
+            })
+
+            function getDailyFund() {
+                BackendApi.getDailyFund({
+                    "fund": fundAddr.value,
+                }).then(res => {
+                        dailyFund.inc = res.data.increment
+                        dailyFund.percent = res.data.percent
+                        if (dailyFund.inc === "0" || dailyFund.inc === "") {
+                            dailyFund.color = "#666666"
+                        } else if (greaterThan(dailyFund.inc, 0)) {
+                            dailyFund.color = "#00EB60"
+                        } else {
+                            dailyFund.color = "#EC5A4C"
+                        }
+                    }
+                ).catch(err => {
+                    Notify({type: 'danger', message: err});
+                })
+            }
 
             // get
             const reqProjectsByFund = reactive({
@@ -320,7 +266,9 @@
             const projects: Project[] = reactive([])
 
             function getProjectsByFund() {
-
+                if (reqProjectsByFund.more === false) {
+                    return
+                }
                 BackendApi.getProjectsByFund({
                     "fund": fundAddr.value,
                     "pageIndex": reqProjectsByFund.pageIndex,
@@ -384,6 +332,21 @@
                 let p: IPageParam = {
                     Name: "CreateProject",
                     Title: "融资申请",
+                    Args: args,
+                    NewPage: true,
+                }
+                context.emit("changeView", p)
+            }
+
+            function toProject(token: string, symbol: string) {
+                let args: IProjectArgs = {
+                    ProjectAddress: token,
+                    FundAddress: fundAddr.value,
+                }
+
+                let p: IPageParam = {
+                    Name: "Project",
+                    Title: symbol,
                     Args: args,
                     NewPage: true,
                 }
@@ -456,11 +419,14 @@
                 SubmitWithdrawETH,
                 SubmitWithdrawToken,
                 SubmitToProject,
-                toCreateProject,
+                reqProjectsByFund,
+                getProjectsByFund,
+                toCreateProject, toProject,
                 MyDeposit,
                 MyFundToken,
                 Login,
-                projects
+                projects,
+                dailyFund
             }
         }
     })
@@ -468,10 +434,11 @@
 </script>
 
 <style scoped>
-    #main-border {
+    #fund-border {
         height: calc(100vh - 300px - 200px);
         overflow-y: scroll;
-        overflow-x: hidden;
+        overflow-x: hidden !important;
+        width: 100%;
         padding-bottom: 200px;
     }
 
@@ -481,7 +448,6 @@
     #color-border {
         position: relative;
         height: 274px;
-        background-color: #00EB60;
     }
 
     #daily-percent {
@@ -740,7 +706,8 @@
         padding-left: 30px;
         z-index: 100;
     }
-    .pro-info-border{
+
+    .pro-info-border {
         height: 100px;
         width: 100px;
         border-radius: 10px;
@@ -748,9 +715,10 @@
         top: 70px;
         right: 14px;
     }
+
     .pro-info-bt {
         background: url("/img/2x/bt-pro.png") no-repeat bottom;
-        background-size:100% auto;
+        background-size: 100% auto;
         width: inherit;
         height: inherit;
         line-height: 100px;

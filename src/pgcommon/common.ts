@@ -55,26 +55,37 @@ export interface ISetProjectParam {
 export interface IForkFundParam {
     From: string
     FundSymbols: string
-    FundIntroduction:string
-    PerAmount:string
-    Durations:string //half life
-    TokenAmount:string
-    GuaranteeReward:string
-    GuaranteeFee:string
-    ProjectTime:string
-    InvestTime:string
-    SellTime:string
-    DonateFee:string
+    FundIntroduction: string
+    PerAmount: string
+    Durations: string //half life
+    TokenAmount: string
+    GuaranteeReward: string
+    GuaranteeFee: string
+    ProjectTime: string
+    InvestTime: string
+    SellTime: string
+    DonateFee: string
 }
 
 export enum SubmitType {
     Save,
     WithDraw,
     WithDrawFundToken,
-    Invest,
-    Sell,
     Guarantee,
-    Exit,
+    DisGuarantee,
+    Invest,
+    DisInvest,
+    Sell,
 
 }
 
+
+export enum ProjectStatus {
+    Guarantee = 1,
+    Invest = 2,
+    GuaranteeAndInvest = 3,
+    FullQuota = 4,
+    Sell = 5,
+    End = 6,
+
+}

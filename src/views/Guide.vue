@@ -2,10 +2,10 @@
     <div id="main-border">
         <NavBar ref="RefNavBar"></NavBar>
         <div id="guide-border">
-            <div id="tmp-container">
+            <div id="tmp-container" @click="toHomePage">
                 <div class="container-border">
                     <div id="dm-name">Dream DAO</div>
-                    <div id="dm-amount">1000.23</div>
+                    <div id="dm-amount">{{ amount }}</div>
                     <div id="dm-unit">ETH</div>
                 </div>
                 <template :key="index" v-for="(t,index) in tickers">
@@ -30,6 +30,7 @@
     import P7 from "@/components/guide/P7.vue"
     import Ticker from "@/components/guide/Ticker.vue"
     import NavBar from "@/components/bar/NavBar";
+    import {ContractManager} from "@/chain/erc20";
 
     export default {
         name: 'Guide',
@@ -44,16 +45,18 @@
             Ticker,
             NavBar
         },
-        mounted() {
+        async mounted() {
             this.$refs.RefNavBar.setTitle("使用指南", 1)
+
+            const abi = new ContractManager()
+            this.amount = await abi.TotalDeposit()
         },
         data() {
             return {
                 currentView: P1,
                 currentIndex: '1',
                 tickers: [],
-
-
+                amount: "",
             }
         },
         methods: {
@@ -153,6 +156,11 @@
                         this.currentView = P7;
                         break
                 }
+            },
+            toHomePage(){
+                this.$router.push({
+                    name: 'Page'
+                })
             }
         }
     }
@@ -164,7 +172,6 @@
         overflow: hidden;
         position: fixed;
     }
-
 
 
     #tmp-container {

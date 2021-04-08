@@ -21,6 +21,12 @@
     // eslint-disable-next-line no-unused-vars
     import {WClient} from "@/chain/walletconnect";
 
+    interface wallet {
+        account: string
+        connected: boolean
+        balance: string
+    }
+
     export default defineComponent({
         name: "Bottom",
         setup() {
@@ -33,25 +39,35 @@
 
             watch(
                 (): boolean => {
-                    return wcli?.state.connected === true
+                    return store.state.connected
                 },
-                value => {
+                (conn) => {
                     // 当otherName中的 firstName或者lastName发生变化时，都会进入这个函数
-                    console.log("connect status :", value)
-                    connectStatus.value = value
+                    connectStatus.value = conn
+                    if (conn === true) {
+                        balance.value = store.state.balance
+                        account.value = store.state.account
+                    }
                 }
+
+                /* [() => store.state],
+                 (value) => {
+                     let st = value as state
+                     connectStatus.value = st.connected
+                     account.value = st.account
+                     balance.value = st.balance
+
+                 }*/
             )
             onMounted(async () => {
                 // when refresh reload walletconnect state
                 if (store.state.connected && !connectStatus.value) {
                     await connectWallet()
                 }
-                console.log("aaaa", wcli?.state.connector?.session.connected)
                 if (wcli != undefined && wcli.state.connector?.session.connected) {
                     connectStatus.value = true
                     account.value = wcli.state.address
                     balance.value = wcli.state.asset
-                    console.log("bbbbbbbbb", wcli.state.asset)
                 }
             })
 

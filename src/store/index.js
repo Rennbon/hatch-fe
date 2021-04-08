@@ -8,7 +8,9 @@ let ls = new SecureLS({isCompression: false});
 
 export const store = new Vuex.Store({
     state: {
-        connected: false
+        connected: false,
+        account: "",
+        balance: "",
     },
     plugins: [createPersistedState({
         storage: {
@@ -20,8 +22,16 @@ export const store = new Vuex.Store({
     })],
     mutations: {
         updateConnected: (state, connected) => {
+            console.log("store connected", connected)
             state.connected = connected
-
+        },
+        updateAccount: (state, account) => {
+            console.log("store account", account)
+            state.account = account
+        },
+        updateBalance: (state, balance) => {
+            console.log("store balance", balance)
+            state.balance = balance
         }
     }
 });

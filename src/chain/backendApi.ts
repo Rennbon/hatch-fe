@@ -28,7 +28,7 @@ export const BackendApi = {
                 params: params
             })
     },
-    getOtherFunds(params: object){
+    getOtherFunds(params: object) {
         return apiManager.get(
             '/otherFunds', {
                 params: params
@@ -58,4 +58,17 @@ export const BackendApi = {
                 params: params
             })
     },
+    getProjectFirstMethodHeight(params: Object) {
+        return apiManager.get(
+            '/projectFirstMethodHeight', {
+                params: params
+            })
+    },
+    getDailyFund(params: Object) {
+        return apiManager.get(
+            '/dailyFund', {
+                params: params
+            })
+
+    }
 }

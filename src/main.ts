@@ -5,6 +5,9 @@ import Vant from 'vant'
 import 'vant/lib/index.css'
 // @ts-ignore
 import {store} from './store/index.js'
+import ElementPlus from 'element-plus';
+
+
 
 function setRem() {
     // 320 默认大小16px; 320px = 20rem ;每个元素px基础上/16
@@ -49,6 +52,9 @@ document.documentElement.addEventListener('touchend', function (event) {
 // @ts-ignore
 const app = createApp(App)
 app.use(Vant)
+app.use(ElementPlus)
 app.use(router)
 app.use(store)
 app.mount('#app')
+
+

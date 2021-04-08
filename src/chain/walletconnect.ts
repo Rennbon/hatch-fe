@@ -2,9 +2,10 @@ import WalletConnect from "@walletconnect/client";
 import QRCodeModal from "@walletconnect/qrcode-modal";
 import {IInternalEvent} from "@walletconnect/types";
 import {Contract} from "ethers";
-import {GetTx} from "../mock/mock_tx"
 import {ApiManager} from "./api";
 import {convertAmountFromRawNumber} from "@/chain/bignumber";
+// @ts-ignore
+import {store} from "@/store";
 
 interface ContactMap {
     [index: string]: Contract
@@ -49,23 +50,20 @@ export class WClient {
         const bridge = "https://bridge.walletconnect.org"
         const connector = new WalletConnect({bridge, qrcodeModal: QRCodeModal})
         this.state.connector = connector
-        console.log("walletConnectInit")
-        //await this.fillState(connector)
         if (!connector.connected) {
+            console.log("wallet ws retry")
             await connector.createSession()
         }
         await this.subscribeToEvents()
     }
-    public sendMockTx = async () => {
-        const {connector, address, chainId} = this.state;
-        if (!connector) {
-            return ""
-        }
-        console.log("sendMockTx=> address:", address)
-        let tx = await GetTx(address)
-        let res = await connector.sendTransaction(tx)
-        return res
-    }
+
+    /*  public heartbeat() {
+          if (this.state.connected) {
+              this.state.connector?.sendCustomRequest(request:)
+
+          }
+      }*/
+
     private subscribeToEvents = async () => {
         const {connector} = this.state
         if (!connector) {
@@ -125,6 +123,8 @@ export class WClient {
         this.state.accounts = accounts
         this.state.address = address
         await this.getAccountBalance()
+        store.commit("updateAccount", address)
+        store.commit("updateConnected", true)
     }
     private onSessionUpdate = async (accounts: string[], chainId: number) => {
         const address = accounts[0];
@@ -132,6 +132,7 @@ export class WClient {
         this.state.accounts = accounts
         this.state.address = address
         await this.getAccountBalance();
+        store.commit("updateAccount", address)
     }
 
     public getAccountBalance = async () => {
@@ -145,7 +146,7 @@ export class WClient {
             this.state.address = address
             // @ts-ignore
             this.state.asset = balance.match(/^\d+(?:\.\d{0,5})?/)[0]
-
+            store.commit("updateBalance", this.state.asset)
         } catch (error) {
             console.error(error)
             this.state.fetching = false
@@ -153,6 +154,8 @@ export class WClient {
     }
     private onDisconnect = () => {
         this.resetApp();
+        store.commit("updateConnected", false)
+        store.commit("updateAccount", "")
     }
     public killSession = async () => {
         const {connector} = this.state;

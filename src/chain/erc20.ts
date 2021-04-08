@@ -11,7 +11,7 @@ import {
     subtract
 } from "./bignumber";
 import {ITxData} from "./types";
-import {IForkFundParam, IMyAsset, ISetProjectParam} from "@/pgcommon/common";
+import {IForkFundParam, IMyAsset, ISetProjectParam, ProjectStatus} from "@/pgcommon/common";
 
 interface INumberAndAddress {
     Number: string;
@@ -29,12 +29,14 @@ export class ContractManager {
     dreamTokenContract: Contract;
     token: string;
     chainId: number;
+    gasLimit: number;
 
 
     constructor(fundsAddr?: string) {
         if (fundsAddr == undefined || fundsAddr === "") {
             fundsAddr = String(process.env.VUE_APP_DREAM_MAKE)
         }
+        this.gasLimit = Number(process.env.VUE_APP_GAS_LIMIT)
         console.log(process.env.VUE_APP_CHAIN_URL)
         this.provider = new ethers.providers.JsonRpcProvider(String(process.env.VUE_APP_CHAIN_URL))
         //String(process.env.VUE_APP_DREAM_MAKE)
@@ -52,7 +54,7 @@ export class ContractManager {
         const gasPrice = await ApiManager.GetGasPrice();
 
 
-        const _gasLimit = 210000;
+        const _gasLimit = this.gasLimit;
         const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
 
         const _value = convertAmountToRawNumber(val);
@@ -76,7 +78,7 @@ export class ContractManager {
         const nonce = await ApiManager.GetAccountNonce(from);
         const gasPrice = await ApiManager.GetGasPrice();
 
-        const _gasLimit = 210000;
+        const _gasLimit = this.gasLimit;
         const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
 
         const _value = 0;
@@ -103,7 +105,7 @@ export class ContractManager {
         const nonce = await ApiManager.GetAccountNonce(from);
         const gasPrice = await ApiManager.GetGasPrice();
 
-        const _gasLimit = 210000;
+        const _gasLimit = this.gasLimit;
         const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
 
         const _value = 0;
@@ -202,25 +204,24 @@ export class ContractManager {
 
     public async SetProject(param: ISetProjectParam): Promise<ITxData> {
         const nonce = await ApiManager.GetAccountNonce(param.From);
-        const gasPrice = await ApiManager.GetGasPrice();
-        const _gasLimit = 210000;
+        //const gasPrice = await ApiManager.GetGasPrice();
+        const gasPrice = "0x3b9aca00"
+        const _gasLimit = this.gasLimit;
         const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
 
         const _value = 0;
         const value = sanitizeHex(convertStringToHex(_value));
 
         const input1 = param.Token
-
-
         const input2 = utils.parseEther(param.SellPrice)
         const input3 = utils.parseEther(param.SoftCap)
         const input4 = utils.parseEther(param.HardCap)
         const input5 = utils.parseEther(param.TargetPrice)
-        const input6 = convertStringToHex(param.SetupHeight)
+        const input6 = param.SetupHeight
         const input7 = [param.Web, param.WhitePaper]
 
         const data = this.dreamMakeAbi.encodeFunctionData("setProject", [input1, input2, input3, input4, input5, input6, input7])
-        const tx = {
+        let tx = {
             from: param.From,
             to: this.token,
             nonce,
@@ -228,14 +229,17 @@ export class ContractManager {
             gasLimit,
             value,
             data,
+            gas: "0x0"
         }
+        let gas = await ApiManager.GetEstimateGas(tx)
+        tx.gas = gas
         return tx
     }
 
     public async SellProject(from: string, token: string, amount: string): Promise<ITxData> {
         const nonce = await ApiManager.GetAccountNonce(from);
         const gasPrice = await ApiManager.GetGasPrice();
-        const _gasLimit = 210000;
+        const _gasLimit = this.gasLimit;
         const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
 
         const _value = 0;
@@ -258,7 +262,7 @@ export class ContractManager {
     public async InvestProject(from: string, token: string, amount: string): Promise<ITxData> {
         const nonce = await ApiManager.GetAccountNonce(from,);
         const gasPrice = await ApiManager.GetGasPrice();
-        const _gasLimit = 210000;
+        const _gasLimit = this.gasLimit;
         const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
 
         const _value = 0;
@@ -278,10 +282,33 @@ export class ContractManager {
         return tx
     }
 
+    public async DisInvestProject(from: string, token: string, amount: string): Promise<ITxData> {
+        const nonce = await ApiManager.GetAccountNonce(from,);
+        const gasPrice = await ApiManager.GetGasPrice();
+        const _gasLimit = this.gasLimit;
+        const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
+
+        const _value = 0;
+        const value = sanitizeHex(convertStringToHex(_value));
+
+        const input = utils.parseEther(amount)
+        const data = this.dreamMakeAbi.encodeFunctionData("revocationInvest", [token, input])
+        const tx = {
+            from,
+            to: this.token,
+            nonce,
+            gasPrice,
+            gasLimit,
+            value,
+            data,
+        }
+        return tx
+    }
+
     public async GuaranteeProject(from: string, token: string, amount: string): Promise<ITxData> {
         const nonce = await ApiManager.GetAccountNonce(from);
         const gasPrice = await ApiManager.GetGasPrice();
-        const _gasLimit = 210000;
+        const _gasLimit = this.gasLimit;
         const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
 
         const _value = 0;
@@ -290,6 +317,30 @@ export class ContractManager {
         console.log(amount)
         const input = utils.parseEther(amount)
         const data = this.dreamMakeAbi.encodeFunctionData("guaranteeProject", [token, input])
+        const tx = {
+            from,
+            to: this.token,
+            nonce,
+            gasPrice,
+            gasLimit,
+            value,
+            data,
+        }
+        return tx
+    }
+
+    public async DisGuaranteeProject(from: string, token: string, amount: string): Promise<ITxData> {
+        const nonce = await ApiManager.GetAccountNonce(from);
+        const gasPrice = await ApiManager.GetGasPrice();
+        const _gasLimit = this.gasLimit;
+        const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
+
+        const _value = 0;
+        const value = sanitizeHex(convertStringToHex(_value));
+
+        console.log(amount)
+        const input = utils.parseEther(amount)
+        const data = this.dreamMakeAbi.encodeFunctionData("revocationGuarantee", [token, input])
         const tx = {
             from,
             to: this.token,
@@ -349,7 +400,7 @@ export class ContractManager {
     public async ForkFund(param: IForkFundParam): Promise<ITxData> {
         const nonce = await ApiManager.GetAccountNonce(param.From);
         const gasPrice = await ApiManager.GetGasPrice();
-        const _gasLimit = 210000;
+        const _gasLimit = this.gasLimit;
         const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
 
         const _value = 0;
@@ -386,11 +437,32 @@ export class ContractManager {
         return tx
     }
 
+    public async ProjectStatus(token: string): Promise<ProjectStatus> {
+        let res = await this.dreamMakeContract.functions.projectStatus(token)
+        console.log("erc20 project status", res)
+        switch (res[0]) {
+            case "Only Guarantee":
+                return ProjectStatus.Guarantee
+            case "Guarantee And Invest":
+                return ProjectStatus.GuaranteeAndInvest
+            case "Only Invest":
+                return ProjectStatus.Invest
+            case "Full Quota":
+                return ProjectStatus.FullQuota
+            case "Sell Project":
+                return ProjectStatus.Sell
+            case "Project End":
+                return ProjectStatus.End
+            default:
+                return ProjectStatus.End
+        }
+    }
+
 
     public async UnlockDream(from: string, amount: string): Promise<ITxData> {
         const nonce = await ApiManager.GetAccountNonce(from);
         const gasPrice = await ApiManager.GetGasPrice();
-        const _gasLimit = 21000;
+        const _gasLimit = this.gasLimit;
         const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
 
         const _value = 0;
@@ -414,7 +486,7 @@ export class ContractManager {
     public async ClearOut(from: string, token: string): Promise<ITxData> {
         const nonce = await ApiManager.GetAccountNonce(from);
         const gasPrice = await ApiManager.GetGasPrice();
-        const _gasLimit = 21000;
+        const _gasLimit = this.gasLimit;
         const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
 
         const _value = 0;

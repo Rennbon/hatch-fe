@@ -35,7 +35,7 @@
         },
         setup() {
             const btLabel = ref("不连接钱包直接阅览")
-            const wcli = inject < WClient > ("walletConnect")
+            const wcli = inject<WClient>("walletConnect")
             onMounted(() => {
                 if (wcli != undefined && wcli.state.connector != null && wcli.state.connector.session != null) {
                     if (wcli.state.connector.session.connected) {

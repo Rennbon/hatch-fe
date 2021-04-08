@@ -8,7 +8,7 @@
                        :rules="[{ pattern: /^([1-9]\d{0,9}|0)(\.\d{1,5})?$/, required:true, message: '格式不正确' }]"
                        placeholder="请输入金额"/>
             <div id="uint">单位: ETH</div>
-            <button id="op-bt" @click="SubmitMethod">提交</button>
+            <van-button loading-type="spinner" @click="SubmitMethod">提交</van-button>
         </div>
     </van-action-sheet>
 </template>
@@ -57,8 +57,13 @@
                         Title.value = "担保"
                         break
                     case SubmitType.Sell:
+                        Title.value = "卖出"
                         break
-                    case SubmitType.Exit:
+                    case SubmitType.DisGuarantee:
+                        Title.value = "撤销担保"
+                        break
+                    case SubmitType.DisInvest:
+                        Title.value = "撤销投资"
                         break
                     default:
                         break
@@ -86,6 +91,12 @@
                         break
                     case SubmitType.Invest:
                         tx = await abi.InvestProject(account.value, param.Project, Amount.value)
+                        break
+                    case SubmitType.DisGuarantee:
+                        tx = await abi.DisGuaranteeProject(account.value, param.Project, Amount.value)
+                        break
+                    case SubmitType.DisInvest:
+                        tx = await abi.DisInvestProject(account.value, param.Project, Amount.value)
                         break
                     default:
                         throw new Error("异常方法")
@@ -135,14 +146,18 @@
         position: relative;
     }
 
-    #op-bt {
+    /deep/ .van-button div {
+        color: white;
+    }
+
+    /deep/ .van-button {
         position: relative;
         margin-top: 20px;
         height: 75px;
         width: 625px;
         background-color: #0575DF;
         border: 0px;
-        color: white;
+        color: white !important;
         font-size: 40px;
         font-family: PingFangSC;
         font-weight: bold;

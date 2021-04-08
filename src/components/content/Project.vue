@@ -1,5 +1,5 @@
 <template>
-    <div id="pro-main">
+    <div id="pro-main" class="infinite-list" v-infinite-scroll="getProjectLog" style="overflow:auto">
         <div id="pro-faker-div"></div>
         <div id="pro-info">
             <div id="pro-info-top">
@@ -81,66 +81,58 @@
                 </div>
                 <div id="pro-my-value" class="pro-my-ticket">
                     <div class="pro-my-title">价值</div>
-                    <div class="pro-my-content">{{ myPosition.value }}</div>
+                    <div class="pro-my-content">{{ myPosition.value }} ETH</div>
                 </div>
                 <div class="pro-line" id="line1"></div>
                 <div id="pro-my-profits" class="pro-my-ticket">
                     <div class="pro-my-title">盈利</div>
-                    <div class="pro-my-content">{{ myPosition.profits }}</div>
+                    <div class="pro-my-content">{{ myPosition.profits }} ETH</div>
                 </div>
                 <div class="pro-line" id="line2"></div>
                 <div id="pro-my-input" class="pro-my-ticket">
                     <div class="pro-my-title">投入成本</div>
-                    <div class="pro-my-content">{{ myPosition.inputCost }}</div>
+                    <div class="pro-my-content">{{ myPosition.inputCost }} ETH</div>
                 </div>
             </div>
-            <div>
-                <button class="pro-my-bt" @click="SubmitGuarantee" v-if="buttons.guarantee" type="info">担保</button>
-                <button class="pro-my-bt" @click="SubmitInvest" v-if="buttons.invest" type="info">投资</button>
-                <button class="pro-my-bt" @click="SubmitExit" v-if="buttons.refund" type="info">退出投资</button>
-            </div>
+        </div>
+        <div style="margin:10px 0px">
+            <button class="pro-my-bt" @click="SubmitGuarantee" v-if="buttons.guarantee" type="info">担保</button>
+            <button class="pro-my-bt" @click="SubmitDisGuarantee" v-if="buttons.disGuarantee" type="info">撤销担保</button>
+            <button class="pro-my-bt" @click="SubmitInvest" v-if="buttons.invest" type="info">投资</button>
+            <button class="pro-my-bt" @click="SubmitDisInvest" v-if="buttons.disInvest" type="info">撤销投资</button>
+            <button class="pro-my-bt" @click="SubmitSell" v-if="buttons.sell" type="info">卖出</button>
         </div>
         <div>
             <van-tabs v-model:active="active" color="#3682FF" @click="tabClick">
                 <van-tab class="pro-logs-tab" name="invest" title="投资记录">
                     <div style="margin-top: 20px"></div>
-                    <div class="pro-logs-border">
-                        <!--  <div class="log-col">
-                              <img class="log-icon" src="/img/2x/logprefix.png"/>
-                              <div class="log-token">0xDF6B7a8B091aA214549756599ce9C6dBea5f9967</div>
-                              <div class="log-eth">10 eth</div>
-                          </div>
-                          <div class="log-col">
-                              <img class="log-icon" src="/img/2x/logprefix.png"/>
-                              <div class="log-token">0xDF6B7a8B091aA214549756599ce9C6dBea5f9967</div>
-                              <div class="log-eth">10 eth</div>
-                          </div>-->
-                        <div class="log-col" :key="index" v-for="(log,index) in investLogs">
+                    <div v-if="projectLogs.length>0" class="pro-logs-border">
+                        <div class="log-col" :key="index" v-for="(log,index) in projectLogs">
                             <img class="log-icon" src="/img/2x/logprefix.png"/>
                             <div class="log-token"> {{ log.from }}</div>
-                            <div class="log-eth"> {{ log.amount }}</div>
+                            <div class="log-eth"> {{ convertAmountToCommon(log.amount) }} ETH</div>
                         </div>
 
                     </div>
                 </van-tab>
                 <van-tab class="pro-logs-tab" name="sell" title="卖出记录">
                     <div style="margin-top: 20px"></div>
-                    <div class="pro-logs-border">
-                        <div class="log-col" :key="index" v-for="(log,index) in sellLogs">
+                    <div v-if="projectLogs.length>0" class="pro-logs-border">
+                        <div class="log-col" :key="index" v-for="(log,index) in projectLogs">
                             <img class="log-icon" src="/img/2x/logprefix.png"/>
                             <div class="log-token"> {{ log.from }}</div>
-                            <div class="log-eth"> {{ log.amount }}</div>
+                            <div class="log-eth"> {{ convertAmountToCommon(log.amount) }} ETH</div>
                         </div>
 
                     </div>
                 </van-tab>
                 <van-tab class="pro-logs-tab" name="guarantee" title="担保记录">
                     <div style="margin-top: 20px"></div>
-                    <div class="pro-logs-border">
-                        <div class="log-col" :key="index" v-for="(log,index) in guaranteeLogs">
+                    <div v-if="projectLogs.length>0" class="pro-logs-border">
+                        <div class="log-col" :key="index" v-for="(log,index) in projectLogs">
                             <img class="log-icon" src="/img/2x/logprefix.png"/>
                             <div class="log-token"> {{ log.from }}</div>
-                            <div class="log-eth"> {{ log.amount }}</div>
+                            <div class="log-eth"> {{ convertAmountToCommon(log.amount) }} ETH</div>
                         </div>
 
                     </div>
@@ -158,11 +150,11 @@
     import {WClient} from "@/chain/walletconnect";
     import {ContractManager} from "@/chain/erc20";
     import {BackendApi} from "@/chain/backendApi";
-    import {Notify} from "vant";
-    import {add, convertAmountToCommon} from "@/chain/bignumber"
+    import {Dialog, Notify} from "vant";
+    import {add, convertAmountToCommon, greaterThan} from "@/chain/bignumber"
     import {ApiManager} from "@/chain/api"
     // eslint-disable-next-line no-unused-vars
-    import {IOperationSlot, SubmitType} from "../../pgcommon/common";
+    import {IOperationSlot, ProjectStatus, SubmitType} from "../../pgcommon/common";
 
     interface ILog {
         id: number
@@ -200,7 +192,7 @@
                 profits: "0",
                 profitsPercent: "0",
                 value: "0",
-                openTime: 0,
+                openTime: "0",
                 effective: 0,
                 dateAmount: 0,
                 input: 0,
@@ -229,8 +221,10 @@
 
             const buttons = reactive({
                 guarantee: false,
+                disGuarantee: false,
                 invest: false,
-                refund: false,
+                disInvest: false,
+                sell: false,
             })
             const boardCss = reactive({} as BoardCss)
             onMounted(async () => {
@@ -244,7 +238,44 @@
                     myPosition.profits = await abi.InvestProjectIncome(account.value, projectAddr.value)
                     myPosition.value = add(myPosition.inputCost, myPosition.profits)
                     myPosition.position = await abi.InvestProjectTokenAmount(account.value, projectAddr.value)
+                    await myFirstInput()
                 }
+                let proStatus = await abi.ProjectStatus(projectAddr.value)
+                console.log("project status", proStatus)
+                switch (proStatus) {
+                    case ProjectStatus.Invest:
+                        buttons.invest = true
+                        if (greaterThan(myPosition.inputCost, 0)) {
+                            buttons.disInvest = true
+                        }
+                        break
+                    case ProjectStatus.GuaranteeAndInvest:
+                        buttons.invest = true
+                        buttons.guarantee = true
+                        if (greaterThan(myPosition.guarantee, 0)) {
+                            buttons.disGuarantee = true
+                        }
+                        if (greaterThan(myPosition.inputCost, 0)) {
+                            buttons.disInvest = true
+                        }
+                        break
+                    case ProjectStatus.Guarantee:
+                        buttons.guarantee = true
+                        if (greaterThan(myPosition.guarantee, 0)) {
+                            buttons.disGuarantee = true
+                        }
+                        break
+                    case ProjectStatus.End:
+                    case ProjectStatus.FullQuota:
+                        break
+                    case ProjectStatus.Sell:
+                        buttons.sell = true
+                        break
+                    default:
+                        break
+                }
+
+
                 let cssRes = calcCss(projectInfo.status)
                 boardCss.fontSize = cssRes.fontSize
                 boardCss.triangle = cssRes.triangle
@@ -254,7 +285,7 @@
                 boardCss.right = cssRes.right
                 boardCss.code = cssRes.code
                 boardCss.color = cssRes.color
-                getProjectInvestLog()
+                getProjectLog()
 
                 let period = projectInfo.setupHeight - currentHeight.value
                 if (period < 0) {
@@ -265,6 +296,21 @@
                 console.log(myPosition.guarantee)
             })
 
+
+            function myFirstInput() {
+                BackendApi.getProjectFirstMethodHeight({
+                    "account": account.value,
+                    "project": projectAddr.value,
+                    "fund": fundAddr.value,
+                }).then(res => {
+                    let period = currentHeight.value - res.data.height
+                    myPosition.openTime = period + " (" + Math.floor(period * 12 / 60 / 60 / 24) + " days)"
+                }).catch(err => {
+                    if (err.response.data === "empty data") {
+                        console.log(err.response.data)
+                    }
+                })
+            }
 
             function getProjectInfo() {
                 BackendApi.getProjectInfo({
@@ -277,7 +323,7 @@
                     projectInfo.name = one.name
                     projectInfo.token = one.token
                     projectInfo.stage = one.stage
-                    // 1：guarantee 2:invest 3:over
+                    /*// 1：guarantee 2:invest 3:over
                     switch (projectInfo.stage) {
                         case 1:
                             buttons.guarantee = true
@@ -287,10 +333,10 @@
                             break
                         default:
                             break
-                    }
-                    if (buttons.invest && myPosition.inputCost != "0") {
-                        buttons.refund = true
-                    }
+                    }*/
+                    /*         if (buttons.invest && myPosition.inputCost != "0") {
+                                 buttons.refund = true
+                             }*/
 
                     projectInfo.price = one.price
                     projectInfo.softCap = one.softCap
@@ -377,100 +423,33 @@
             }
 
 
-            // sellLog start
-            const reqSellLog = reactive({
-                pageIndex: 1,
-                pageSize: 10,
-                more: true,
-                methodNum: 3,
-            })
-            const sellLogs: ILog[] = reactive([])
-
-            function getProjectSellLog() {
-                if (!reqSellLog.more) {
-                    return
-                }
-                BackendApi.getProjectMethodLogs({
-                    "pageIndex": reqSellLog.pageIndex,
-                    "pageSize": reqSellLog.pageSize,
-                    "methodNum": reqSellLog.methodNum,
-                    "project": projectAddr.value,
-                    "fund": fundAddr.value
-                }).then(res => {
-                    if (res.data.array.length > 0) {
-                        sellLogs.concat(res.data.array)
-                        reqSellLog.pageIndex++
-                    } else {
-                        reqSellLog.more = false
-                    }
-
-                }).catch(err => {
-                        Notify({type: 'danger', message: err});
-                    }
-                )
-            }
-
-            // invest log  start
-            const reqInvestLog = reactive({
+            const reqLogRequest = reactive({
                 pageIndex: 1,
                 pageSize: 10,
                 more: true,
                 methodNum: 2,
             })
-            const investLogs: ILog[] = reactive([])
+            const projectLogs: ILog[] = reactive([])
 
-            function getProjectInvestLog() {
-                if (!reqInvestLog.more) {
+            function getProjectLog() {
+                if (!reqLogRequest.more) {
                     return
                 }
                 BackendApi.getProjectMethodLogs({
-                    "pageIndex": reqInvestLog.pageIndex,
-                    "pageSize": reqInvestLog.pageSize,
-                    "methodNum": reqInvestLog.methodNum,
-                    "project": projectAddr.value,
-                    "fund": fundAddr.value
-                }).then(res => {
-                    if (res.data.array.length > 0) {
-                        investLogs.concat(res.data.array)
-                        reqInvestLog.pageIndex++
-                    } else {
-                        reqInvestLog.more = false
-                    }
-
-                }).catch(err => {
-                        Notify({type: 'danger', message: err});
-                    }
-                )
-            }
-
-            const reqGuaranteeLog = reactive({
-                pageIndex: 1,
-                pageSize: 10,
-                more: true,
-                methodNum: 1,
-            })
-            const guaranteeLogs: ILog[] = reactive([])
-
-            function getProjectGuaranteeLog() {
-                console.log("gg")
-                if (!reqGuaranteeLog.more) {
-                    return
-                }
-                BackendApi.getProjectMethodLogs({
-                    "pageIndex": reqGuaranteeLog.pageIndex,
-                    "pageSize": reqGuaranteeLog.pageSize,
-                    "methodNum": reqGuaranteeLog.methodNum,
+                    "pageIndex": reqLogRequest.pageIndex,
+                    "pageSize": reqLogRequest.pageSize,
+                    "methodNum": reqLogRequest.methodNum,
                     "project": projectAddr.value,
                     "fund": fundAddr.value
                 }).then(res => {
                     let arr = res.data.array
                     if (arr.length > 0) {
                         for (let i = 0; i < arr.length; i++) {
-                            guaranteeLogs.push(arr[i])
+                            projectLogs.push(arr[i])
                         }
-                        reqGuaranteeLog.pageIndex++
+                        reqLogRequest.pageIndex++
                     } else {
-                        reqGuaranteeLog.more = false
+                        reqLogRequest.more = false
                     }
 
                 }).catch(err => {
@@ -499,9 +478,27 @@
                 emit(params)
             }
 
-            function SubmitExit() {
+            function SubmitDisGuarantee() {
                 const params = {
-                    Type: SubmitType.Exit,
+                    Type: SubmitType.DisGuarantee,
+                    Fund: fundAddr.value,
+                    Project: projectAddr.value,
+                } as IOperationSlot
+                emit(params)
+            }
+
+            function SubmitDisInvest() {
+                const params = {
+                    Type: SubmitType.DisInvest,
+                    Fund: fundAddr.value,
+                    Project: projectAddr.value,
+                } as IOperationSlot
+                emit(params)
+            }
+
+            function SubmitSell() {
+                const params = {
+                    Type: SubmitType.Sell,
                     Fund: fundAddr.value,
                     Project: projectAddr.value,
                 } as IOperationSlot
@@ -509,6 +506,15 @@
             }
 
             function emit(p: IOperationSlot) {
+                if (account.value === "") {
+                    Dialog.alert({
+                        title: '提示',
+                        message: '需要连接钱包',
+                    }).then(() => {
+                        // on close
+                    });
+                    return
+                }
                 context.emit("openOperation", p)
             }
 
@@ -516,23 +522,26 @@
             const tabClick = (name: string) => {
                 switch (name) {
                     case "invest":
-                        getProjectInvestLog();
+                        reqLogRequest.methodNum = 2
                         break
                     case "sell":
-                        getProjectSellLog();
+                        reqLogRequest.methodNum = 3
                         break
                     default:
-                        getProjectGuaranteeLog()
+                        reqLogRequest.methodNum = 1
                         break
                 }
+                projectLogs.splice(0)
+                reqLogRequest.pageIndex = 1
+                reqLogRequest.more = true
+                getProjectLog()
                 console.log(name)
             }
             return {
                 fundDaily, projectInfo, myPosition, currentHeight,
-                sellLogs, investLogs, guaranteeLogs,
-                getProjectSellLog, getProjectInvestLog, getProjectGuaranteeLog,
+                getProjectLog, projectLogs,
                 buttons, active, boardCss,
-                SubmitGuarantee, SubmitInvest, SubmitExit,
+                SubmitGuarantee, SubmitInvest, SubmitDisGuarantee, SubmitDisInvest, SubmitSell,
                 tabClick
             }
 
@@ -543,10 +552,10 @@
 <style scoped>
     #pro-main {
         position: relative;
-        height: calc(100vh - 300px - 200px);
+        height: calc(100vh - 300px - 100px);
         overflow-y: scroll;
         overflow-x: hidden;
-        padding-bottom: 200px;
+        padding-bottom: 100px;
     }
 
     #pro-faker-div {
@@ -759,7 +768,7 @@
     }
 
     #pro-my {
-        height: 510px;
+        height: 410px;
         width: 660px;
         margin: auto;
     }
@@ -974,7 +983,7 @@
     }
 
     .pro-my-bt {
-        margin-top: 30px;
+        margin-top: 18px;
         height: 80px;
         width: 660px;
         background-color: #3682FF;
@@ -1020,7 +1029,6 @@
 
     .pro-logs-border {
         width: 660px;
-        height: 320px;
         padding-top: 20px;
         border-radius: 10px;
         box-shadow: 0 3px 16px rgba(0, 0, 0, .10), 0 3px 16px rgba(0, 0, 0, .10);

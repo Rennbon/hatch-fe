@@ -17,14 +17,16 @@ export interface IChainData {
     rpc_url: string;
     native_currency: IAssetData;
 }
+
 export interface ITxData {
     from: string;
     to: string;
     nonce: string;
-    gasPrice: string;
+    gasPrice?: string;
     gasLimit: string;
     value: string;
     data: string;
+    gas?: string;
 }
 
 export interface IBlockScoutTx {
