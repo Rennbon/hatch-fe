@@ -26,7 +26,7 @@ export interface ITxData {
     gasLimit: string;
     value: string;
     data: string;
-    gas?: string;
+    gas?: number | string;
 }
 
 export interface IBlockScoutTx {

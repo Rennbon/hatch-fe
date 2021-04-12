@@ -204,13 +204,12 @@ export class ContractManager {
 
     public async SetProject(param: ISetProjectParam): Promise<ITxData> {
         const nonce = await ApiManager.GetAccountNonce(param.From);
-        //const gasPrice = await ApiManager.GetGasPrice();
-        const gasPrice = "0x3b9aca00"
+        const gasPrice = await ApiManager.GetGasPrice();
+        //const gasPrice = "0x3b9aca00"
         const _gasLimit = this.gasLimit;
         const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
 
-        const _value = 0;
-        const value = sanitizeHex(convertStringToHex(_value));
+        const value = "0x0";
 
         const input1 = param.Token
         const input2 = utils.parseEther(param.SellPrice)
@@ -232,7 +231,9 @@ export class ContractManager {
             gas: "0x0"
         }
         let gas = await ApiManager.GetEstimateGas(tx)
+        console.log(gas)
         tx.gas = gas
+        console.log(tx)
         return tx
     }
 

@@ -6,12 +6,12 @@
             <img @click="showPopup" class="menu" src="/img/2x/menu-w.png"/>
         </div>
         <div :id="barStyle==1?'nav-border':'nav-border-0'" v-if="barStyle===1||barStyle==2">
-            <img @click="back" :style="{'color':barStyle==2?'white':'#666666'}" id="back"
+            <img v-if="curTitle!='使用指南'" @click="back" :style="{'color':barStyle==2?'white':'#666666'}" id="back"
                  :src="barStyle==2?'/img/2x/arrow-w.png':'/img/2x/arrow-left.png'"/>
             <img @click="showPopup" :style="{'color':barStyle==2?'white':'#666666'}"
                  class="menu"
                  :src="barStyle==2?'/img/2x/menu-w.png':'/img/2x/menu.png'"/>
-            <div id="title" :style="{'color':barStyle==2?'white':'#666666'}" >{{ curTitle }}</div>
+            <div id="title" :style="{'color':barStyle==2?'white':'#666666'}">{{ curTitle }}</div>
         </div>
 
         <van-popup v-model:show="display" teleport="body" id="right-menu"

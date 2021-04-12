@@ -62,5 +62,11 @@
     "> 1%",
     "last 2 versions",
     "not dead"
+  ],
+  "moduleDirectories": [
+    "node_modules",
+    "src",
+    "test"
   ]
+
 }

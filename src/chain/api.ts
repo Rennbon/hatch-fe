@@ -1,6 +1,6 @@
 import axios, {AxiosInstance} from "axios";
-import {convertAmountFromRawNumber} from "@/chain/bignumber";
-import {ITxData} from "@/chain/types";
+import {convertAmountFromRawNumber} from "./bignumber";
+import {ITxData} from "./types";
 
 const api: AxiosInstance = axios.create({
     baseURL: process.env.VUE_APP_CHAIN_URL,
@@ -62,7 +62,15 @@ async function GetEstimateGas(tx: ITxData): Promise<string> {
         {
             "jsonrpc": "2.0",
             "method": "eth_estimateGas",
-            "params": [tx],
+            "params": [{
+                "from": tx.from,
+                "to": tx.to,
+                "value": tx.value,
+                "nonce": tx.nonce,
+                "data": tx.data,
+                "gasPrice": tx.gasPrice,
+                "gasLimit": tx.gasLimit,
+            }],
             "id": Number(process.env.VUE_APP_CHAIN_ID)
         }
     );
@@ -94,6 +102,7 @@ async function GetBlockNumber(): Promise<number> {
     );
     const {result} = response.data;
     return Number(convertAmountFromRawNumber(result, 0))
+
 }
 
 export const ApiManager = {
