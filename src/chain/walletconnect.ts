@@ -1,6 +1,6 @@
 import WalletConnect from "@walletconnect/client";
 import QRCodeModal from "@walletconnect/qrcode-modal";
-import {IInternalEvent} from "@walletconnect/types";
+import {IInternalEvent, IJsonRpcRequest} from "@walletconnect/types";
 import {Contract} from "ethers";
 import {ApiManager} from "./api";
 import {convertAmountFromRawNumber} from "@/chain/bignumber";
@@ -46,9 +46,19 @@ export class WClient {
     public state: IAppState = {
         ...INITIAL_STATE
     }
+    heartCheck: NodeJS.Timeout | undefined
+
     public walletConnectInit = async () => {
         const bridge = "https://bridge.walletconnect.org"
-        const connector = new WalletConnect({bridge, qrcodeModal: QRCodeModal})
+
+        let session = store.getters.getSession
+        let connector: WalletConnect
+        if (session != null) {
+            connector = new WalletConnect({session: session})
+        } else {
+            connector = new WalletConnect({bridge, qrcodeModal: QRCodeModal})
+        }
+
         this.state.connector = connector
         if (!connector.connected) {
             console.log("wallet ws retry")
@@ -57,18 +67,25 @@ export class WClient {
         await this.subscribeToEvents()
     }
 
-    /*  public heartbeat() {
-          if (this.state.connected) {
-              this.state.connector?.sendCustomRequest(request:)
-
-          }
-      }*/
+    public async heartbeat() {
+        if (this.heartCheck) {
+            clearInterval(this.heartCheck)
+        }
+        this.heartCheck = setInterval(() => {
+            if (this.state.connector != null && this.state.connector.connected) {
+                this.state.connector.unsafeSend({
+                    method: "ping"
+                } as IJsonRpcRequest)
+            }
+        }, 5000);
+    }
 
     private subscribeToEvents = async () => {
         const {connector} = this.state
         if (!connector) {
             return
         }
+        this.heartbeat()
         connector.on("session_update", async (error, payload) => {
             console.log(`connector.on("session_update")`);
             if (error) {
@@ -125,6 +142,7 @@ export class WClient {
         await this.getAccountBalance()
         store.commit("updateAccount", address)
         store.commit("updateConnected", true)
+        store.commit("updateSession", this.state.connector?.session)
     }
     private onSessionUpdate = async (accounts: string[], chainId: number) => {
         const address = accounts[0];

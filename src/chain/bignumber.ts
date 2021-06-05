@@ -94,7 +94,7 @@ export function convertAmountFromRawNumber(value: string | number, decimals = 18
 }
 
 export function convertAmountToCommon(value: string | number, decimals = 18): string {
-    if (value === "0" || value === "" || value === 0) {
+    if (value === "0" || value === "" || value === 0 || value === null) {
         return "0"
     }
     let v = new BigNumber(`${value}`).dividedBy(new BigNumber("10").pow(decimals)).toString();

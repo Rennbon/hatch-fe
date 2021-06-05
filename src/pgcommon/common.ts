@@ -27,6 +27,11 @@ export interface IOperationSlot {
     Project: string
     Fund: string
     Limit: string
+    Tips: string
+}
+export interface  IDialogSlot {
+    Title: string
+    Content : string
 }
 
 

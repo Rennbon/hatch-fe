@@ -46,27 +46,34 @@ export const BackendApi = {
                 params: params
             })
     },
-    getProjectInfo(params: Object) {
+    getProjectInfo(params: object) {
         return apiManager.get(
             '/projectInfo', {
                 params: params
             })
     },
-    getProjectMethodLogs(params: Object) {
+    getProjectMethodLogs(params: object) {
         return apiManager.get(
             '/projectMethodLogs', {
                 params: params
             })
     },
-    getProjectFirstMethodHeight(params: Object) {
+    getProjectFirstMethodHeight(params: object) {
         return apiManager.get(
             '/projectFirstMethodHeight', {
                 params: params
             })
     },
-    getDailyFund(params: Object) {
+    getDailyFund(params: object) {
         return apiManager.get(
             '/dailyFund', {
+                params: params
+            })
+
+    },
+    getInboxes(params: object) {
+        return apiManager.get(
+            '/inbox', {
                 params: params
             })
 

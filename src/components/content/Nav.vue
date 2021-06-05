@@ -29,10 +29,12 @@
                      :key="index" v-for="(pro,index) in myProjects"
                      @click="toProject(pro)">
                     <div class="pro-name"> {{ pro.name }}</div>
-                    <div class="pro-price" :style="{'color':pro.font}">{{ convertAmountToCommon(pro.price) }}</div>
+                    <div class="pro-price" :style="{'color':pro.font}">
+                        {{ pro.minus ? "-" : "" }}{{ convertAmountToCommon(pro.price) }}
+                    </div>
                     <div class="pro-uint">ETH</div>
                     <div class="pro-state" :style="{'color':pro.status==='违约'?'white':'#666666'}">{{ pro.status }}</div>
-                    <div class="pro-fund">{{ pro.fundName }}DreamDAO</div>
+                    <div class="pro-fund">{{ pro.fundName }}</div>
                 </div>
                 <div class="fund-container" v-if="reqMyPage.more" @click="getMyPage">
                     <div class="more">More
@@ -51,7 +53,8 @@
                     <div class="fund-amount">{{ convertAmountToCommon(dreamDao.amount) }}</div>
                     <div class="fund-uint">ETH</div>
                 </div>
-                <div class="fund-container fund-win" :key="index" v-for="(fund,index) in otherFunds"
+
+                <div v-show="false" class="fund-container fund-win" :key="index" v-for="(fund,index) in otherFunds"
                      @click="toFund(fund.token,fund.name)">
                     <div class="fund-src">Fund</div>
                     <div class="fund-name">{{ fund.name }}</div>
@@ -64,7 +67,7 @@
                     <div class="fund-amount">{{ convertAmountToCommon(fund.amount) }}</div>
                     <div class="fund-uint">ETH</div>
                 </div>
-                <div class="fund-container" v-if="reqOtherFunds.more" @click="getOtherFunds">
+                <div v-show="false" class="fund-container" v-if="reqOtherFunds.more" @click="getOtherFunds">
                     <div class="more">More
                         <van-icon class="more-icon" name="play"/>
                     </div>
@@ -72,8 +75,8 @@
             </div>
             <!-- disconnected end -->
 
-            <van-divider v-if="account!=''" dashed>other Funds</van-divider>
-            <div v-if="account!=''" class="dm-pod">
+            <van-divider v-show="false" v-if="account!=''" dashed>other Funds</van-divider>
+            <div v-show="false" v-if="account!=''" class="dm-pod">
                 <div style="height: 100px;font-family: PingFangSC;font-size: 32px;margin: auto;line-height:100px;"
                      v-if="otherFunds.length===0">
                     暂无数据
@@ -97,6 +100,8 @@
                     </div>
                 </div>
             </div>
+
+
             <van-divider dashed>other Startup</van-divider>
             <div class="dm-pod">
                 <div style="height: 100px;font-family: PingFangSC;font-size: 32px;margin: auto;line-height:100px;"
@@ -108,7 +113,10 @@
                      :key="index" v-for="(pro,index) in otherProjects"
                      @click="toProject(pro)">
                     <div class="pro-name"> {{ pro.name }}</div>
-                    <div class="pro-price" :style="{'color':pro.font}">{{ convertAmountToCommon(pro.price) }}</div>
+                    <div class="pro-price" :style="{'color':pro.font}">{{
+                            pro.minus ? "-" : ""
+                        }}{{ convertAmountToCommon(pro.price) }}
+                    </div>
                     <div class="pro-uint">ETH</div>
                     <div class="pro-state" :style="{'color':pro.status==='违约'?'white':'#666666'}">{{ pro.status }}</div>
                     <div class="pro-fund">{{ pro.fundName }}DreamDAO</div>
@@ -172,7 +180,7 @@
         fundName: string
         fundToken: string
         css: string
-
+        minus: boolean
         //0:none
         //1: Profitable
         //2: Profitable but not on target
@@ -207,7 +215,7 @@
                     account.value = wcli.state.address
                 }
                 getMyPage()
-                getOtherFunds()
+                //getOtherFunds()
                 getOtherProjects()
                 console.log("load nav", account)
             })

@@ -1,5 +1,5 @@
 <template>
-    <van-action-sheet :round="false" :style="{'height':'300px'}" v-model:show="Show">
+    <van-action-sheet :round="false" :style="{'height':'340px'}" v-model:show="Show">
         <div id="title">{{ Title }}</div>
         <div id="neck"></div>
         <div id="content">
@@ -8,6 +8,10 @@
                        :rules="[{ pattern: /^([1-9]\d{0,9}|0)(\.\d{1,5})?$/, required:true, message: '格式不正确' }]"
                        placeholder="请输入金额"/>
             <div id="uint">单位: ETH</div>
+            <div id="tips" v-if="Tips.length>0">
+                <div id="tips-title">提示：</div>
+                <div id="tips-content">{{ Tips }}</div>
+            </div>
             <van-button loading-type="spinner" @click="SubmitMethod">提交</van-button>
         </div>
     </van-action-sheet>
@@ -31,6 +35,8 @@
             const Title = ref("title")
             const To = ref("")
             const Amount = ref("")
+            const Tips = ref("")
+            const Limit = ref("")
 
             let abi: ContractManager
             const account = ref("")
@@ -68,6 +74,9 @@
                     default:
                         break
                 }
+                console.log("tips", p.Tips)
+                Tips.value = p.Tips === undefined || p.Tips === null ? "" : p.Tips
+                Limit.value = p.Limit
                 Show.value = true
             }
 
@@ -119,6 +128,7 @@
                 Title,
                 open,
                 To,
+                Tips,
                 Amount,
                 SubmitMethod
             }
@@ -183,5 +193,25 @@
         top: 28px;
         right: 20px;
         font-size: 28px;
+    }
+
+    #tips {
+        height: 60px;
+        font-family: PingFangSC;
+        position: relative;
+        padding: 10px 50px;
+    }
+
+    #tips-title {
+        font-size: 24px;
+        position: absolute;
+        top: 10px;
+    }
+
+    #tips-content {
+        font-size: 20px;
+        position: absolute;
+        top: 44px;
+        text-align: left;
     }
 </style>

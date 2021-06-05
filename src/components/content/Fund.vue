@@ -144,7 +144,7 @@
     import {defineComponent, inject, onMounted, reactive, ref} from "vue";
     import {ContractManager} from "@/chain/erc20";
     // eslint-disable-next-line no-unused-vars
-    import {IFundArgs, IOperationSlot, IPageParam, IProjectArgs, SubmitType} from "../../pgcommon/common";
+    import {IDialogSlot, IFundArgs, IOperationSlot, IPageParam, IProjectArgs, SubmitType} from "../../pgcommon/common";
     // eslint-disable-next-line no-unused-vars
     import {WClient} from "@/chain/walletconnect";
     import {convertAmountToCommon, greaterThan} from "@/chain/bignumber"
@@ -174,6 +174,7 @@
         components: {},
         methods: {
             convertAmountToCommon,
+            greaterThan,
         },
         setup(props, context) {
             const wcli = inject<WClient>("walletConnect")
@@ -218,6 +219,7 @@
                     MyFundToken.decimals = myFundToken.Decimals
                     MyFundToken.symbol = myFundToken.Symbol
                     MyFundToken.unlock = myFundToken.Unlock
+
                 }
                 getProjectsByFund()
                 FundInfo.totalDeposit = await abi.TotalDeposit()
@@ -282,6 +284,7 @@
                         let stageColor = ""
                         switch (proTmp.stage) {
                             case 1:
+                            case 3:
                                 stageFont = "担保"
                                 // background-image: ;
                                 stageColor = "#EC5A4C"
@@ -290,7 +293,7 @@
                                 stageFont = "投资"
                                 stageColor = "#00EB60"
                                 break
-                            case 3:
+                            default:
                                 stageFont = "结束"
                                 stageColor = "#666666"
                                 break
@@ -326,6 +329,13 @@
 
             // create new project
             function toCreateProject() {
+                if (!greaterThan(MyDeposit.all, 0)) {
+                    dialog({
+                        Title: "提示",
+                        Content: '当前非fund成员，需要往fund中存入任意数量的ETH成为fund成员'
+                    })
+                    return
+                }
                 let args: IFundArgs = {
                     FundAddress: fundAddr.value,
                 }
@@ -364,21 +374,25 @@
             }
 
             function SubmitWithdrawETH() {
+                let limit = convertAmountToCommon(MyDeposit.unlock)
                 const params = {
                     Type: SubmitType.WithDraw,
                     Fund: fundAddr.value,
                     Project: "",
-                    Limit: MyDeposit.unlock,
+                    Limit: limit,
+                    Tips: "最大可提现金额: " + limit + " ETH"
                 } as IOperationSlot
                 emit(params)
             }
 
             function SubmitWithdrawToken() {
+                let limit = convertAmountToCommon(MyFundToken.unlock)
                 const params = {
                     Type: SubmitType.WithDrawFundToken,
                     Fund: fundAddr.value,
                     Project: "",
-                    Limit: MyDeposit.unlock,
+                    Limit: limit,
+                    Tips: "最大可提现金额: " + limit + " DreamDAO"
                 } as IOperationSlot
                 emit(params)
             }
@@ -411,6 +425,10 @@
 
             function emit(p: IOperationSlot) {
                 context.emit("openOperation", p)
+            }
+
+            function dialog(p: IDialogSlot) {
+                context.emit("openDialog", p)
             }
 
             return {

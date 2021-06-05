@@ -109,8 +109,12 @@
                     <div v-if="projectLogs.length>0" class="pro-logs-border">
                         <div class="log-col" :key="index" v-for="(log,index) in projectLogs">
                             <img class="log-icon" src="/img/2x/logprefix.png"/>
-                            <div class="log-token"> {{ log.from }}</div>
-                            <div class="log-eth"> {{ convertAmountToCommon(log.amount) }} ETH</div>
+                            <img class="log-icon" src="/img/2x/logprefix.png"/>
+                            <div class="log-token">From: {{ log.from }}</div>
+                            <div class="log-eth">Amount: {{ log.sign ? '+' : '-' }}{{
+                                    convertAmountToCommon(log.amount)
+                                }} ETH
+                            </div>
                         </div>
 
                     </div>
@@ -120,8 +124,12 @@
                     <div v-if="projectLogs.length>0" class="pro-logs-border">
                         <div class="log-col" :key="index" v-for="(log,index) in projectLogs">
                             <img class="log-icon" src="/img/2x/logprefix.png"/>
-                            <div class="log-token"> {{ log.from }}</div>
-                            <div class="log-eth"> {{ convertAmountToCommon(log.amount) }} ETH</div>
+                            <img class="log-icon" src="/img/2x/logprefix.png"/>
+                            <div class="log-token">From: {{ log.from }}</div>
+                            <div class="log-eth">Amount: {{ log.sign ? '+' : '-' }}{{
+                                    convertAmountToCommon(log.amount)
+                                }} ETH
+                            </div>
                         </div>
 
                     </div>
@@ -131,8 +139,11 @@
                     <div v-if="projectLogs.length>0" class="pro-logs-border">
                         <div class="log-col" :key="index" v-for="(log,index) in projectLogs">
                             <img class="log-icon" src="/img/2x/logprefix.png"/>
-                            <div class="log-token"> {{ log.from }}</div>
-                            <div class="log-eth"> {{ convertAmountToCommon(log.amount) }} ETH</div>
+                            <div class="log-token">From: {{ log.from }}</div>
+                            <div class="log-eth">Amount: {{ log.sign ? '+' : '-' }}{{
+                                    convertAmountToCommon(log.amount)
+                                }} ETH
+                            </div>
                         </div>
 
                     </div>
@@ -161,6 +172,7 @@
         blockHeight: number
         from: string
         amount: string
+        sign: boolean
     }
 
     interface BoardCss {
@@ -200,7 +212,6 @@
             const projectInfo = reactive({
                 name: "",
                 token: "",
-                stage: 0,
                 price: "0",
                 softCap: "0",
                 hardCap: "",
@@ -240,9 +251,9 @@
                     myPosition.position = await abi.InvestProjectTokenAmount(account.value, projectAddr.value)
                     await myFirstInput()
                 }
-                let proStatus = await abi.ProjectStatus(projectAddr.value)
-                console.log("project status", proStatus)
-                switch (proStatus) {
+                let proStage = await abi.ProjectStatus(projectAddr.value)
+                console.log("project status", proStage)
+                switch (proStage) {
                     case ProjectStatus.Invest:
                         buttons.invest = true
                         if (greaterThan(myPosition.inputCost, 0)) {
@@ -322,22 +333,6 @@
                     let one = res.data.one
                     projectInfo.name = one.name
                     projectInfo.token = one.token
-                    projectInfo.stage = one.stage
-                    /*// 1：guarantee 2:invest 3:over
-                    switch (projectInfo.stage) {
-                        case 1:
-                            buttons.guarantee = true
-                            break
-                        case 2:
-                            buttons.invest = true
-                            break
-                        default:
-                            break
-                    }*/
-                    /*         if (buttons.invest && myPosition.inputCost != "0") {
-                                 buttons.refund = true
-                             }*/
-
                     projectInfo.price = one.price
                     projectInfo.softCap = one.softCap
                     projectInfo.hardCap = one.hardCap
@@ -554,7 +549,7 @@
         position: relative;
         height: calc(100vh - 300px - 100px);
         overflow-y: scroll;
-        overflow-x: hidden;
+        overflow-x: hidden !important;
         padding-bottom: 100px;
     }
 
@@ -1000,7 +995,7 @@
     }
 
     .log-col {
-        height: 32px;
+        height: 64px;
         width: inherit;
         position: relative;
     }
@@ -1017,14 +1012,14 @@
         font-size: 22px;
         position: absolute;
         left: 48px;
-
     }
 
     .log-eth {
         font-family: PingFang;
         font-size: 22px;
         position: absolute;
-        left: 580px;
+        left: 48px;
+        top: 32px;
     }
 
     .pro-logs-border {

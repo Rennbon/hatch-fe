@@ -1,9 +1,12 @@
 <template>
     <div id="main">
         <NavBar ref="RefNavBar" @changeView="handleChangeView" @backPre="handlePreView"></NavBar>
-        <component @openOperation="handleOpenOperation" @changeView="handleChangeView" :is="currentPage"
+        <component @openOperation="handleOpenOperation"
+                   @openDialog="handleOpenDialog"
+                   @changeView="handleChangeView" :is="currentPage"
                    :jsonParams="pageParam.Args"></component>
         <Operation ref="RefOperation"></Operation>
+        <Dialog ref="RefDialog"></Dialog>
         <Bottom></Bottom>
     </div>
 </template>
@@ -18,13 +21,17 @@
     import CreateProject from "@/components/content/CreateProject.vue"
     import {defineComponent, onMounted, provide, ref} from "vue";
     // eslint-disable-next-line no-unused-vars
-    import {IFundArgs, IOperationSlot, IPageParam, IProjectArgs} from "@/pgcommon/common";
+    import {IDialogSlot, IFundArgs, IOperationSlot, IPageParam, IProjectArgs} from "@/pgcommon/common";
     import Operation from "@/components/bar/Operation.vue"
     import ForkFund from "@/components/content/ForkFund.vue"
+    import Inbox from "@/components/content/Inbox.vue"
+    import Dialog from "@/components/bar/Dialog.vue"
+
 
     export default defineComponent({
         name: "Page",
         components: {
+            Dialog,
             Operation,
             NavBar,
             Bottom,
@@ -32,7 +39,8 @@
             Project,
             Nav,
             CreateProject,
-            ForkFund
+            ForkFund,
+            Inbox
         },
         props: {},
         setup() {
@@ -52,7 +60,8 @@
                 ["Nav", Nav],
                 ["Project", Project],
                 ["CreateProject", CreateProject],
-                ["ForkFund", ForkFund]
+                ["ForkFund", ForkFund],
+                ["Inbox", Inbox]
             ])
             const currentPage = ref<any>(Nav)
             const preParams: IPageParam[] = [{
@@ -126,15 +135,20 @@
                 RefOperation.value.open(p)
             }
 
+            const RefDialog = ref()
+
+            function handleOpenDialog(p: IDialogSlot) {
+                RefDialog.value.open(p)
+            }
 
             return {
                 currentPage,
                 pageParam,
                 handleChangeView,
                 handlePreView,
-                handleOpenOperation,
+                handleOpenOperation, RefOperation,
+                handleOpenDialog, RefDialog,
                 RefNavBar,
-                RefOperation
             }
         }
     })

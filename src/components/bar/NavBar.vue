@@ -25,11 +25,15 @@
                 <div id="right-menu-title">Menu</div>
             </div>
             <div id="menu-body">
+                <div v-if="connected" class="menu-cell" @click="toInbox">
+                    <img class="menu-cell-img" src="/img/2x/menu-1.png"/>
+                    <div class="menu-cell-font">消息</div>
+                </div>
                 <div class="menu-cell" @click="toHomePage">
                     <img class="menu-cell-img" src="/img/2x/menu-1.png"/>
                     <div class="menu-cell-font">HomePage</div>
                 </div>
-                <div class="menu-cell" @click="toForkFund">
+                <div v-show="false" class="menu-cell" @click="toForkFund">
                     <img class="menu-cell-img" src="/img/2x/menu-2.png"/>
                     <div class="menu-cell-font">创建基金</div>
                 </div>
@@ -56,10 +60,12 @@
 </template>
 
 <script lang="ts">
-    import {defineComponent, ref} from "vue";
+    import {defineComponent, onMounted, ref, watch} from "vue";
     import {useRouter} from "vue-router"
     // eslint-disable-next-line no-unused-vars
     import {IPageArgs, IPageParam} from "@/pgcommon/common";
+    // @ts-ignore
+    import useStore from "@/store";
 
     export default defineComponent({
         name: "NavBar",
@@ -70,6 +76,20 @@
             const barStyle = ref(0)
             const display = ref(false)
             const router = useRouter()
+            const store = useStore()
+            const connected = ref(false)
+            watch(
+                (): boolean => {
+                    return store.state.connected
+                },
+                (conn) => {
+                    // 当otherName中的 firstName或者lastName发生变化时，都会进入这个函数
+                    connected.value = conn
+                }
+            )
+            onMounted(() => {
+                connected.value = store.state.connected
+            })
 
             function setTitle(title: string, style: number = 0) {
                 curTitle.value = title
@@ -86,6 +106,18 @@
                 router.push({
                     name: 'Home'
                 })
+            }
+
+            function toInbox() {
+                let args: IPageArgs = {}
+                let p: IPageParam = {
+                    Name: "Inbox",
+                    Title: "消息",
+                    Args: args,
+                    NewPage: true,
+                }
+                changeView(p)
+                display.value = false
             }
 
             function toForkFund() {
@@ -113,8 +145,8 @@
             return {
                 setTitle,
                 showPopup,
-                toHomePage,
-                toForkFund,
+                toHomePage, toForkFund, toInbox,
+                connected,
                 back,
                 barStyle,
                 curTitle,

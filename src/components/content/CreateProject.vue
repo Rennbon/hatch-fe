@@ -51,7 +51,7 @@
                     type="digit"
                     name="SetupHeight"
                     label="上架时间"
-                    placeholder="必填，单位：ETH区块高度"
+                    :placeholder="heightAdvice"
                     :rules="[{pattern:/^[1-9]\d*$/,required:true,  message: '请填写上架时间' }]"
             />
             <van-field
@@ -103,6 +103,7 @@
     // eslint-disable-next-line no-unused-vars
     import {ISetProjectParam} from "../../pgcommon/common";
     import {Notify} from "vant";
+    import {ApiManager} from "@/chain/api";
 
 
     export default defineComponent({
@@ -125,10 +126,11 @@
             const AmountPattern = /^([1-9]\d{0,9}|0)(\.\d{1,5})?$/
             const ERC20Pattern = /^0x[0-9a-fA-F]{40}$/
             const provider = new ethers.providers.JsonRpcProvider(String(process.env.VUE_APP_CHAIN_URL))
-
+            const heightAdvice = ref("")
             let abi: ContractManager
             onMounted(() => {
                 abi = new ContractManager(fundAddr.value)
+                blockHeight()
             })
 
             async function getERC20TokenSymbol() {
@@ -142,6 +144,12 @@
             const onFailed = (errorInfo: any) => {
                 console.log('failed', errorInfo);
             };
+
+            async function blockHeight() {
+                let blockHeight = await ApiManager.GetBlockNumber()
+                blockHeight = blockHeight + 10000
+                heightAdvice.value = "当前块高："+blockHeight+"，建议增加10000"
+            }
 
             async function createProject() {
                 let account = wcli!.state.address
@@ -175,7 +183,8 @@
                 AmountPattern,
                 ERC20Pattern,
                 getERC20TokenSymbol,
-                createProject
+                createProject,
+                heightAdvice
             }
         }
     })

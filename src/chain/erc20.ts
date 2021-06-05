@@ -217,8 +217,16 @@ export class ContractManager {
         const input4 = utils.parseEther(param.HardCap)
         const input5 = utils.parseEther(param.TargetPrice)
         const input6 = param.SetupHeight
-        const input7 = [param.Web, param.WhitePaper]
 
+        let web = param.Web
+        let wp = param.WhitePaper
+        if (web === "") {
+            web = "none"
+        }
+        if (wp === "") {
+            wp = "none"
+        }
+        const input7 = [web, wp]
         const data = this.dreamMakeAbi.encodeFunctionData("setProject", [input1, input2, input3, input4, input5, input6, input7])
         let tx = {
             from: param.From,
@@ -231,9 +239,7 @@ export class ContractManager {
             gas: "0x0"
         }
         let gas = await ApiManager.GetEstimateGas(tx)
-        console.log(gas)
         tx.gas = gas
-        console.log(tx)
         return tx
     }
 
@@ -383,7 +389,7 @@ export class ContractManager {
             from: account,
         }
         let res = await contract.functions.investProjectTokenAmount(project, overrides)
-        let val = convertAmountToCommon(res)
+        let val = convertAmountToCommon(res, 0)
         return val
     }
 
