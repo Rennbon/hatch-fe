@@ -16,7 +16,7 @@
 <script lang="ts">
     import {defineComponent, inject, onMounted, ref} from "vue";
     // eslint-disable-next-line no-unused-vars
-    import {WClient} from "../chain/walletconnect";
+    import {WClient} from "@/chain/walletconnect";
 
 
     export default defineComponent({

@@ -989,7 +989,7 @@
         font-family: PingFangSC;
     }
 
-    /deep/ .van-tab__text {
+    :deep(.van-tab__text) {
         font-family: PingFangSC;
         font-size: 32px;
     }

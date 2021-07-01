@@ -148,7 +148,7 @@
             async function blockHeight() {
                 let blockHeight = await ApiManager.GetBlockNumber()
                 blockHeight = blockHeight + 10000
-                heightAdvice.value = "当前块高："+blockHeight+"，建议增加10000"
+                heightAdvice.value = "当前块高：" + blockHeight + "，建议增加10000"
             }
 
             async function createProject() {
@@ -191,11 +191,11 @@
 </script>
 
 <style scoped>
-    /deep/ .van-cell {
+    :deep(.van-cell) {
 
     }
 
-    /deep/ .van-field__label {
+    :deep(.van-field__label) {
         font-size: 32px;
         font-weight: bold;
         padding-left: 20px;
@@ -205,13 +205,13 @@
         height: 48px;
     }
 
-    /deep/ .van-button__text {
+    :deep(.van-button__text) {
         color: white;
         border: none;
 
     }
 
-    /deep/ .van-button {
+    :deep(.van-button) {
         border: none;
         border-radius: 10px;
         background-color: #3682FF;

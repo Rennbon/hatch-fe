@@ -22,6 +22,12 @@ apiManager.interceptors.response.use(
     }
 )
 export const BackendApi = {
+    getMyPageV2(params: object) {
+        return apiManager.get(
+            '/v2/myPage', {
+                params: params
+            })
+    },
     getMyPage(params: object) {
         return apiManager.get(
             '/myPage', {
@@ -34,9 +40,21 @@ export const BackendApi = {
                 params: params
             })
     },
+    getFundIncrement(params: object) {
+        return apiManager.get(
+            '/fundIncrement', {
+                params: params
+            })
+    },
     getOtherProjects(params: object) {
         return apiManager.get(
             '/otherProjects', {
+                params: params
+            })
+    },
+    getOtherProjectsV2(params: object) {
+        return apiManager.get(
+            '/v2/otherProjects', {
                 params: params
             })
     },

@@ -156,11 +156,11 @@
         position: relative;
     }
 
-    /deep/ .van-button div {
+    :deep(.van-button div) {
         color: white;
     }
 
-    /deep/ .van-button {
+    :deep(.van-button) {
         position: relative;
         margin-top: 20px;
         height: 75px;
@@ -174,13 +174,13 @@
         border-radius: 10px;
     }
 
-    /deep/ .van-cell {
+    :deep(.van-cell) {
         width: 650px;
         border: 0px;
     }
 
 
-    /deep/ .van-field__label {
+    :deep(.van-field__label) {
         font-size: 32px;
         line-height: 50px;
         font-family: PingFangSC;

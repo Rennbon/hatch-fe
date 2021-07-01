@@ -22,6 +22,15 @@ export interface IProjectArgs extends IFundArgs {
 }
 
 
+export interface IProject {
+    State: number
+    Symbol: string
+    SoftCap: number
+    HardCap: number
+    Uint: string
+
+}
+
 export interface IOperationSlot {
     Type: SubmitType
     Project: string
@@ -29,9 +38,10 @@ export interface IOperationSlot {
     Limit: string
     Tips: string
 }
-export interface  IDialogSlot {
+
+export interface IDialogSlot {
     Title: string
-    Content : string
+    Content: string
 }
 
 
@@ -94,3 +104,5 @@ export enum ProjectStatus {
     End = 6,
 
 }
+
+

@@ -3,11 +3,15 @@
         <div id="nav-border-0">
             <div id="nav-logo">🐣</div>
             <div id="nav-name">Hatch.Tech</div>
-            <div v-if="connected" style="margin: auto">
-                <div id="account">{{ account }}</div>
-                <button id="disconnect" @click="disconnect">断开连接</button>
+            <div id="nav-wallet">
+                <div v-if="connected">
+                    <div class="nav-wallet-cnt" @click="disconnect">{{ accountFormat(account) }}</div>
+                </div>
+                <div v-else>
+                    <div @click="connectWallet" class="nav-wallet-cnt">Not connected</div>
+                </div>
             </div>
-            <img @click="showPopup" class="menu" src="/img/2x/menu-w.png"/>
+            <van-icon @click="showPopup" class="menu" name="weapp-nav"/>
         </div>
 
         <van-popup v-model:show="display" teleport="body" id="right-menu"
@@ -50,23 +54,27 @@
                     <div class="menu-cell-font">联系我们</div>
                 </div>
             </div>
-        </van-popup>
 
+        </van-popup>
     </div>
 </template>
 
 <script lang="ts">
-    import {defineComponent, onMounted, ref, watch} from "vue";
+    import {defineComponent, inject, onMounted, ref, watch} from "vue";
     import {useRouter} from "vue-router"
     // eslint-disable-next-line no-unused-vars
     import {IPageArgs, IPageParam} from "@/pgcommon/common";
     // @ts-ignore
     import useStore from "@/store/index";
+    // eslint-disable-next-line no-unused-vars
+    import {WClient} from "@/chain/walletconnect";
+    import {Dialog} from "vant";
 
     export default defineComponent({
-        name: "NavBarV2",
+        name: "NavBar",
         props: {},
         setup(props, context) {
+            const wcli = inject<WClient>('walletConnect')
             const curTitle = ref("")
             // 0:logo blue 1:white 2:blue
             const barStyle = ref(0)
@@ -83,11 +91,46 @@
                     // 当otherName中的 firstName或者lastName发生变化时，都会进入这个函数
                     connected.value = conn
                     account.value = store.state.account
+                    console.log(1, account)
                 }
             )
             onMounted(() => {
                 connected.value = store.state.connected
+                account.value = store.state.account
             })
+
+
+            async function connectWallet() {
+                if (wcli === undefined) {
+                    throw new Error("出错了")
+                }
+                await wcli.walletConnectInit()
+                if (wcli.state.connector?.session.connected) {
+                    store.commit("updateConnected", true)
+                    connected.value = wcli.state.connected
+                    account.value = wcli.state.address
+                    console.log(2, account)
+                }
+            }
+
+            function disconnect() {
+                Dialog.confirm({
+                    message: 'disconnect wallet',
+                })
+                    .then(() => {
+                        console.log("click disconnect")
+                        wcli!.killSession()
+                        connected.value = false
+                    })
+                    .catch(() => {
+                        // on cancel
+                    });
+
+            }
+
+            function accountFormat(account: string) {
+                return account.substring(0, 5) + '...' + account.substring(38)
+            }
 
             function setTitle(title: string, style: number = 0) {
                 curTitle.value = title
@@ -148,7 +191,8 @@
                 back,
                 barStyle,
                 curTitle,
-                display
+                display, account,
+                connectWallet, disconnect, accountFormat
             }
         }
     })
@@ -196,9 +240,31 @@
         top: 30px;
     }
 
+    #nav-wallet {
+        width: 240px;
+        height: 60px;
+        border-radius: 30px;
+        background-color: #FFFF00;
+        color: #333333;
+        font-size: 24px;
+        font-family: PingFangSC;
+        position: absolute;
+        left: 350px;
+        top: 20px;
+    }
+
+    .nav-wallet-cnt {
+        line-height: 60px;
+        text-align: center;
+        font-size: 24px;
+        font-family: PingFangSC;
+        font-weight: bold;
+
+    }
+
     .menu {
         position: absolute;
-        top: 28px;
+        top: 32px;
         right: 38px;
         z-index: 1000;
         height: 36px;

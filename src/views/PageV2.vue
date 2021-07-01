@@ -15,9 +15,8 @@
 
     import Fund from "@/components/content/Fund.vue";
     import Project from "@/components/content/Project.vue";
-    import Bottom from "@/components/bar/Bottom.vue";
-    import NavBar from "@/components/bar/v2/NavBarV2.vue";
-    import Nav from "@/components/content/Nav.vue"
+    import NavBar from "@/components/bar/v2/NavBar.vue";
+    import Nav from "@/components/content/v2/Nav.vue"
     import CreateProject from "@/components/content/CreateProject.vue"
     import {defineComponent, onMounted, provide, ref} from "vue";
     // eslint-disable-next-line no-unused-vars
@@ -34,7 +33,6 @@
             Dialog,
             Operation,
             NavBar,
-            Bottom,
             Fund,
             Project,
             Nav,

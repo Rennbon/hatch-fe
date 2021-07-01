@@ -144,3 +144,9 @@ export function formatInputDecimals(inputOne: string, inputTwo: string): string 
         .replace(/,/g, "");
     return result;
 }
+
+export function GetPercent(numerator: string | number, denominator: string | number): number {
+    let num1 = new BigNumber(`${numerator}`).toNumber()
+    let num2 = new BigNumber(`${denominator}`).toNumber()
+    return num2 <= 0 ? 0 : (Math.round(num1 / num2 * 10000) / 100.00);
+}

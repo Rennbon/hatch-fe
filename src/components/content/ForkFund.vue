@@ -210,12 +210,12 @@
         overflow-x: hidden;
     }
 
-    /deep/ .van-cell {
+    :deep(.van-cell) {
 
     }
 
 
-    /deep/ .van-field__label {
+    :deep(.van-field__label) {
         font-size: 28px;
         font-weight: bold;
         padding-left: 20px;
@@ -237,7 +237,7 @@
         top: 16px;
     }
 
-    /deep/ .van-button__text {
+    :deep(.van-button__text) {
         color: white;
     }
 </style>
