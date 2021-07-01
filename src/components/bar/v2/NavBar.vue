@@ -249,7 +249,7 @@
         font-size: 24px;
         font-family: PingFangSC;
         position: absolute;
-        left: 350px;
+        left: 390px;
         top: 20px;
     }
 

@@ -52,19 +52,26 @@
         <div class="divider">- - - Others - - -</div>
         <div class="dm-pods">
             <div class="dm-pod">
-                <div class="dm-container" :key="index" v-for="(pro,index) in otherProjects">
+                <div class="dm-container" :key="index" :style="{'background-color':pro.contentBGColor}" v-for="(pro,index) in otherProjects">
                     <div class="dm-container-header"
                          :style="{'color': pro.headerColor,'background-color':pro.headerBGColor}">{{ pro.header }}
                     </div>
-                    <div class="dm-container-name">{{ pro.name }}</div>
-                    <div class="dm-container-num">{{ pro.numTag }}</div>
-                    <div class="dm-container-uint">USDT</div>
+                    <div class="dm-container-name"
+                         :style="{'color': pro.contentColor,'background-color':pro.contentBGColor}">{{ pro.name }}
+                    </div>
+                    <div class="dm-container-num"
+                         :style="{'color': pro.contentColor,'background-color':pro.contentBGColor}">{{ pro.numTag }}
+                    </div>
+                    <div class="dm-container-uint"
+                         :style="{'color': pro.contentColor,'background-color':pro.contentBGColor}">USDT
+                    </div>
                     <div class="dm-container-footer">
                         <span class="dcf-1" :style="{'width': pro.step1 }">{{ pro.step1 }}</span>
-                        <span class="dcf-2" :style="{'width': pro.step2 }">{{ pro.step2 }}</span>
+                        <span class="dcf-2"
+                              :style="{'width': pro.step2 }">{{ pro.step2 === '0%' ? '' : pro.step2 }}</span>
                         <span class="dcf-3"
                               :style="{'width': pro.step3,'color':pro.footerColor,'background-color':pro.footerBGColor}">{{
-                                pro.footer
+                                pro.footer === '' ? '\u00a0' : pro.footer
                             }}</span>
                     </div>
                 </div>
@@ -481,13 +488,15 @@
         font-size: 24px;
         line-height: 24px;
         top: 36px;
-        font-weight: 500;
+        font-family: PingFangSC;
+        font-weight: bold;
     }
 
     #base-fund-inc {
         font-size: 24px;
         position: relative;
         top: 36px;
+        font-family: PingFangSC;
         font-weight: 500;
     }
 
@@ -515,18 +524,18 @@
     }
 
     #base-mining {
-        width: 120px;
+        width: 160px;
         height: 60px;
         background-color: #FFCC00;
         color: #333333;
         font-size: 24px;
         font-weight: bold;
         font-family: PingFangSC;
-        border-radius: 30px;
+        border-radius: 48px;
         position: absolute;
-        right: 50px;
+        right: 40px;
         line-height: 60px;
-        top: 80px;
+        top: 110px;
     }
 
     .dm-pods {
@@ -558,7 +567,7 @@
         top: 0px;
         height: 30px;
         width: 100%;
-        font-size: 24px;
+        font-size: 20px;
         font-family: PingFangSC;
         background-color: #FFCC00;
         color: #FFFF00;
