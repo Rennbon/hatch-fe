@@ -1,20 +1,20 @@
 <template>
     <div id="home">
+        <NavBar></NavBar>
         <Index></Index>
-        <Bottom></Bottom>
     </div>
 </template>
 
 <script lang="ts">
-    import Bottom from "@/components/bar/Bottom.vue";
-    import Index from "@/components/Index.vue";
+    import NavBar from "@/components/bar/v2/NavBar.vue";
+    import Index from "@/components/content/v2/Index.vue";
     import {defineComponent} from "vue";
 
     export default defineComponent({
         name: 'HomeV2',
         components: {
             Index,
-            Bottom,
+            NavBar,
         },
 
     })

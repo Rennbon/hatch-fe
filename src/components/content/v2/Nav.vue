@@ -2,24 +2,25 @@
     <div id="dm-body">
         <div id="base-fund" @click="toFund(MDToken,'DreamDAO')">
             <div id="base-fund-name">Hatch-Tech</div>
-            <div id="base-fund-percent" :style="{'color': dreamDao.color}">{{ dreamDao.percent }}</div>
-            <div id="base-fund-inc" :style="{'color': dreamDao.color}">{{ dreamDao.inc }} USDT</div>
+            <div id="base-fund-percent" :style="{'color': fundInfo.color}">{{ fundInfo.percent }}</div>
+            <div id="base-fund-inc" :style="{'color': fundInfo.color}">{{ fundInfo.inc }} USDT</div>
             <div id="base-mining">Mining</div>
             <div id="base-line">
                 <div class="base-raw">
-                    <span class="base-key">Marker Size:</span>
-                    <span class="base-val">{{ convertAmountToCommon(dreamDao.amount) }} USDT</span>
+                    <span class="base-key">Capital Pool:</span>
+                    <span class="base-val">{{ convertAmountToCommon(fundInfo.amount) }} USDT</span>
                 </div>
                 <div class="base-raw">
                     <span class="base-key">Total Wallets:</span>
-                    <span class="base-val">{{ dreamDao.users }}</span>
+                    <span class="base-val">{{ fundInfo.capital }}</span>
                 </div>
             </div>
         </div>
-        <div class="divider">- - - My - - -</div>
-        <div class="dm-pods">
+        <div v-if="account!=''" class="divider-title">- - - My - - -</div>
+        <div class="dm-pods" v-if="account!=''">
             <div class="dm-pod">
                 <div class="dm-container" :style="{'background-color':pro.contentBGColor}" :key="index"
+                     @click="toProject(pro)"
                      v-for="(pro,index) in myProjects">
                     <div class="dm-container-header"
                          :style="{'color': pro.headerColor,'background-color':pro.headerBGColor}">{{ pro.header }}
@@ -49,10 +50,11 @@
                 </div>
             </div>
         </div>
-        <div class="divider">- - - Others - - -</div>
+        <div class="divider-title" v-if="account!=''">- - - Others - - -</div>
         <div class="dm-pods">
             <div class="dm-pod">
-                <div class="dm-container" :key="index" :style="{'background-color':pro.contentBGColor}" v-for="(pro,index) in otherProjects">
+                <div class="dm-container" :key="index" :style="{'background-color':pro.contentBGColor}"
+                     @click="toProject(pro)" v-for="(pro,index) in otherProjects">
                     <div class="dm-container-header"
                          :style="{'color': pro.headerColor,'background-color':pro.headerBGColor}">{{ pro.header }}
                     </div>
@@ -75,7 +77,7 @@
                             }}</span>
                     </div>
                 </div>
-                <div class="dm-container" v-if="reqOtherProjects.more" @click="getOtherProjects">
+                <div class="dm-container" v-if="reqOtherProjects.moreIcon" @click="getOtherProjects">
                     <div class="more">More
                     </div>
                 </div>
@@ -97,6 +99,7 @@
     import {ContractManager} from "@/chain/erc20";
     // @ts-ignore
     import useStore from "@/store";
+    import {ApiManager} from "@/chain/api";
 
 
     class ReqMyPage {
@@ -181,25 +184,33 @@
         setup(props, context) {
             const store = useStore()
             const account = ref("")
-            const MDToken = inject<string>("makeDream", "")
             const wcli = inject<WClient>("walletConnect")
             const currentHeight = ref(0)
-
-            const dreamDao = reactive({amount: "0", percent: "0%", inc: "0", color: "", users: "0"})
-            //const myFunds = reactive({list: []})
+            const abi = inject<ContractManager>("abi", new ContractManager(""))
+            const MDToken = inject<string>("makeDream", "")
+            const fundInfo = reactive({
+                percent: "0%",
+                amount: "0",
+                capital: "0",
+                investors: "0",
+                inc: "0",
+                color: ""
+            })
 
             const myProjects: Project[] = reactive([])
             onMounted(async () => {
-                const abi = new ContractManager(MDToken)
+                console.log("block number",await ApiManager.GetBlockNumber())
                 if (wcli != undefined && store.state.connected) {
                     await wcli.walletConnectInit()
                     account.value = wcli.state.address
-                    dreamDao.users = await abi.CountUsers()
+                    getMyPage()
                 }
+                fundInfo.capital = await abi.CountUsers()
+                fundInfo.investors = await abi.CountInvests()
+                fundInfo.amount = await abi.TotalDeposit()
 
 
                 getFundIncrement()
-                getMyPage()
                 getOtherProjects()
                 console.log("load nav", account)
             })
@@ -209,16 +220,16 @@
                         "fundToken": MDToken
                     }
                 ).then(res => {
-                    dreamDao.percent = res.data.percent + "%"
-                    dreamDao.inc = res.data.increment
-                    dreamDao.amount = res.data.amount
-                    if (dreamDao.inc === "0" || dreamDao.inc === "") {
-                        dreamDao.color = "#666666"
-                        dreamDao.inc = "0"
-                    } else if (greaterThan(dreamDao.inc, 0)) {
-                        dreamDao.color = "#00EB60"
+                    fundInfo.percent = res.data.percent + "%"
+                    fundInfo.inc = res.data.increment
+                    fundInfo.amount = res.data.amount
+                    if (fundInfo.inc === "0" || fundInfo.inc === "") {
+                        fundInfo.color = "#666666"
+                        fundInfo.inc = "0"
+                    } else if (greaterThan(fundInfo.inc, 0)) {
+                        fundInfo.color = "#00EB60"
                     } else {
-                        dreamDao.color = "#EC5A4C"
+                        fundInfo.color = "#EC5A4C"
                     }
                 })
             }
@@ -262,6 +273,7 @@
             const reqOtherProjects = reactive({
                 offset: 0,
                 more: true,
+                moreIcon: false
             })
 
             function calcProject(pro: ProjectOutput, currentHeight: number): Project {
@@ -365,7 +377,7 @@
                         break
                 }
                 if (pro.status > 0) {
-                    tmp.footer = "Trust by HatchDAO"
+                    tmp.footer = "Trust HatchDAO"
                     tmp.footerColor = '#BCBCBC'
                 }
                 return tmp
@@ -394,6 +406,8 @@
                         reqOtherProjects.more = false
                     } else if (reqOtherProjects.offset > 0 && projectLen < 9) {
                         reqOtherProjects.more = false
+                    } else {
+                        reqOtherProjects.moreIcon = true
                     }
                     reqOtherProjects.offset += projectLen
                     console.log("otherProject len", otherProjects.length)
@@ -439,7 +453,7 @@
                 toFund,
                 toProject,
                 getMyPage, getOtherProjects,
-                dreamDao,
+                fundInfo,
                 MDToken,
                 otherProjects, myProjects,
                 reqOtherProjects, reqMyPage,
@@ -459,12 +473,13 @@
         padding-bottom: 200px;
     }
 
-    .divider {
+    .divider-title {
         height: 30px;
         margin: 0px 10px;
         font-size: 20px;
         line-height: 60px;
         color: #797979;
+        font-weight: bold;
     }
 
     #base-fund {
@@ -601,7 +616,6 @@
         width: 100%;
         font-size: 20px;
         font-family: PingFangSC;
-
     }
 
     .dcf-1 {

@@ -15,7 +15,7 @@
 <script lang="ts">
     import {defineComponent, ref} from "vue";
     // eslint-disable-next-line no-unused-vars
-    import {IDialogSlot} from "../../pgcommon/common";
+    import {IDialogSlot} from "@/pgcommon/common";
 
     export default defineComponent({
             name: "dialog",

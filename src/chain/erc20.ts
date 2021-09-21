@@ -362,11 +362,10 @@ export class ContractManager {
 
     // get one's guarantee of project
     public async GuaranteeProjectValue(account: string, project: string): Promise<string> {
-        let contract = this.dreamMakeContract
         let overrides = {
             from: account,
         }
-        let res = await contract.functions.guaranteeProjectValue(project, overrides)
+        let res = await this.dreamMakeContract.functions.guaranteeProjectValue(project, overrides)
         let val = convertAmountToCommon(res)
         return val
     }
@@ -375,7 +374,7 @@ export class ContractManager {
     public async InvestProjectValue(account: string, project: string): Promise<string> {
         let contract = this.dreamMakeContract
         let overrides = {
-            from: account,
+            from: account
         }
         let res = await contract.functions.investProjectValue(project, overrides)
         let val = convertAmountToCommon(res)
@@ -386,7 +385,7 @@ export class ContractManager {
     public async InvestProjectTokenAmount(account: string, project: string): Promise<string> {
         let contract = this.dreamMakeContract
         let overrides = {
-            from: account,
+            from: account
         }
         let res = await contract.functions.investProjectTokenAmount(project, overrides)
         let val = convertAmountToCommon(res, 0)

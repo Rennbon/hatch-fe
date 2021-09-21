@@ -1,7 +1,7 @@
 <template>
     <div id="main-border">
         <NavBar ref="RefNavBar"></NavBar>
-        <div id="guide-border">
+        <div id="guide-border-v2">
             <div id="tmp-container" @click="toHomePage">
                 <div class="container-border">
                     <div id="dm-name">Dream DAO</div>
@@ -21,15 +21,15 @@
     </div>
 </template>
 <script>
-    import P1 from "@/components/guide/P1.vue"
-    import P2 from "@/components/guide/P2.vue"
-    import P3 from "@/components/guide/P3.vue"
-    import P4 from "@/components/guide/P4.vue"
-    import P5 from "@/components/guide/P5.vue"
-    import P6 from "@/components/guide/P6.vue"
-    import P7 from "@/components/guide/P7.vue"
-    import Ticker from "@/components/guide/Ticker.vue"
-    import NavBar from "@/components/bar/NavBar";
+    import P1 from "@/components/guide/v2/P1.vue"
+    import P2 from "@/components/guide/v2/P2.vue"
+    import P3 from "@/components/guide/v2/P3.vue"
+    import P4 from "@/components/guide/v2/P4.vue"
+    import P5 from "@/components/guide/v2/P5.vue"
+    import P6 from "@/components/guide/v2/P6.vue"
+    import P7 from "@/components/guide/v2/P7.vue"
+    import Ticker from "@/components/guide/v2/Ticker.vue"
+    import NavBar from "@/components/bar/v2/NavBar";
     import {ContractManager} from "@/chain/erc20";
 
     export default {

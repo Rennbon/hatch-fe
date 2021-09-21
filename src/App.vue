@@ -32,7 +32,7 @@
                 provide<WClient>("walletConnect", new WClient())
                 provide<ContractManager>("abi", new ContractManager(String(process.env.VUE_APP_DREAM_MAKE)))
                 provide<string>("makeDream", String(process.env.VUE_APP_DREAM_MAKE))
-                provide<string>("account","")
+                provide<string>("account", "")
             }
         }
     )
@@ -67,6 +67,19 @@
     }
 
     .guide-border {
+        background-image: linear-gradient(to right, #0575DF, #00EB60);
+        height: 450px;
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+        width: 100%;
+        box-shadow: 0 0 28px rgba(0, 0, 0, .25), 0 0 28px rgba(0, 0, 0, .25);
+        border-radius: 20px 20px 0 0;
+        color: white;
+        z-index: 5000;
+    }
+
+    .guide-border-v2 {
         background-image: linear-gradient(to right, #0575DF, #00EB60);
         height: 450px;
         position: absolute;
@@ -126,4 +139,157 @@
         line-height: 30px;
 
     }
+
+    .dcf-1 {
+        display: inline-block;
+        background-color: #FF9900;
+        color: #FFFF00;
+        height: 30px;
+        padding: 0;
+        margin: 0;
+        font-size: 20px;
+        line-height: 30px;
+    }
+
+    .dcf-2 {
+        display: inline-block;
+        background-color: #FFFF00;
+        color: #FF9900;
+        height: 30px;
+        padding: 0;
+        margin: 0;
+        font-size: 20px;
+        line-height: 30px;
+    }
+
+    .dcf-3 {
+        display: inline-block;
+        height: 30px;
+        padding: 0;
+        margin: 0;
+        font-size: 20px;
+        line-height: 30px;
+    }
+
+    .divider {
+        height: 20px;
+        background-color: #BCBCBC;
+    }
+
+    .cell-line {
+        border-bottom: 2px solid #cccccc;
+    }
+
+    .cell {
+        width: 666px;
+        line-height: 80px;
+        height: 80px;
+        display: inline-flex;
+    }
+
+    .cell-right {
+        width: 180px;
+        height: 80px;
+    }
+
+    .cell-middle {
+        width: 306px;
+        text-align: right;
+        height: 80px;
+    }
+
+    .cell-left {
+        width: 180px;
+        height: 80px;
+    }
+
+    .cell-title {
+        font-size: 32px;
+        font-family: Arial;
+        color: #333333;
+        line-height: 80px;
+        text-align: left;
+    }
+
+    .cell-title-left {
+        font-size: 24px;
+        font-family: Arial;
+        line-height: 80px;
+        color: #333333;
+        height: 80px;
+        text-align: left;
+    }
+
+    .cell-label {
+        height: inherit;
+        font-size: 24px;
+        color: #333333;
+        text-align: left;
+        font-family: Arial;
+    }
+
+    .cell-number {
+        width: 256px;
+        font-size: 24px;
+        font-family: Arial;
+        color: #333333;
+        display: inline-block;
+        text-align: right;
+    }
+
+    .cell-unit {
+        width: 50px;
+        font-size: 20px;
+        text-align: center;
+        display: inline-block;
+        color: #BCBCBC;
+    }
+
+    .cell-button {
+        border-radius: 48px;
+        font-size: 24px;
+        font-weight: bold;
+        color: #333333;
+        background-color: #FFCC00;
+        border: 0;
+        line-height: 24px;
+    }
+
+    .cell-button-width {
+        height: 60px;
+        width: 160px;
+    }
+
+
+    .cell-half {
+        width: 50%;
+    }
+
+    .cell-half-label {
+        height: 40px;
+        font-size: 24px;
+        text-align: left;
+        line-height: 40px;
+        font-weight: bold;
+    }
+
+    .cell-half-value {
+        height: 40px;
+        text-align: right;
+        font-size: 24px;
+        line-height: 40px;
+        font-weight: bold;
+    }
+
+    .cell-large-half {
+        width: 66%;
+        height: 80px;
+    }
+
+    .cell-small-half {
+        width: 33%;
+        height: 80px;
+        text-align: right;
+    }
+
 </style>

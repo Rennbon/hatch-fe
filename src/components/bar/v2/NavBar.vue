@@ -1,8 +1,10 @@
 <template>
     <div>
         <div id="nav-border-0">
-            <div id="nav-logo">🐣</div>
-            <div id="nav-name">Hatch.Tech</div>
+            <div v-if="barStyle==0" id="nav-logo">🐣</div>
+            <img v-if="barStyle==1" @click="back" id="back"
+                 src="/img/2x/arrow-left.png"/>
+            <div id="nav-name">{{ curTitle }}</div>
             <div id="nav-wallet">
                 <div v-if="connected">
                     <div class="nav-wallet-cnt" @click="disconnect">{{ accountFormat(account) }}</div>
@@ -53,6 +55,9 @@
                     <img class="menu-cell-img" src="/img/2x/menu-6.png"/>
                     <div class="menu-cell-font">联系我们</div>
                 </div>
+                <div class="menu-cell">
+                    <div class="menu-cell-font" @click="toProject">项目</div>
+                </div>
             </div>
 
         </van-popup>
@@ -63,7 +68,7 @@
     import {defineComponent, inject, onMounted, ref, watch} from "vue";
     import {useRouter} from "vue-router"
     // eslint-disable-next-line no-unused-vars
-    import {IPageArgs, IPageParam} from "@/pgcommon/common";
+    import {IPageArgs, IPageParam, IProjectArgs} from "@/pgcommon/common";
     // @ts-ignore
     import useStore from "@/store/index";
     // eslint-disable-next-line no-unused-vars
@@ -75,7 +80,7 @@
         props: {},
         setup(props, context) {
             const wcli = inject<WClient>('walletConnect')
-            const curTitle = ref("")
+            const curTitle = ref("Hatch.Tech")
             // 0:logo blue 1:white 2:blue
             const barStyle = ref(0)
             const display = ref(false)
@@ -173,6 +178,21 @@
                 display.value = false
             }
 
+            function toProject() {
+                let args: IProjectArgs = {
+                    ProjectAddress: "pro.token",
+                    FundAddress: "fund",
+                }
+                let p: IPageParam = {
+                    Name: "Project",
+                    Title: "项目",
+                    Args: args,
+                    NewPage: true,
+                }
+                changeView(p)
+                display.value = false
+            }
+
 
             function back() {
                 console.log("back", curTitle.value)
@@ -186,7 +206,7 @@
             return {
                 setTitle,
                 showPopup,
-                toHomePage, toForkFund, toInbox,
+                toHomePage, toForkFund, toInbox, toProject,
                 connected,
                 back,
                 barStyle,
@@ -236,7 +256,7 @@
         font-family: PingFangSC-Semibold, sans-serif;
         color: #333333;
         position: absolute;
-        left: 80px;
+        left: 120px;
         top: 30px;
     }
 

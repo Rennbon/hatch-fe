@@ -12,16 +12,15 @@
 </template>
 
 <script lang="ts">
-
-    import Fund from "@/components/content/Fund.vue";
-    import Project from "@/components/content/Project.vue";
+    import Fund from "@/components/content/v2/Fund.vue";
+    import Project from "@/components/content/v2/Project.vue";
     import NavBar from "@/components/bar/v2/NavBar.vue";
     import Nav from "@/components/content/v2/Nav.vue"
     import CreateProject from "@/components/content/CreateProject.vue"
     import {defineComponent, onMounted, provide, ref} from "vue";
     // eslint-disable-next-line no-unused-vars
     import {IDialogSlot, IFundArgs, IOperationSlot, IPageParam, IProjectArgs} from "@/pgcommon/common";
-    import Operation from "@/components/bar/Operation.vue"
+    import Operation from "@/components/bar/v2/Operation.vue"
     import ForkFund from "@/components/content/ForkFund.vue"
     import Inbox from "@/components/content/Inbox.vue"
     import Dialog from "@/components/bar/Dialog.vue"
@@ -82,13 +81,14 @@
                     provideValue(p)
                     currentPage.value = pMap.get(p.Name)
                     pageParam.value = p
-                    let barStyle = 1
+                    let barStyle = 0
                     switch (p.Name) {
                         case "Nav":
                             barStyle = 0;
                             break
+                        case "Fund":
                         case "Project":
-                            barStyle = 2;
+                            barStyle = 1;
                             break
                         default:
                             break

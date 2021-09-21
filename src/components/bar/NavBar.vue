@@ -63,7 +63,7 @@
     import {defineComponent, onMounted, ref, watch} from "vue";
     import {useRouter} from "vue-router"
     // eslint-disable-next-line no-unused-vars
-    import {IPageArgs, IPageParam} from "@/pgcommon/common";
+    import {IPageArgs, IPageParam, IProjectArgs} from "@/pgcommon/common";
     // @ts-ignore
     import useStore from "@/store";
 
@@ -141,6 +141,8 @@
             function changeView(p: IPageParam) {
                 context.emit("changeView", p)
             }
+
+
 
             return {
                 setTitle,
