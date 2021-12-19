@@ -1,18 +1,20 @@
 <template>
     <div id="dm-body">
-        <div id="base-fund" @click="toFund(MDToken,'DreamDAO')">
-            <div id="base-fund-name">Hatch-Tech</div>
+        <div id="base-fund" @click="toFund(MDToken,'Hatch.Tech')">
+            <div id="base-fund-name">FUN</div>
             <div id="base-fund-percent" :style="{'color': fundInfo.color}">{{ fundInfo.percent }}</div>
-            <div id="base-fund-inc" :style="{'color': fundInfo.color}">{{ fundInfo.inc }} USDT</div>
+            <div id="base-fund-inc" :style="{'color': fundInfo.color}">{{ fundInfo.inc }}
+                <span class="color-gray">USDT</span></div>
             <div id="base-mining">Mining</div>
             <div id="base-line">
                 <div class="base-raw">
                     <span class="base-key">Capital Pool:</span>
-                    <span class="base-val">{{ convertAmountToCommon(fundInfo.amount) }} USDT</span>
+                    <span class="base-val">{{ convertAmountToCommon(fundInfo.amount) }} <span
+                            class="color-gray">USDT</span></span>
                 </div>
                 <div class="base-raw">
-                    <span class="base-key">Total Wallets:</span>
-                    <span class="base-val">{{ fundInfo.capital }}</span>
+                    <span class="base-key">Investors:</span>
+                    <span class="base-val">{{ fundInfo.capital }} <span class="color-gray">Wallets</span></span>
                 </div>
             </div>
         </div>
@@ -50,7 +52,7 @@
                 </div>
             </div>
         </div>
-        <div class="divider-title" v-if="account!=''">- - - Others - - -</div>
+        <div class="divider-title" v-if="account===''">- - - Others - - -</div>
         <div class="dm-pods">
             <div class="dm-pod">
                 <div class="dm-container" :key="index" :style="{'background-color':pro.contentBGColor}"
@@ -199,7 +201,8 @@
 
             const myProjects: Project[] = reactive([])
             onMounted(async () => {
-                console.log("block number",await ApiManager.GetBlockNumber())
+                currentHeight.value = await ApiManager.GetBlockNumber()
+                console.log("block number", currentHeight.value)
                 if (wcli != undefined && store.state.connected) {
                     await wcli.walletConnectInit()
                     account.value = wcli.state.address
@@ -288,8 +291,18 @@
                     step3: "100%",
                     step1: "0%",
                     step2: "0%",
-                    footer: ""
-
+                    footer: "",
+                    footerBGColor: "#E4E4E4",
+                    footerColor: "#FF9900",
+                    preStep: true,
+                    headerBGColor: '#FF9900',
+                    headerColor: '#FFFF00',
+                    headerFont: "10",
+                    contentBGColor: "",
+                    contentColor: "",
+                    header: "",
+                    leftNum: "",
+                    rightNum: ""
                 } as Project
                 console.log(pro.status, pro.token)
                 switch (pro.status) {
@@ -314,7 +327,6 @@
                         } else {
                             tmp.footer = "0%"
                         }
-                        console.log(currentHeight, tmp.token, tmp.step1, tmp.step2, tmp.step3)
                         tmp.footerBGColor = "#E4E4E4"
                         tmp.footerColor = "#FF9900"
                         tmp.preStep = true
@@ -400,6 +412,7 @@
                         //3: loss
                         //4: break the contract
                         let cc = calcProject(proTmp, currentHeight.value)
+                        console.log("cc", cc)
                         otherProjects.push(cc)
                     }
                     if (reqOtherProjects.offset === 0 && projectLen < 8) {
@@ -478,7 +491,7 @@
         margin: 0px 10px;
         font-size: 20px;
         line-height: 60px;
-        color: #797979;
+        color: #BCBCBC;
         font-weight: bold;
     }
 

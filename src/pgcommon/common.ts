@@ -21,6 +21,11 @@ export interface IProjectArgs extends IFundArgs {
     ProjectAddress: string
 }
 
+export interface IList extends IPageArgs {
+    Type: ListType
+    Project: string
+    Symbol: string
+}
 
 export interface IProject {
     State: number
@@ -102,7 +107,13 @@ export enum ProjectStatus {
     FullQuota = 4,
     Sell = 5,
     End = 6,
-
 }
 
+export enum ListType {
+    GuaranteeLog = 1,
+    InvestLog = 2,
+    SellLog = 3,
+    Guarantor = 4,
+    Investor = 5,
+}
 

@@ -58,6 +58,9 @@
                 <div class="menu-cell">
                     <div class="menu-cell-font" @click="toProject">项目</div>
                 </div>
+                <div class="menu-cell">
+                    <div class="menu-cell-font" @click="toCreateProject">创建项目</div>
+                </div>
             </div>
 
         </van-popup>
@@ -68,7 +71,7 @@
     import {defineComponent, inject, onMounted, ref, watch} from "vue";
     import {useRouter} from "vue-router"
     // eslint-disable-next-line no-unused-vars
-    import {IPageArgs, IPageParam, IProjectArgs} from "@/pgcommon/common";
+    import {IFundArgs, IPageArgs, IPageParam, IProjectArgs} from "@/pgcommon/common";
     // @ts-ignore
     import useStore from "@/store/index";
     // eslint-disable-next-line no-unused-vars
@@ -157,7 +160,7 @@
             function toInbox() {
                 let args: IPageArgs = {}
                 let p: IPageParam = {
-                    Name: "Inbox",
+                    Name: "List",
                     Title: "消息",
                     Args: args,
                     NewPage: true,
@@ -171,6 +174,20 @@
                 let p: IPageParam = {
                     Name: "ForkFund",
                     Title: "创建基金会",
+                    Args: args,
+                    NewPage: true,
+                }
+                changeView(p)
+                display.value = false
+            }
+
+            function toCreateProject() {
+                let args: IFundArgs = {
+                    FundAddress: "",
+                }
+                let p: IPageParam = {
+                    Name: "CreateProject",
+                    Title: "Startup Submit",
                     Args: args,
                     NewPage: true,
                 }
@@ -206,7 +223,7 @@
             return {
                 setTitle,
                 showPopup,
-                toHomePage, toForkFund, toInbox, toProject,
+                toHomePage, toForkFund, toInbox, toProject, toCreateProject,
                 connected,
                 back,
                 barStyle,

@@ -4,14 +4,14 @@
         <img id="logo" src="/img/2x/logo-b.png" alt=""/>
         <div id="name">Dream DAO</div>
         <div>
-            <div class="content">The first</div>
-            <div class="content">decentralized combinator</div>
-            <div class="content">in the world</div>
+            <div class="content">The First</div>
+            <div class="content">Decentralized Incubator</div>
+            <div class="content">in the World</div>
         </div>
         <button id="info-bt" @click="toPage">{{ btLabel }}</button>
         <button id="guide-bt" @click="toP1">What is DreamDAO?</button>
     </div>
-</template>
+</template>åå
 
 <script lang="ts">
     import {defineComponent, inject, onMounted, ref} from "vue";

@@ -1,9 +1,9 @@
 <template>
     <div>
         <div>
-            <div class="content">The first</div>
-            <div class="content">decentralized combinator</div>
-            <div class="content">in the world</div>
+            <div class="content">The First</div>
+            <div class="content">Decentralized Incubator</div>
+            <div class="content">in the World</div>
         </div>
         <div id="idx-numbers">
             <div class="idx-kv">
@@ -19,7 +19,7 @@
                 <i class="idx-val">Startups</i>
             </div>
         </div>
-        <button id="info-bt" @click="toPage">GO></button>
+        <button id="info-bt" @click="toPage">GO ></button>
         <div id="guide-bt" @click="toP1">What is Hatch?</div>
     </div>
 </template>

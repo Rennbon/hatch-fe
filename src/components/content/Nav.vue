@@ -47,7 +47,7 @@
             <!-- disconnected start -->
             <div class="dm-pod" v-if="account===''">
                 <div class="dm-container" @click="toFund(MDToken,'DreamDAO')">
-                    <div class="fund-name">DreamDAO</div>
+                    <div class="fund-name">Hatch.Tech</div>
                     <div class="fund-percent" :style="{'color': dreamDao.color}">{{ dreamDao.percent }}</div>
                     <div class="fund-inc" :style="{'color': dreamDao.color}">{{ dreamDao.inc }} ETH</div>
                     <div class="fund-amount">{{ convertAmountToCommon(dreamDao.amount) }}</div>

@@ -23,7 +23,6 @@
             }
             lastTouchEnd = now;
         }, false)
-
     }
 
     export default defineComponent({
@@ -63,7 +62,8 @@
     }
 
     div {
-        color: #666666;
+        color: #333;
+        font-family: Arial;
     }
 
     .guide-border {
@@ -77,6 +77,11 @@
         border-radius: 20px 20px 0 0;
         color: white;
         z-index: 5000;
+    }
+
+    .cell-group {
+        padding: 0px 42px 0px 42px;
+        width: 666px;
     }
 
     .guide-border-v2 {
@@ -177,31 +182,36 @@
     }
 
     .cell-line {
-        border-bottom: 2px solid #cccccc;
+        border-bottom: 2px solid #F2F2F2;
     }
 
     .cell {
-        width: 666px;
+        width: 100%;
         line-height: 80px;
         height: 80px;
         display: inline-flex;
     }
 
+
     .cell-right {
         width: 180px;
+        display: inline-block;
         height: 80px;
     }
 
     .cell-middle {
         width: 306px;
+        display: inline-block;
         text-align: right;
         height: 80px;
     }
 
     .cell-left {
         width: 180px;
+        display: inline-block;
         height: 80px;
     }
+
 
     .cell-title {
         font-size: 32px;
@@ -210,6 +220,7 @@
         line-height: 80px;
         text-align: left;
     }
+
 
     .cell-title-left {
         font-size: 24px;
@@ -220,16 +231,27 @@
         text-align: left;
     }
 
-    .cell-label {
-        height: inherit;
+    .cell-title-right {
         font-size: 24px;
+        font-family: Arial;
+        line-height: 80px;
+        color: #333333;
+        height: 80px;
+        padding-right: 10px;
+        text-align: right;
+    }
+
+    .cell-label {
+        font-size: 22px;
         color: #333333;
         text-align: left;
         font-family: Arial;
+        height: 80px;
+        line-height: 80px;
     }
 
     .cell-number {
-        width: 256px;
+        width: 246px;
         font-size: 24px;
         font-family: Arial;
         color: #333333;
@@ -237,8 +259,9 @@
         text-align: right;
     }
 
+
     .cell-unit {
-        width: 50px;
+        width: 60px;
         font-size: 20px;
         text-align: center;
         display: inline-block;
@@ -246,6 +269,8 @@
     }
 
     .cell-button {
+        height: 60px;
+        width: 160px;
         border-radius: 48px;
         font-size: 24px;
         font-weight: bold;
@@ -253,11 +278,16 @@
         background-color: #FFCC00;
         border: 0;
         line-height: 24px;
+        font-family: PingFangSC;
     }
 
-    .cell-button-width {
-        height: 60px;
-        width: 160px;
+    .question-o {
+        text-align: right;
+        padding-right: 20px;
+        font-size: 48px;
+        line-height: 80px;
+        display: block;
+        color: #aaa;
     }
 
 
@@ -292,4 +322,26 @@
         text-align: right;
     }
 
+    .color-gray {
+        color: #BCBCBC;
+    }
+
+    .color-black {
+        color: #333;
+    }
+
+    .font-italic {
+        font-style: italic
+    }
+
+    .token-unit {
+        font-style: italic;
+        font-size: 20px;
+        color: #BCBCBC;
+        font-family: Arial;
+    }
+
+    .cell-page-num {
+        font-size: 20px;
+    }
 </style>

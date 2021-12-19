@@ -13,7 +13,7 @@
     </van-action-sheet>
 </template>
 <script lang="ts">
-    import {defineComponent, inject, ref} from "vue";
+    import {defineComponent, inject, onMounted, ref, watch} from "vue";
     // eslint-disable-next-line no-unused-vars
     import {IOperationSlot, SubmitType} from "@/pgcommon/common";
     // eslint-disable-next-line no-unused-vars
@@ -22,6 +22,8 @@
     import {Notify} from "vant";
     // eslint-disable-next-line no-unused-vars
     import {ITxData} from "@/chain/types";
+    // @ts-ignore
+    import useStore from "@/store";
 
     export default defineComponent({
         name: "Operation",
@@ -33,10 +35,27 @@
             const Amount = ref("")
             const Tips = ref("")
             const Limit = ref("")
-
+            const store = useStore()
+            const connected = ref(false)
             let abi: ContractManager
             const account = ref("")
             let param: IOperationSlot
+            watch(
+                (): boolean => {
+                    return store.state.connected
+                },
+                (conn) => {
+                    // 当otherName中的 firstName或者lastName发生变化时，都会进入这个函数
+                    connected.value = conn
+                    account.value = store.state.account
+                    console.log(1, account)
+                }
+            )
+            onMounted(async () => {
+                if (wcli != undefined && wcli.state.connector?.session.connected) {
+                    account.value = wcli.state.address
+                }
+            })
 
             function open(p: IOperationSlot) {
                 param = p
@@ -77,6 +96,12 @@
             }
 
             async function SubmitMethod() {
+                if (wcli != undefined && wcli.state.connector?.session.connected) {
+                    account.value = wcli.state.address
+                } else {
+                    Notify("need connect the wallet first")
+                    return
+                }
                 let tx: ITxData
                 switch (param.Type) {
                     case SubmitType.Save:
@@ -107,13 +132,14 @@
                         throw new Error("异常方法")
                 }
                 console.log("tx ", tx)
-                wcli!.state.connector!.sendTransaction(tx)
+                wcli.state.connector.sendTransaction(tx)
                     .then(
                         () => {
                             Notify({type: 'success', message: '交易发送成功'});
                             Show.value = false
                         }
                     ).catch(res => {
+                    console.log(res)
                     Notify(res)
                 })
             }

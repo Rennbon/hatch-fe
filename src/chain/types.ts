@@ -29,6 +29,14 @@ export interface ITxData {
     gas?: number | string;
 }
 
+export interface IFunInfo {
+    total: string;
+    investors: string;
+    startups:string;
+    wallets :string;
+    destroyed:string;
+}
+
 export interface IBlockScoutTx {
     value: string;
     txreceipt_status: string;

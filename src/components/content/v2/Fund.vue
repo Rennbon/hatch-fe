@@ -1,9 +1,12 @@
 <template>
     <div id="fund-border">
         <div id="fund-desc">
-            <div id="symbol">{{ MyFundToken.symbol }}</div>
-            <div id="desc">
-                目前没这个描述字段
+            <!--<div id="symbol">{{ MyFundToken.symbol }}</div>-->
+            <div id="desc">Our main Ethereum CLI client. It is the entry point into the Ethereum network (main-, test-
+                or private net), capable of running as a full node (default), archive node (retaining all historical
+                state) or a light node (retrieving data live). It can be used by other processes as a gateway into the
+                Ethereum network via JSON RPC endpoints exposed on top of HTTP, WebSocket and/or IPC transports. geth
+                --help and the CLI page for command line options.
             </div>
         </div>
 
@@ -11,33 +14,34 @@
             <div class="cell cell-line">
                 <div class="cell-left cell-title">My USDT</div>
                 <div class="cell-middle"></div>
-                <div class="cell-right cell-title-left">{{ myUSDT.percent }} of poll</div>
+                <div class="cell-right cell-title-right">{{ myUSDT.percent }} of poll</div>
             </div>
             <div class="cell cell-line">
                 <div class="cell-left cell-label">Total balance:</div>
                 <div class="cell-middle">
-                    <div class="cell-number">{{ myUSDT.all }}</div>
+
+                    <div class="cell-number">{{ convertAmountToCommon(myUSDT.total) }}</div>
                     <i class="cell-unit">USDT</i></div>
                 <div class="cell-right ">
-                    <button class="cell-button" @click="SubmitSaveETH">Deposit</button>
+                    <button class="cell-button" @click="SubmitSaveETH">Mining</button>
                 </div>
             </div>
             <div class="cell cell-line">
                 <div class="cell-left cell-label">Locked:</div>
                 <div class="cell-middle">
-                    <div class="cell-number">{{ myUSDT.lock }}</div>
+                    <div class="cell-number">{{ convertAmountToCommon(myUSDT.locked) }}</div>
                     <i class="cell-unit">USDT</i></div>
                 <div class="cell-right ">
-                    <van-icon name="question-o"/>
+                    <van-icon class="question-o" name="question-o"/>
                 </div>
             </div>
             <div class="cell">
                 <div class="cell-left cell-label">Withdrawable:</div>
                 <div class="cell-middle">
-                    <div class="cell-number">{{ myUSDT.withDrawable }}</div>
+                    <div class="cell-number">{{ convertAmountToCommon(myUSDT.withDrawable) }}</div>
                     <i class="cell-unit">USDT</i></div>
                 <div class="cell-right ">
-                    <button class="cell-button"  @click="SubmitWithdrawETH">Withdraw</button>
+                    <button class="cell-button" @click="SubmitWithdrawETH">Withdraw</button>
                 </div>
             </div>
         </div>
@@ -47,13 +51,13 @@
             <div class="cell cell-line">
                 <div class="cell-left cell-title">My FUN</div>
                 <div class="cell-middle"></div>
-                <div class="cell-right cell-title-left">{{ my2VC.percent }} of total</div>
+                <div class="cell-right cell-title-right">{{ myFun.percent }} of total</div>
             </div>
             <div class="cell cell-line">
                 <div class="cell-left cell-label">Total balance:</div>
                 <div class="cell-middle">
-                    <div class="cell-number">{{ my2VC.total }}</div>
-                    <i class="cell-unit">USDT</i></div>
+                    <div class="cell-number">{{ convertAmountToCommon(myFun.total) }}</div>
+                    <i class="cell-unit">{{ myFun.symbol }}</i></div>
                 <div class="cell-right ">
                     <button class="cell-button">Deposit</button>
                 </div>
@@ -61,17 +65,17 @@
             <div class="cell cell-line">
                 <div class="cell-left cell-label">Locked:</div>
                 <div class="cell-middle">
-                    <div class="cell-number">{{ my2VC.locked }}</div>
-                    <i class="cell-unit">USDT</i></div>
+                    <div class="cell-number">{{ convertAmountToCommon(myFun.locked) }}</div>
+                    <i class="cell-unit">{{ myFun.symbol }}</i></div>
                 <div class="cell-right ">
-                    <van-icon name="question-o"/>
+                    <van-icon class="question-o" name="question-o"/>
                 </div>
             </div>
             <div class="cell">
                 <div class="cell-left cell-label">Withdrawable:</div>
                 <div class="cell-middle">
-                    <div class="cell-number">{{ my2VC.withDrawable }}</div>
-                    <i class="cell-unit">USDT</i></div>
+                    <div class="cell-number">{{ convertAmountToCommon(myFun.withDrawable) }}</div>
+                    <i class="cell-unit">{{ myFun.symbol }}</i></div>
                 <div class="cell-right ">
                     <button class="cell-button">Withdraw</button>
                 </div>
@@ -80,65 +84,65 @@
         <div class="divider"></div>
         <div class="cell-group">
             <div class="cell cell-line">
-                <div class="cell-left cell-title">About 2VC</div>
+                <div class="cell-left cell-title">About Fun</div>
                 <div class="cell-middle"></div>
-                <div class="cell-right cell-title-left"></div>
+                <div class="cell-right cell-title-right"></div>
             </div>
             <div class="cell cell-line">
                 <div class="cell-left cell-label">Capital Pool:</div>
                 <div class="cell-middle">
-                    <div class="cell-number">{{ about2VC.capital }}</div>
+                    <div class="cell-number">{{ aboutFun.capital }}</div>
                     <i class="cell-unit">USDT</i></div>
                 <div class="cell-right ">
-                    <van-icon name="question-o"/>
+                    <van-icon class="question-o" name="question-o"/>
                 </div>
             </div>
             <div class="cell cell-line">
                 <div class="cell-left cell-label">Investors:</div>
                 <div class="cell-middle">
-                    <div class="cell-number">{{ about2VC.investors }}</div>
+                    <div class="cell-number">{{ aboutFun.investors }}</div>
                 </div>
                 <div class="cell-right ">
-                    <van-icon name="question-o"/>
+                    <van-icon class="question-o" name="question-o"/>
                 </div>
             </div>
             <div class="cell cell-line">
                 <div class="cell-left cell-label">Startups:</div>
                 <div class="cell-middle">
-                    <div class="cell-number">{{ about2VC.startups }}</div>
+                    <div class="cell-number">{{ aboutFun.startups }}</div>
                 </div>
                 <div class="cell-right ">
                     <button class="cell-button">Submit</button>
                 </div>
             </div>
             <div class="cell cell-line">
-                <div class="cell-left cell-label">Total 2VC dug:</div>
+                <div class="cell-left cell-label">Total Mined:</div>
                 <div class="cell-middle">
-                    <div class="cell-number">{{ about2VC.totalDug }}</div>
-                    <i class="cell-unit">2VC</i>
+                    <div class="cell-number">{{ aboutFun.totalDug }}</div>
+                    <i class="cell-unit">FUN</i>
                 </div>
                 <div class="cell-right ">
-                    <van-icon name="question-o"/>
+                    <van-icon class="question-o" name="question-o"/>
                 </div>
             </div>
             <div class="cell cell-line">
                 <div class="cell-left cell-label">Destroyed:</div>
                 <div class="cell-middle">
-                    <div class="cell-number">{{ about2VC.destroyed }}</div>
-                    <i class="cell-unit">2VC</i>
+                    <div class="cell-number">{{ aboutFun.destroyed }}</div>
+                    <i class="cell-unit">FUN</i>
                 </div>
                 <div class="cell-right ">
-                    <van-icon name="question-o"/>
+                    <van-icon class="question-o" name="question-o"/>
                 </div>
             </div>
             <div class="cell cell-line">
-                <div class="cell-left cell-label">2VC Price:</div>
+                <div class="cell-left cell-label">Price:</div>
                 <div class="cell-middle">
-                    <div class="cell-number">{{ about2VC.price }}</div>
+                    <div class="cell-number">{{ aboutFun.price }}</div>
                     <i class="cell-unit">USDT</i>
                 </div>
                 <div class="cell-right ">
-                    <van-icon name="question-o"/>
+                    <van-icon class="question-o" name="question-o"/>
                 </div>
             </div>
         </div>
@@ -152,7 +156,7 @@
     import {IOperationSlot, SubmitType} from "@/pgcommon/common";
     // eslint-disable-next-line no-unused-vars
     import {WClient} from "@/chain/walletconnect";
-    import {convertAmountToCommon, greaterThan} from "@/chain/bignumber"
+    import {convertAmountToCommon, greaterThan, subtract} from "@/chain/bignumber"
     //import {BackendApi} from "@/chain/backendApi";
     // eslint-disable-next-line no-unused-vars
     import {Notify} from "vant";
@@ -180,13 +184,14 @@
         methods: {
             convertAmountToCommon,
             greaterThan,
+            subtract,
         },
         setup(props, context) {
             const wcli = inject<WClient>("walletConnect")
             const fundAddr = inject("fund", ref(""))
 
             const account = ref("")
-            const Login = ref(false)
+            const Login = ref<boolean>(false)
             const MyDeposit = reactive({
                 all: "0",
                 unlock: "",
@@ -200,25 +205,37 @@
                 symbol: "",
             })
 
-
             onMounted(async () => {
                 const abi = new ContractManager(fundAddr.value)
                 if (wcli != undefined) {
-                    Login.value = true
                     account.value = wcli.state.address
-                    let myDeposit = await abi.MyDeposit(account.value)
-                    let myFundToken = await abi.MyFundTokenAmount(account.value)
-                    MyDeposit.all = myDeposit.All
-                    MyDeposit.lock = myDeposit.Lock
-                    MyDeposit.unlock = myDeposit.Unlock
+                    if (account.value != "") {
+                        Login.value = true
+                        let myDeposit = await abi.MyDeposit(account.value)
+                        myUSDT.total = myDeposit.All
+                        myUSDT.locked = myDeposit.Lock
+                        myUSDT.withDrawable = myDeposit.Unlock
 
-                    MyFundToken.withdraw = myFundToken.Withdraw
-                    MyFundToken.all = myFundToken.All
-                    MyFundToken.decimals = myFundToken.Decimals
-                    MyFundToken.symbol = myFundToken.Symbol
-                    MyFundToken.unlock = myFundToken.Unlock
+                        let myFundToken = await abi.MyFundTokenAmount(account.value)
+                        myFun.total = myFundToken.All
+                        myFun.withDrawable = myFundToken.Unlock
+                        myFun.symbol = myFundToken.Symbol
+                        myFun.locked = subtract(myFun.total, myFun.withDrawable)
+
+                        MyFundToken.withdraw = myFundToken.Withdraw
+                        MyFundToken.all = myFundToken.All
+                        MyFundToken.decimals = myFundToken.Decimals
+                        MyFundToken.symbol = myFundToken.Symbol
+                        MyFundToken.unlock = myFundToken.Unlock
+                    }
+                    let funInfo = await abi.FunInfo()
+                    aboutFun.capital = funInfo.total
+                    aboutFun.investors = funInfo.investors
+                    aboutFun.startups = funInfo.startups
+                    aboutFun.totalDug = funInfo.total
+                    aboutFun.destroyed = funInfo.destroyed
                 }
-
+                console.log("login", Login.value)
             })
             const myUSDT = reactive({
                 percent: "0%",
@@ -226,13 +243,14 @@
                 locked: "0",
                 withDrawable: "0"
             })
-            const my2VC = reactive({
+            const myFun = reactive({
                 percent: "0%",
                 total: "0",
                 locked: "0",
-                withDrawable: "0"
+                withDrawable: "0",
+                symbol: "FUN"
             })
-            const about2VC = reactive({
+            const aboutFun = reactive({
                 capital: "0",
                 investors: "0",
                 startups: "0",
@@ -316,7 +334,7 @@
              }*/
 
             return {
-                myUSDT, my2VC, about2VC,
+                myUSDT, myFun, aboutFun,
                 SubmitSaveETH,
                 SubmitWithdrawETH,
                 SubmitWithdrawToken,
@@ -353,107 +371,20 @@
         color: #333333;
         width: 160px;
         padding: 10px 0px 0px 10px;
+        border: 1px solid red;
     }
+
 
     #desc {
         position: absolute;
-        left: 160px;
-        top: 50px;
+        padding: 10px 20px;
         font-size: 24px;
-        width: 570px;
-        height: 220px;
+        width: 710px;
+        height: 260px;
         word-break: break-word;
         overflow: hidden;
         text-align: left;
-    }
-
-    .divider {
-        height: 20px;
-        background-color: #BCBCBC;
-    }
-
-    .cell-line {
-        border-bottom: 2px solid #cccccc;
-    }
-
-    .cell {
-        width: 666px;
-        margin-left: 42px;
-        line-height: 80px;
-    }
-
-    .cell-right {
-        width: 180px;
-        display: inline-block;
-        height: 80px;
-    }
-
-    .cell-middle {
-        width: 306px;
-        display: inline-block;
-        text-align: right;
-        height: 80px;
-    }
-
-    .cell-left {
-        width: 180px;
-        display: inline-block;
-        height: 80px;
-    }
-
-    .cell-title {
-        font-size: 32px;
-        font-family: Arial;
-        color: #333333;
-        line-height: 80px;
-        text-align: left;
-    }
-
-    .cell-title-left {
-        font-size: 24px;
-        font-family: Arial;
-        line-height: 80px;
-        color: #333333;
-        height: 80px;
-        text-align: left;
-    }
-
-    .cell-label {
-        font-size: 24px;
-        color: #333333;
-        text-align: left;
-        font-family: Arial;
-        height: 80px;
-        line-height: 80px;
-    }
-
-    .cell-number {
-        width: 256px;
-        font-size: 24px;
-        font-family: Arial;
-        color: #333333;
-        display: inline-block;
-        text-align: right;
-    }
-
-    .cell-unit {
-        width: 50px;
-        font-size: 20px;
-        text-align: center;
-        display: inline-block;
-        color: #BCBCBC;
-    }
-
-    .cell-button {
-        height: 60px;
-        padding: 20px;
-        border-radius: 48px;
-        font-size: 24px;
-        font-weight: bold;
-        color: #333333;
-        background-color: #FFCC00;
-        border: 0;
-        line-height: 24px;
+        font-family: arial;
     }
 
 </style>

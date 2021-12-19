@@ -15,16 +15,16 @@
                       :style="{'width': '20%'} "></span>
             </div>
             <div id="pro-button">
-                <button class="pro-button-1" @click="SubmitGuarantee">提供担保</button>
-                <button class="pro-button-1" @click="SubmitInvest">投资</button>
-                <button class="pro-button-1" @click="SubmitSell">出售</button>
+                <button class="pro-button-1" @click="SubmitGuarantee">Offer Guaranty</button>
+                <button class="pro-button-1" @click="SubmitInvest">Invest</button>
+                <button class="pro-button-1" @click="SubmitSell">Sell</button>
             </div>
         </div>
         <div id="pro-detail">
             <div class="cell-group">
                 <div class="cell cell-line">
                     <div class="cell-large-half  cell-title">About This Startup</div>
-                    <div class="cell-small-half cell-title-left">detail</div>
+                    <div class="cell-small-half cell-title-left">Details>></div>
                 </div>
                 <div class="cell cell-line">
                     <div class="cell-half">
@@ -33,38 +33,44 @@
                     </div>
                     <div class="cell-half">
                         <div class="cell-half-label">Token Price:</div>
-                        <div class="cell-half-value">Note lauch</div>
+                        <div class="cell-half-value">Not launched</div>
                     </div>
                 </div>
 
                 <div class="cell cell-line">
                     <div class="cell-half">
-                        <div class="cell-half-label">Guarantee:</div>
-                        <div class="cell-half-value">{{ projectInfo.guarantee }}USDT (20%)</div>
+                        <div class="cell-half-label">Guarantee Offered:</div>
+                        <div class="cell-half-value">{{ projectInfo.guarantee }} <span class="token-unit">USDT</span>
+                            (20%)
+                        </div>
                     </div>
                     <div class="cell-half">
-                        <div class="cell-half-label">Token Price:</div>
-                        <div class="cell-half-value">150,000 USDT (15%)</div>
+                        <div class="cell-half-label">Invested:</div>
+                        <div class="cell-half-value">150,000 <span class="token-unit">USDT</span> (15%)</div>
                     </div>
                 </div>
                 <div class="cell cell-line">
                     <div class="cell-half">
                         <div class="cell-half-label">Invest Price:</div>
-                        <div class="cell-half-value">{{ convertAmountToCommon(projectInfo.price) }} USDT</div>
+                        <div class="cell-half-value">{{ convertAmountToCommon(projectInfo.price) }} <span
+                                class="token-unit">USDT</span></div>
                     </div>
                     <div class="cell-half">
                         <div class="cell-half-label">Target Price:</div>
-                        <div class="cell-half-value">{{ convertAmountToCommon(projectInfo.targetPrice) }} USDT</div>
+                        <div class="cell-half-value">{{ convertAmountToCommon(projectInfo.targetPrice) }} <span
+                                class="token-unit">USDT</span></div>
                     </div>
                 </div>
                 <div class="cell cell-line">
                     <div class="cell-half">
                         <div class="cell-half-label">Soft Cap:</div>
-                        <div class="cell-half-value">{{ convertAmountToCommon(projectInfo.softCap) }} USDT</div>
+                        <div class="cell-half-value">{{ convertAmountToCommon(projectInfo.softCap) }} <span
+                                class="token-unit">USDT</span></div>
                     </div>
                     <div class="cell-half">
                         <div class="cell-half-label">Hard Cap:</div>
-                        <div class="cell-half-value">{{ convertAmountToCommon(projectInfo.hardCap) }} USDT</div>
+                        <div class="cell-half-value">{{ convertAmountToCommon(projectInfo.hardCap) }} <span
+                                class="token-unit">USDT</span></div>
                     </div>
                 </div>
                 <div class="cell cell-line">
@@ -73,7 +79,7 @@
                         <div class="cell-half-value">{{ projectInfo.setupHeight }}</div>
                     </div>
                     <div class="cell-half">
-                        <div class="cell-half-label">Launch Time:</div>
+                        <div class="cell-half-label">Expected Launch Time:</div>
                         <div class="cell-half-value">{{ projectInfo.deadline }}</div>
                     </div>
                 </div>
@@ -82,115 +88,111 @@
             <div class="cell-group">
                 <div class="cell cell-line">
                     <div class="cell-large-half  cell-title">My hodl</div>
-                    <div class="cell-small-half cell-title-left">detail</div>
+                    <div class="cell-small-half cell-title-left"></div>
                 </div>
                 <div class="cell cell-line">
-                    <div class="cell-left cell-label">持仓ABC:</div>
+                    <div class="cell-left cell-label">Position ABC:</div>
                     <div class="cell-middle">
                         <div class="cell-number">{{ myPosition.position }}</div>
                         <i class="cell-unit">USDT</i></div>
                     <div class="cell-right ">
-                        <button class="cell-button cell-button-width">投资</button>
+                        <button class="cell-button">Invest More</button>
                     </div>
                 </div>
                 <div class="cell cell-line">
-                    <div class="cell-left cell-label">Chicago货值:</div>
+                    <div class="cell-left cell-label">Position Value:</div>
                     <div class="cell-middle">
                         <div class="cell-number">1,234,567,890.09</div>
                         <i class="cell-unit">USDT</i></div>
                     <div class="cell-right ">
-                        <button class="cell-button cell-button-width">退款</button>
+                        <button class="cell-button">Refund</button>
                     </div>
                 </div>
                 <div class="cell cell-line">
-                    <div class="cell-left cell-label">浮盈:</div>
+                    <div class="cell-left cell-label">Current Profit:</div>
                     <div class="cell-middle">
                         <div class="cell-number">{{ myPosition.profits }}</div>
                         <i class="cell-unit">USDT</i></div>
                     <div class="cell-right ">
-                        <button class="cell-button cell-button-width">出售</button>
+                        <button class="cell-button">Sell</button>
                     </div>
                 </div>
                 <div class="cell cell-line">
-                    <div class="cell-left cell-label">投入时间:</div>
+                    <div class="cell-left cell-label">Invest Time:</div>
                     <div class="cell-middle">
                         <div class="cell-number">{{ myPosition.openTime }}</div>
                     </div>
                     <div class="cell-right ">
-                        <button class="cell-button cell-button-width">出售</button>
+                        <van-icon class="question-o" name="question-o"/>
                     </div>
                 </div>
                 <div class="cell">
-                    <div class="cell-left cell-label">剩余时间:</div>
+                    <div class="cell-left cell-label">Time Remaining:</div>
                     <div class="cell-middle">
                         <div class="cell-number">{{ projectInfo.deadline }}</div>
                     </div>
                     <div class="cell-right ">
-                        <button class="cell-button cell-button-width">出售</button>
+                        <van-icon class="question-o" name="question-o"/>
                     </div>
                 </div>
             </div>
+
             <div class="divider"></div>
 
             <div class="cell-group">
                 <div class="cell cell-line">
-                    <div class="cell-large-half  cell-title">My guarantee</div>
-                    <div class="cell-small-half cell-title-left">detail</div>
+                    <div class="cell-large-half  cell-title">My Guaranty</div>
+                    <div class="cell-small-half cell-title-left"></div>
                 </div>
                 <div class="cell cell-line">
-                    <div class="cell-left cell-label">担保金额:</div>
+                    <div class="cell-left cell-label">Offered Amount:</div>
                     <div class="cell-middle">
                         <div class="cell-number">{{ myPosition.guarantee }}</div>
                         <i class="cell-unit">USDT</i></div>
                     <div class="cell-right ">
-                        <button class="cell-button cell-button-width">提供担保</button>
+                        <button class="cell-button">Add More</button>
                     </div>
                 </div>
                 <div class="cell cell-line">
-                    <div class="cell-left cell-label">锁仓金额:</div>
+                    <div class="cell-left cell-label">Locked:</div>
                     <div class="cell-middle">
                         <div class="cell-number">1,234,567,890.09</div>
                         <i class="cell-unit">USDT</i></div>
                     <div class="cell-right ">
-                        <button class="cell-button cell-button-width">退款</button>
+                        <van-icon class="question-o" name="question-o"/>
                     </div>
                 </div>
                 <div class="cell ">
-                    <div class="cell-left cell-label">可退金额:</div>
+                    <div class="cell-left cell-label">Withdrawable:</div>
                     <div class="cell-middle">
                         <div class="cell-number">1,234,567,890.09</div>
                         <i class="cell-unit">USDT</i></div>
                     <div class="cell-right ">
-                        <button class="cell-button cell-button-width">撤销担保</button>
+                        <button class="cell-button">Withdraw</button>
                     </div>
                 </div>
             </div>
             <div class="divider"></div>
             <div class="cell-group">
-                <div class="cell cell-line">
-                    <div class="cell-left cell-label">担保人名单</div>
-                    <div class="cell-middle"></div>
-                    <div class="cell-right">123</div>
+                <div class="cell cell-line" @click="toList(4,'USDT')">
+                    <div class="cell-large-half cell-label">Guarantor List</div>
+                    <div class="cell-small-half cell-page-num">{{ counts.c1 }}></div>
                 </div>
-                <div class="cell cell-line">
-                    <div class="cell-left cell-label">投资人名单</div>
-                    <div class="cell-middle"></div>
-                    <div class="cell-right ">123</div>
+                <div class="cell cell-line" @click="toList(5,'USDT')">
+                    <div class="cell-large-half cell-label">Investor List</div>
+                    <div class="cell-small-half cell-page-num">{{ counts.c2 }}></div>
                 </div>
-                <div class="cell cell-line">
-                    <div class="cell-left cell-label">担保记录</div>
-                    <div class="cell-middle"></div>
-                    <div class="cell-right ">123</div>
+                <div class="cell cell-line" @click="toList(1,'USDT')">
+                    <div class="cell-large-half cell-label">Guaranty Records</div>
+                    <div class="cell-small-half cell-page-num">{{ counts.c3 }}></div>
                 </div>
-                <div class="cell cell-line">
-                    <div class="cell-left cell-label">投资记录</div>
-                    <div class="cell-middle"></div>
-                    <div class="cell-right ">123</div>
+                <div class="cell cell-line" @click="toList(2,'USDT')">
+                    <div class="cell-large-half cell-label">Investment Records</div>
+                    <div class="cell-small-half cell-page-num">{{ counts.c4 }}></div>
                 </div>
-                <div class="cell">
-                    <div class="cell-left cell-label">出售记录</div>
-                    <div class="cell-middle"></div>
-                    <div class="cell-right ">123</div>
+                <div class="cell" @click="toList(3,projectInfo.symbol)">
+                    <div class="cell-large-half cell-label">Selling Records</div>
+                    <div class="cell-small-half cell-page-num">{{ counts.c5 }}></div>
                 </div>
             </div>
             <div style="height: 100px"></div>
@@ -209,7 +211,7 @@
     import {add, convertAmountToCommon, greaterThan} from "@/chain/bignumber"
     import {ApiManager} from "@/chain/api"
     // eslint-disable-next-line no-unused-vars
-    import {IOperationSlot, ProjectStatus, SubmitType} from "@/pgcommon/common";
+    import {IList, IOperationSlot, IPageParam, ListType, ProjectStatus, SubmitType} from "@/pgcommon/common";
 
     interface ILog {
         id: number
@@ -255,6 +257,7 @@
             })
             const projectInfo = reactive({
                 name: "",
+                symbol: "",
                 token: "",
                 price: "0",
                 softCap: "0",
@@ -285,6 +288,7 @@
             const boardCss = reactive({} as BoardCss)
             onMounted(async () => {
                 await getProjectInfo()
+                getCounts()
                 currentHeight.value = await ApiManager.GetBlockNumber()
                 if (wcli != undefined && wcli.state.connector?.session.connected) {
                     account.value = wcli.state.address
@@ -340,7 +344,7 @@
                 boardCss.right = cssRes.right
                 boardCss.code = cssRes.code
                 boardCss.color = cssRes.color
-                getProjectLog()
+
 
                 let period = projectInfo.setupHeight - currentHeight.value
                 if (period < 0) {
@@ -375,6 +379,7 @@
                 }).then(res => {
                     myPosition.input = res.data.myInputHeight
                     let one = res.data.one
+                    projectInfo.symbol = one.symbol
                     projectInfo.name = one.name
                     projectInfo.token = one.token
                     projectInfo.price = one.price
@@ -398,6 +403,46 @@
                 )
             }
 
+            const counts = reactive(
+                {
+                    c1: 0,
+                    c2: 0,
+                    c3: 0,
+                    c4: 0,
+                    c5: 0,
+                }
+            )
+
+            function getCounts() {
+                BackendApi.getCounts({
+                    "project": projectAddr.value,
+                    "fund": fundAddr.value,
+                }).then(res => {
+                    counts.c1 = res.data.guarantorListCount
+                    counts.c2 = res.data.investorListCount
+                    counts.c3 = res.data.guarantyRecordsCount
+                    counts.c4 = res.data.investmentRecordsCount
+                    counts.c5 = res.data.sellingRecordsCount
+                }).catch(err => {
+                        Notify({type: 'danger', message: err});
+                    }
+                )
+            }
+
+            function toList(typ: number, symbol: string) {
+                let args: IList = {
+                    Type: typ as ListType,
+                    Project: projectAddr.value,
+                    Symbol: symbol
+                }
+                let p: IPageParam = {
+                    Name: "List",
+                    Title: projectInfo.name,
+                    Args: args,
+                    NewPage: true,
+                }
+                context.emit("changeView", p)
+            }
 
             function calcCss(status: Number): BoardCss {
                 let obj = {} as BoardCss
@@ -462,7 +507,7 @@
             }
 
 
-            const reqLogRequest = reactive({
+            /*const reqLogRequest = reactive({
                 pageIndex: 1,
                 pageSize: 10,
                 more: true,
@@ -495,7 +540,7 @@
                         Notify({type: 'danger', message: err});
                     }
                 )
-            }
+            }*/
 
             const active = ref(0);
 
@@ -504,6 +549,7 @@
                     Type: SubmitType.Guarantee,
                     Fund: fundAddr.value,
                     Project: projectAddr.value,
+                    Tips: ""
                 } as IOperationSlot
                 emit(params)
             }
@@ -558,30 +604,30 @@
             }
 
 
-            const tabClick = (name: string) => {
-                switch (name) {
-                    case "invest":
-                        reqLogRequest.methodNum = 2
-                        break
-                    case "sell":
-                        reqLogRequest.methodNum = 3
-                        break
-                    default:
-                        reqLogRequest.methodNum = 1
-                        break
-                }
-                projectLogs.splice(0)
-                reqLogRequest.pageIndex = 1
-                reqLogRequest.more = true
-                getProjectLog()
-                console.log(name)
-            }
+            /* const tabClick = (name: string) => {
+                 switch (name) {
+                     case "invest":
+                         reqLogRequest.methodNum = 2
+                         break
+                     case "sell":
+                         reqLogRequest.methodNum = 3
+                         break
+                     default:
+                         reqLogRequest.methodNum = 1
+                         break
+                 }
+                 projectLogs.splice(0)
+                 reqLogRequest.pageIndex = 1
+                 reqLogRequest.more = true
+                 getProjectLog()
+                 console.log(name)
+             }*/
             return {
                 fundDaily, projectInfo, myPosition, currentHeight,
-                getProjectLog, projectLogs,
+                counts, toList,
                 buttons, active, boardCss,
                 SubmitGuarantee, SubmitInvest, SubmitDisGuarantee, SubmitDisInvest, SubmitSell,
-                tabClick
+
             }
 
         }
@@ -653,7 +699,7 @@
     }
 
     .pro-button-1 {
-        margin: 10px 40px;
+        margin: 10px 20px;
         background-color: #FFCC00;
         color: #333333;
         font-size: 24px;

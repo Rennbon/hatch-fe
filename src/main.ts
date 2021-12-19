@@ -51,6 +51,7 @@ document.documentElement.addEventListener('touchend', function (event) {
 
 // @ts-ignore
 const app = createApp(App)
+//app.use(VueFullscreen)
 app.use(Vant)
 app.use(ElementPlus)
 app.use(router)

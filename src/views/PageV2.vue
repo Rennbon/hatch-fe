@@ -16,15 +16,14 @@
     import Project from "@/components/content/v2/Project.vue";
     import NavBar from "@/components/bar/v2/NavBar.vue";
     import Nav from "@/components/content/v2/Nav.vue"
-    import CreateProject from "@/components/content/CreateProject.vue"
+    import CreateProject from "@/components/content/v2/CreateProject.vue"
     import {defineComponent, onMounted, provide, ref} from "vue";
     // eslint-disable-next-line no-unused-vars
-    import {IDialogSlot, IFundArgs, IOperationSlot, IPageParam, IProjectArgs} from "@/pgcommon/common";
+    import {IDialogSlot, IFundArgs, IList, IOperationSlot, IPageParam, IProjectArgs} from "@/pgcommon/common";
     import Operation from "@/components/bar/v2/Operation.vue"
     import ForkFund from "@/components/content/ForkFund.vue"
-    import Inbox from "@/components/content/Inbox.vue"
     import Dialog from "@/components/bar/Dialog.vue"
-
+    import List from "@/components/content/v2/List.vue"
 
     export default defineComponent({
         name: "PageV2",
@@ -37,7 +36,7 @@
             Nav,
             CreateProject,
             ForkFund,
-            Inbox
+            List
         },
         props: {},
         setup() {
@@ -49,8 +48,10 @@
             provide("fund", curFundId)
             const curProjectId = ref("")
             provide("project", curProjectId)
-
-
+            const curListSymbol = ref("")
+            const curListType = ref(4)
+            provide("listSymbol", curListSymbol)
+            provide("listType", curListType)
             // unified scheduling
             const pMap = new Map<string, any>([
                 ["Fund", Fund],
@@ -58,7 +59,7 @@
                 ["Project", Project],
                 ["CreateProject", CreateProject],
                 ["ForkFund", ForkFund],
-                ["Inbox", Inbox]
+                ["List", List]
             ])
             const currentPage = ref<any>(Nav)
             const preParams: IPageParam[] = [{
@@ -88,6 +89,7 @@
                             break
                         case "Fund":
                         case "Project":
+                        case "List":
                             barStyle = 1;
                             break
                         default:
@@ -105,6 +107,11 @@
                     case "Project":
                         curFundId.value = (p.Args as IProjectArgs).FundAddress
                         curProjectId.value = (p.Args as IProjectArgs).ProjectAddress
+                        break
+                    case "List":
+                        curListSymbol.value = (p.Args as IList).Symbol
+                        curListType.value = (p.Args as IList).Type as number
+                        console.log("page2", curListSymbol.value, curListType.value)
                         break
                     default:
                         break;

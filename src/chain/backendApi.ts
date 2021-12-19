@@ -95,5 +95,17 @@ export const BackendApi = {
                 params: params
             })
 
+    },
+    getCounts(params:object){
+        return apiManager.get(
+            '/v2/counts', {
+                params: params
+            })
+    },
+    getProjectMembers(params:object){
+        return apiManager.get(
+            '/v2/projectMembers', {
+                params: params
+            })
     }
 }

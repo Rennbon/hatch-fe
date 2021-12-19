@@ -10,7 +10,7 @@ import {
     convertStringToHex,
     subtract
 } from "./bignumber";
-import {ITxData} from "./types";
+import {IFunInfo, ITxData} from "./types";
 import {IForkFundParam, IMyAsset, ISetProjectParam, ProjectStatus} from "@/pgcommon/common";
 
 interface INumberAndAddress {
@@ -125,6 +125,20 @@ export class ContractManager {
             data,
         }
         return tx
+    }
+
+    public async FunInfo(): Promise<IFunInfo> {
+        let total = await this.TotalDeposit()
+        let startups = await this.CountProjects()
+        let mined = await this.CountUsers()
+        let investors = await this.CountInvests()
+        return {
+            total: total,
+            investors: investors,
+            startups: startups,
+            wallets: mined,
+            destroyed: "0",
+        }
     }
 
     public async TotalDeposit(): Promise<string> {
